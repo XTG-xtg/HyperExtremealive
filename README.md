@@ -33,6 +33,8 @@
 
 ## Alive 整合修复候选
 
+HyperAlive 作者主页：[酷安主页](https://www.coolapk.com/u/39588100)。
+
 基于 `main@7321d76102da566264f8773671ec64172eae7849` 整合 Alive 实现，当前版本 `0.5-alive.6` / versionCode 11。
 入口：**功能 → Alive 动态壁纸**。沿用本项目的 Miuix 主题、中文页面与系统二级页转场。
 
