@@ -15,6 +15,10 @@
 #    虽然 manifest 引用会让 R8 自动保留，但这条链**一旦断了没有任何编译期信号**
 #    （现象只是"系统壁纸选择器里看不到这个壁纸"），所以显式写死。
 -keep class com.frederic22.hyperextreme.wallpaper.SpatialWallpaperService { *; }
+-keep class com.frederic22.hyperextreme.alive.HomeWallpaperService { *; }
+-keep class com.frederic22.hyperextreme.alive.LockWallpaperService { *; }
+-keep class com.frederic22.hyperextreme.alive.ConfigProvider { *; }
+-keep class com.frederic22.hyperextreme.alive.NativeScene { *; }
 
 # ── libxposed API 整个包保持原样 ──────────────────────────────────────────────
 #

@@ -139,7 +139,7 @@ private const val BottomFadeAlpha = 0.85f
  * 二级页是**盖住底栏**的全屏页（用户指定），所以它们不占 [Tab] 的位置。
  * 见 [FunctionHome] / [MaskReplaceDetail] / [SystemUiDetail] / [DesktopDetail]。
  */
-internal enum class DetailPage { MaskReplace, ParallaxBg, SpatialWallpaper, SystemUi, Desktop }
+internal enum class DetailPage { MaskReplace, ParallaxBg, SpatialWallpaper, Alive, SystemUi, Desktop }
 
 // 二级页（[DetailPage]）的转场**不归本文件管**：它现在是独立 Activity（[MaskDetailActivity]），
 // 转场由**系统的 Activity 动画**负责 —— 为什么必须如此、以及为什么不在这里复刻，见那个类的注释。
@@ -674,7 +674,7 @@ private fun TabHost(
 internal fun DetailTabHost(
     title: String,
     onBack: () -> Unit,
-    onRestartAod: () -> Unit,
+    onRestartAod: (() -> Unit)?,
     content: @Composable () -> Unit,
 ) {
     // 收起驱动与一级页 [TabHost] 同一套（2026-10-15 修正）：只借 `MiuixScrollBehavior`
@@ -735,7 +735,7 @@ internal fun DetailTabHost(
                         }
                     },
                     actions = {
-                        IconButton(onClick = { haptic(); onRestartAod() }) {
+                        if (onRestartAod != null) IconButton(onClick = { haptic(); onRestartAod() }) {
                             Icon(
                                 imageVector = MiuixIcons.Refresh,
                                 contentDescription = "重启锁屏编辑器",

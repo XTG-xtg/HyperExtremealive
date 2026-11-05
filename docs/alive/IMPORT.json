@@ -1,0 +1,171 @@
+{
+  "lab_package": "io.github.frederic.hyperalive",
+  "new_package": "com.frederic22.hyperextreme.alive",
+  "files": [
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\AliveWallpaperService.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\AliveWallpaperService.java",
+      "source_sha256": "9bc9460d72fa7e4ab0830a8f8f90bdea023859fa893ba2ef1a0d8aad866c5cec"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\AssetGl.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\AssetGl.java",
+      "source_sha256": "9947ddff7b1b93818e1f2df75919d739eca1efff18a38ffc781f74d9265d6de8"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\BubbleMotion.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\BubbleMotion.java",
+      "source_sha256": "0dd077cde2b1c46042f51d01230a4fc6528e5e65355e7908716671d27fa391b9"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\BubbleRenderer.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\BubbleRenderer.java",
+      "source_sha256": "6ac1ba540841df6061b88dcb8d4bd42372f6cd79c45ac7916f41bb762164f6be"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\Config.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\Config.java",
+      "source_sha256": "c96db49b244f6fbfccdc9b9d352d957f2a5600aa414b0f48be4b9f8f771e0c62"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\ConfigProvider.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\ConfigProvider.java",
+      "source_sha256": "68f4f72ec74463e59e00858851c3b6bfe3ab5e9f025f1eb73a08974900b93b0c"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\CosmicEgl.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\CosmicEgl.java",
+      "source_sha256": "5d3ce3963ce275c05b852537ee24b1abd5239425a8f6367da91cab54ecb2d5c4"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\CosmicMotion.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\CosmicMotion.java",
+      "source_sha256": "0dd56358d86ad7f09e80c76b0b32ca4538b68d2181e893a165de78d14efc428f"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\CosmicRenderer.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\CosmicRenderer.java",
+      "source_sha256": "7a84b71619e59a950275ac4ca9b7d3c288ab3a68f02f3db4bedf1e348b98daa6"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\Diagnostics.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\Diagnostics.java",
+      "source_sha256": "dd2785df43764308f75ac3c775848c4bed17a9b0f6fe116b9a091af7793b3fa4"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\EglWorker.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\EglWorker.java",
+      "source_sha256": "4eff514f78605d0d17510de05ea7e91bec6148b84a286a9bdba416efe2b0522a"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\EngineRegistry.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\EngineRegistry.java",
+      "source_sha256": "c1397ccd64006f1370610fcb67205b255309953ccc02dd9cc4957df3f96d4937"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\FlymeVideoDecoder.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\FlymeVideoDecoder.java",
+      "source_sha256": "559ccd3c22d2bb0ec848dea2e82653ad4165352da13154caf08578d4d458c04e"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\FlymeVideoMotion.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\FlymeVideoMotion.java",
+      "source_sha256": "5c9d86f70632305e1c5a83fd691256812685746744b3b40dee379108eb8a9096"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\FlymeVideoRenderer.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\FlymeVideoRenderer.java",
+      "source_sha256": "01f997a7b5ee64dd5a3f451f9fc33f8a6bf1655f68ba3c10c4746d219fec8c62"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\GradientMotion.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\GradientMotion.java",
+      "source_sha256": "dea658ae6d276530575e1438cb91ee5fa72a45bd039f87dd7cd832d49485ee00"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\GradientRenderer.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\GradientRenderer.java",
+      "source_sha256": "d61ddeb87a38087eff3ccb6ae71bc5840bc81a839d1f6bd917c89b7fdd975f52"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\GradientSpline.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\GradientSpline.java",
+      "source_sha256": "1f8a359cc9acfd4996b52d41cf0a9293ff7e7bbcffff37367a4ac42cf91ab090"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\HomeWallpaperService.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\HomeWallpaperService.java",
+      "source_sha256": "534a7dbd5e59650dbab12bf712e325a7619f2d9c3ffaff1128bd68a817414510"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\LockWallpaperService.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\LockWallpaperService.java",
+      "source_sha256": "0ea91767466436766e60a2c5ceb4e48292d7d923a926da5297112aeee1cd9973"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\MaskDecoder.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\MaskDecoder.java",
+      "source_sha256": "6a8c616498272be1149c4d012c40a9c203c07781b7565b4bd0d89274a5f03e3e"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\MaskFrames.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\MaskFrames.java",
+      "source_sha256": "f0624d22fcfd9a3b14fc179e50f07fd93ea63c211c90ee76a26abd22337fcfac"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\PhotoRenderer.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\PhotoRenderer.java",
+      "source_sha256": "26aca5787f1dfd281128844d1933b7da67a6a7c0d2b87a364240bfc95682ffc5"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\PhotoStyle.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\PhotoStyle.java",
+      "source_sha256": "15b056503a26b645f2dc870593453100a4b7f66fa317352919881b166aa10328"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\Protocol.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\Protocol.java",
+      "source_sha256": "b778ea8465115a239bfc4b536cafb2e2d47f3f7e2c462e1fa2e7e40f88b8b177"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\RootBridge.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\RootBridge.java",
+      "source_sha256": "6b67a45880eb4821f517252546542d253debe0ce890d0472a13c9f542279b9ea"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\StereoMotion.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\StereoMotion.java",
+      "source_sha256": "566fdcaf5daf4bf5b4f51f6304a018cf74ea99b1049303e3e4a3fc2c9dccef1f"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\StereoRenderer.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\StereoRenderer.java",
+      "source_sha256": "3110fa0178a01dbe24a6e6ae257ab73fb2d34aa406c7a084bc5bbbf43be7e617"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\StereoSensor.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\StereoSensor.java",
+      "source_sha256": "6895b6cd670f5ea22b52b05cc3a708423784d97c223bf4853dc0f5750d7c71e7"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\WallpaperMotion.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\WallpaperMotion.java",
+      "source_sha256": "c865bb3dcb0b91e2fc8b7be0d46d4898d44e971ee916373da8ed0f9ab38515bb"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\WallpaperRenderer.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\WallpaperRenderer.java",
+      "source_sha256": "6f8ce7b83bc35b4adf92182bb7048c92ef843c24952ff9c6d3db81a804ab34bc"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\WallpaperTransitionTime.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\WallpaperTransitionTime.java",
+      "source_sha256": "6cb1d0d869049cda4dd06a69273225feffef8dde93d44e49678ed946efb81ef7"
+    },
+    {
+      "source": "app\\src\\main\\java\\io\\github\\frederic\\hyperalive\\core\\AliveState.java",
+      "target": "app\\src\\main\\java\\com\\frederic22\\hyperextreme\\alive\\core\\AliveState.java",
+      "source_sha256": "25c7891091e68a50bc89de5ece403e45e4d5a514b9a0acb2f87547d1a8d8a21b"
+    }
+  ]
+}

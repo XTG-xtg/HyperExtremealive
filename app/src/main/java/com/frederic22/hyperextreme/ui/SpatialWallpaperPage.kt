@@ -50,6 +50,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.frederic22.hyperextreme.data.MaskPrefs
 import com.frederic22.hyperextreme.data.SpatialControl
 import com.frederic22.hyperextreme.data.RunLog
+import com.frederic22.hyperextreme.data.WallpaperFeatures
+import com.frederic22.hyperextreme.data.WallpaperFeaturePolicy.Feature
 import com.frederic22.hyperextreme.spatial.SpatialDepth
 import com.frederic22.hyperextreme.spatial.SpatialLayers
 import com.frederic22.hyperextreme.wallpaper.SpatialServiceMode
@@ -157,6 +159,7 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
     // 后台查不了就算了）。`WallpaperManager` 没有壁纸变化回调（ACTION_WALLPAPER_CHANGED
     // 是 protected broadcast），所以只能靠 onResume 重读。
     var serviceRunning by remember { mutableStateOf(SpatialServiceMode.isRunning(ctx)) }
+    var hookStopping by remember { mutableStateOf(prefs.spatialStopPending) }
     var showMountWarn by remember { mutableStateOf(false) }
     var noMoreWarn by remember { mutableStateOf(false) }
 
@@ -168,7 +171,7 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
      * ⇒ 候选框能被清空 / 换成别的图，与屏幕上看到的完全对不上。现在两种模式的
      * 「生效中锁住候选框」语义一致（用户要求"与 LSPosed 模式逻辑相同"）。
      */
-    val locked = activeKey.isNotEmpty() || serviceRunning
+    val locked = activeKey.isNotEmpty() || serviceRunning || hookStopping
 
     /**
      * 当前模式是否**正在运行** —— 为 true 时「挂载模式」下拉锁死。
@@ -177,22 +180,26 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
      * * LSPosed 运行中 → 必须点「关闭替换」才能改模式；
      * * 服务模式运行中 → 必须点「恢复到系统默认壁纸」才能改模式。
      */
-    val isRunning = if (mountMode == MaskPrefs.SPATIAL_MOUNT_SERVICE) {
-        serviceRunning
-    } else {
-        activeKey.isNotEmpty()
-    }
+    val isRunning = locked
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
+        val storage = ctx.getSharedPreferences(MaskPrefs.NAME, android.content.Context.MODE_PRIVATE)
+        val listener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+            activeKey = prefs.spatialKey
+            hookStopping = prefs.spatialStopPending
+        }
+        storage.registerOnSharedPreferenceChangeListener(listener)
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 // 用户可能在系统壁纸页里换了图/换了范围，回来必须重新对一次
                 serviceRunning = SpatialServiceMode.isRunning(ctx)
+                activeKey = prefs.spatialKey
+                hookStopping = prefs.spatialStopPending
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer); storage.unregisterOnSharedPreferenceChangeListener(listener) }
     }
 
     /** 提交挂载模式（弹窗确认后才走这里）。 */
@@ -241,6 +248,9 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
      * 重启 miwallpaper），因为视差页的「功能冲突提醒」也要用同一套关闭动作。
      */
     fun enableSpatial(key: String) {
+        try {
+        WallpaperFeatures.activate(ctx, Feature.SPATIAL) {
+        check(!SpatialServiceMode.isRunning(ctx)) { "请先关闭空间壁纸的系统服务模式" }
         prefs.setSpatialActive(key)
         activeKey = key
         // **SystemUI 侧读的是系统属性**（见 SpatialFlag：那里 prefs 通道不可用）。
@@ -260,6 +270,11 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
             "空间壁纸已生效（${scopeLabel(prefs.spatialScope)}）",
             Toast.LENGTH_LONG,
         ).show()
+        }
+        } catch (error: Exception) {
+            AppToast.show(ctx, error.message ?: "空间壁纸开启失败")
+            return
+        }
 
         // 记「**壁纸基准**」（2026-10-29）：aod 侧的换壁纸检测拿它当比对值，
         // 判据一变就无条件关闭空间壁纸（没有开关）。判据要读模板文件 ⇒ 放后台、不阻塞点按；
@@ -268,7 +283,8 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
         Thread {
             runCatching {
                 val version = com.frederic22.hyperextreme.data.WallpaperVersion.compute(app)
-                if (version.usable) prefs.setSpatialWallpaperFp(version.value)
+                if (version.usable && prefs.spatialActive && prefs.spatialKey == key)
+                    prefs.setSpatialWallpaperFp(version.value)
             }
         }.apply { isDaemon = true }.start()
     }
@@ -541,28 +557,31 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                     colors = ButtonDefaults.textButtonColorsPrimary(),
                 )
                 Spacer(Modifier.height(12.dp))
-                TextButton(
-                    text = when {
-                        // 系统壁纸服务模式：两个文案都由「当前系统壁纸是不是我们」决定
-                        mountMode == MaskPrefs.SPATIAL_MOUNT_SERVICE ->
-                            if (serviceRunning) "恢复到系统默认壁纸" else "跳转到服务页设置"
-                        lastKey != null && activeKey == lastKey -> "关闭替换"
-                        else -> "立即替换"
-                    },
-                    onClick = replace@{
+                SwitchRow(
+                    title = "启用空间壁纸",
+                    checked = isRunning,
+                    enabled = !busy && !checking && !state.busy,
+                    summary = if (hookStopping) "等待系统确认停用；若长时间未关闭，可重试关闭开关"
+                        else if (mountMode == MaskPrefs.SPATIAL_MOUNT_SERVICE)
+                        "开启后在系统页面确认；关闭会恢复默认壁纸。与 Alive、视差壁纸互斥。"
+                        else "与 Alive、视差壁纸互斥；关闭后保留图片和参数",
+                    onCheckedChange = replace@{ next ->
                         haptic()
                         // ── 系统壁纸服务模式：**只走系统路径**（2026-10-30）──
                         // 开启 = 写目标 + 拉起系统壁纸页（用户在页面里选生效范围）；
                         // 关闭 = WallpaperManager.clear(both) → 回系统默认壁纸。
-                        if (mountMode == MaskPrefs.SPATIAL_MOUNT_SERVICE) {
+                        if (mountMode == MaskPrefs.SPATIAL_MOUNT_SERVICE || serviceRunning) {
                             if (serviceRunning) {
                                 // `WallpaperManager.clear()` 是同步 binder，HyperOS 上要几百 ms，
                                 // 放主线程就是「点一下卡一下」（用户 2026-10-31 反馈）。
                                 // 丢到 IO 线程，完成后再回主线程更新状态 / toast。
                                 scope.launch {
-                                    withContext(Dispatchers.IO) { SpatialServiceMode.disable(ctx) }
-                                    serviceRunning = SpatialServiceMode.isRunning(ctx)
-                                    Toast.makeText(ctx, "已恢复到系统默认壁纸", Toast.LENGTH_LONG).show()
+                                    busy = true
+                                    try {
+                                        val result = withContext(Dispatchers.IO) { SpatialServiceMode.disable(ctx) }
+                                        serviceRunning = SpatialServiceMode.isRunning(ctx)
+                                        AppToast.show(ctx, result.exceptionOrNull()?.message ?: "空间壁纸已关闭，已恢复默认壁纸")
+                                    } finally { busy = false }
                                 }
                             } else {
                                 val k = lastKey
@@ -570,12 +589,9 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                                     File(SpatialDepth.cacheRoot(ctx), k),
                                 )
                                 if (ok) {
-                                    SpatialServiceMode.enable(ctx, k!!)
-                                    Toast.makeText(
-                                        ctx,
-                                        "请在系统服务页设置生效范围",
-                                        Toast.LENGTH_LONG,
-                                    ).show()
+                                    runCatching { SpatialServiceMode.enable(ctx, k!!) }
+                                        .onSuccess { AppToast.show(ctx, "请在系统页面确认设置，返回后会回读开关状态") }
+                                        .onFailure { AppToast.show(ctx, it.message ?: "无法打开壁纸服务页") }
                                 } else {
                                     Toast.makeText(ctx, "请先生成深度缓存", Toast.LENGTH_SHORT).show()
                                 }
@@ -588,7 +604,12 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                         // （与功能页 `requireActivated()` 同一把闸门）。
                         // ⚠️ **关闭方向不拦**：否则掉激活后用户连关都关不掉。
                         // 位置在服务模式 return 之后 ⇒ 服务模式（免 Root）完全不受影响。
-                        val closing = lastKey != null && activeKey == lastKey
+                        val closing = !next
+                        if (closing) {
+                            SpatialControl.disable(ctx)
+                            activeKey = ""
+                            return@replace
+                        }
                         if (!closing && !state.fullyActivated) {
                             Toast.makeText(
                                 ctx,
@@ -643,8 +664,6 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.textButtonColorsPrimary(),
                 )
             }
         }

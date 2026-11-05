@@ -151,6 +151,13 @@ class MaskPrefs(context: Context) {
     val spatialActive: Boolean
         get() = prefs.getBoolean(KEY_SPATIAL_ACTIVE, false)
 
+    val spatialStopPending: Boolean
+        get() = prefs.getBoolean(WallpaperFeaturePolicy.SPATIAL_STOP_PENDING, false)
+
+    fun setSpatialStopPending(value: Boolean) {
+        prefs.edit().putBoolean(WallpaperFeaturePolicy.SPATIAL_STOP_PENDING, value).commit()
+    }
+
     /** 当前生效的图层缓存键（= 图片 sha256 前 16 位，SystemUI 用它拼 provider uri）。 */
     val spatialKey: String
         get() = prefs.getString(KEY_SPATIAL_KEY, "").orEmpty()
@@ -367,12 +374,19 @@ class MaskPrefs(context: Context) {
         prefs.edit().putBoolean(KEY_PARALLAX_ACTIVE, value).commit()
     }
 
+    val parallaxStopPending: Boolean
+        get() = prefs.getLong(WallpaperFeaturePolicy.PARALLAX_STOP_TOKEN, 0L) > parallaxAck
+
+    fun markParallaxStop(token: Long) {
+        prefs.edit().putLong(WallpaperFeaturePolicy.PARALLAX_STOP_TOKEN, token).commit()
+    }
+
     /** 「视差壁纸效果」开 / 关指令的请求号（App 发显式广播给 SystemUI，ParallaxBg 回执）。 */
     val parallaxToken: Long
         get() = prefs.getLong(KEY_PARALLAX_TOKEN, 0L)
 
     fun requestParallax(): Long {
-        val token = System.currentTimeMillis()
+        val token = maxOf(System.currentTimeMillis(), parallaxToken + 1L, parallaxAck + 1L)
         prefs.edit().putLong(KEY_PARALLAX_TOKEN, token).commit()
         return token
     }
@@ -752,7 +766,7 @@ class MaskPrefs(context: Context) {
     }
 
     companion object {
-        const val NAME = "mask_swap"
+        const val NAME = WallpaperFeaturePolicy.PREFS
 
         /**
          * 拿不到壁纸内容指纹时的占位值。
@@ -770,7 +784,7 @@ class MaskPrefs(context: Context) {
         /** 空间壁纸的推理短边（像素档位）。 */
         const val KEY_SPATIAL_SHORT_SIDE = "spatial_short_side"
         /** 空间壁纸是否生效（SystemUI 侧轮询）。 */
-        const val KEY_SPATIAL_ACTIVE = "spatial_active"
+        const val KEY_SPATIAL_ACTIVE = WallpaperFeaturePolicy.SPATIAL_ACTIVE
         /** 当前生效的图层缓存键（图片 sha256 前 16 位）。 */
         const val KEY_SPATIAL_KEY = "spatial_key"
         /** 最近一次**生成成功**的图层缓存键（不管有没有生效）。 */
@@ -886,7 +900,7 @@ class MaskPrefs(context: Context) {
         const val NAV_BG_RADIUS_MAX = 50
 
         /** 「视差壁纸效果」：开启状态 + 指令号 / 回执号（SystemUI 侧 ParallaxBg 消费）。 */
-        const val KEY_PARALLAX_ACTIVE = "parallax_bg_active"
+        const val KEY_PARALLAX_ACTIVE = WallpaperFeaturePolicy.PARALLAX_ACTIVE
         const val KEY_PARALLAX_TOKEN = "parallax_token"
         const val KEY_PARALLAX_ACK = "parallax_ack"
 

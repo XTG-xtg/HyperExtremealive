@@ -33,8 +33,8 @@ android {
         applicationId = "com.frederic22.hyperextreme"
         minSdk = 33
         targetSdk = 37
-        versionCode = 5
-        versionName = "0.5"
+        versionCode = 13
+        versionName = "0.5-alive.6-ui.2"
 
         ndk {
             abiFilters += "arm64-v8a"
@@ -96,6 +96,14 @@ android {
         compose = true
     }
 
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
+
+    sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/aliveAssets").get().asFile)
+    sourceSets.getByName("main").jniLibs.srcDir(layout.buildDirectory.dir("generated/aliveJni").get().asFile)
+    androidResources { noCompress += listOf("mp4", "dex") }
+
     packaging {
         // dex 压缩进 APK（minSdk >= 28 时 AGP 默认是不压缩、安装时直接 mmap，
         // 体积会大 20MB 左右）。这里要的是包小，所以打开 legacy 打包。
@@ -115,6 +123,9 @@ kotlin {
 }
 
 dependencies {
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.17")
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.12.0")
     // libxposed API 102（由 io.github.libxposed:api:102.0.0 的 AAR 解出的 classes.jar）。
     // 只参与编译，运行时由框架提供，绝不打包进 APK。
     compileOnly(files("libs/libxposed-api-102.jar"))
@@ -135,3 +146,30 @@ dependencies {
     // 2026-10-22 用户决定退回完整版（so 17.8MB），模型直接用 `.onnx`。
     implementation(libs.onnxruntime.android)
 }
+
+val prepareAliveHelper by tasks.registering(Exec::class) {
+    inputs.dir(rootProject.file("alive-root/src"))
+    inputs.file(rootProject.file("tools/build_alive_helper.py"))
+    outputs.dir(layout.buildDirectory.dir("generated/aliveAssets"))
+    workingDir(rootProject.projectDir)
+    commandLine(
+        System.getenv("PYTHON") ?: "python", "tools/build_alive_helper.py",
+        "--sdk", android.sdkDirectory.absolutePath,
+        "--java-home", System.getProperty("java.home"),
+        "--compile-sdk", android.compileSdk.toString(),
+        "--build-tools", android.buildToolsVersion,
+    )
+}
+tasks.named("preBuild") { dependsOn(prepareAliveHelper) }
+
+val prepareAlivePhoto by tasks.registering(Exec::class) {
+    inputs.dir(rootProject.file("alive-photo"))
+    inputs.file(rootProject.file("tools/build_alive_photo.py"))
+    outputs.dir(layout.buildDirectory.dir("generated/aliveJni"))
+    workingDir(rootProject.projectDir)
+    commandLine(
+        System.getenv("PYTHON") ?: "python", "tools/build_alive_photo.py",
+        "--ndk", android.sdkDirectory.resolve("ndk/${android.ndkVersion}").absolutePath,
+    )
+}
+tasks.named("preBuild") { dependsOn(prepareAlivePhoto) }

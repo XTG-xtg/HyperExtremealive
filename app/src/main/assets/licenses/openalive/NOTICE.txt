@@ -1,0 +1,5 @@
+OpenAlive source: https://github.com/Maga-King/OpenAlive
+Commit: 2d54c72a573b2f66e20b558283bef58cdb0ada60
+Source-derived Java and Rust are used under the included MIT license.
+Official Flyme shaders, masks, videos and other wallpaper assets retain their original owners' rights. The MIT license does not grant redistribution or commercial rights to these assets.
+Integration changes and source hashes: docs/alive/PROVENANCE.json in the source distribution.

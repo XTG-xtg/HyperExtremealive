@@ -1,0 +1,17 @@
+GPU=Adreno (TM) 830
+FRAME variant=1 mode=0 lit=20441
+FRAME variant=1 mode=1 lit=288360
+FRAME variant=1 mode=2 lit=288360
+FRAME variant=201 mode=0 lit=12990
+FRAME variant=201 mode=1 lit=288360
+FRAME variant=201 mode=2 lit=288360
+FRAME variant=301 mode=0 lit=288360
+FRAME variant=301 mode=1 lit=288360
+FRAME variant=301 mode=2 lit=288360
+FRAME variant=501 mode=0 lit=288360
+FRAME variant=501 mode=1 lit=288360
+FRAME variant=501 mode=2 lit=288360
+FRAME variant=601 mode=0 lit=2022
+FRAME variant=601 mode=1 lit=288360
+FRAME variant=601 mode=2 lit=288360
+RENDER_PROBE_OK (not wallpaper-binding or visual-parity verification)

@@ -27,6 +27,8 @@ import com.frederic22.hyperextreme.data.SelfTest
 import com.frederic22.hyperextreme.data.SystemUiPackageName
 import com.frederic22.hyperextreme.data.WallpaperSource
 import com.frederic22.hyperextreme.data.WallpaperVersion
+import com.frederic22.hyperextreme.data.WallpaperFeatures
+import com.frederic22.hyperextreme.data.WallpaperFeaturePolicy.Feature
 import com.frederic22.hyperextreme.hook.HookRuntime
 import com.frederic22.hyperextreme.hook.ParallaxBg
 import com.frederic22.hyperextreme.hook.ScreenFlash
@@ -88,7 +90,7 @@ class MaskUiState(
      * 权威状态在 prefs（`MaskPrefs.parallaxBgActive`）——界面按钮显示「立即替换」还是
      * 「关闭替换」、SystemUI 侧插不插背景层，全都看它。
      */
-    var parallaxActive by mutableStateOf(prefs.parallaxBgActive)
+    var parallaxActive by mutableStateOf(prefs.parallaxBgActive || prefs.parallaxStopPending)
         private set
 
     /** 「视差壁纸效果」的背景图预览（`files/parallax_bg.png`；未选图时为 null）。 */
@@ -284,7 +286,7 @@ class MaskUiState(
             hookStatus = readHookStatus(prefs)
             frameworkConnected = ActivationState.frameworkConnected
             themeMode = ThemeMode.of(prefs.themeMode)
-            parallaxActive = prefs.parallaxBgActive
+            parallaxActive = prefs.parallaxBgActive || prefs.parallaxStopPending
             syncProtectionState()
         } finally {
             refreshing = false
@@ -394,8 +396,8 @@ class MaskUiState(
             prefs.setDiagNote("壁纸尺寸探测：${hook.first}×${hook.second}（hook）")
             return hook
         }
-        toast("分辨率对比失败，请手动检查后再开始替换")
-        prefs.setDiagNote("壁纸尺寸探测：hook 超时（未取到分辨率，已提示手动检查）")
+        toast("未能读取当前壁纸尺寸，本次未导入。请确认模块已激活后重新选图", long = true)
+        prefs.setDiagNote("壁纸尺寸探测：hook 超时，未使用旧尺寸或屏幕尺寸进行裁剪")
         return null
     }
 
@@ -557,36 +559,39 @@ class MaskUiState(
      * （超时通常意味着 SystemUI 没重启过 / hook 还没装上，提示重启后重试）。
      */
     fun enableParallax() {
+        if (busy) return
         if (!MaskStore.parallaxExists(context)) {
             toast("还没有选择背景图片")
             return
         }
+        busy = true
         scope.launch {
-            busy = true
-            // 记录「视差基准」：当前壁纸判据 —— 供「壁纸改变后自动关闭替换」比对；
-            // 算不出就留空（hook 侧检测时会惰性补记）。开启即重置，避免沿用上一轮的陈旧基准。
-            withContext(Dispatchers.IO) {
-                val fp = runCatching { WallpaperVersion.compute(context) }.getOrNull()
-                    ?.value?.takeIf { it.isNotEmpty() }
-                prefs.setParallaxWallpaperFp(fp.orEmpty())
+            try {
+                val result = withContext(Dispatchers.IO) { runCatching {
+                    WallpaperFeatures.activate(context, Feature.PARALLAX) {
+                        val fp = runCatching { WallpaperVersion.compute(context) }.getOrNull()
+                            ?.value?.takeIf { it.isNotEmpty() }
+                        prefs.setParallaxWallpaperFp(fp.orEmpty())
+                        prefs.setParallaxBgActive(true)
+                        ParallaxCoverFlag.push(prefs.parallaxCoverDesktop)
+                        val token = prefs.requestParallax()
+                        sendParallaxCommand(token, on = true)
+                        if (!waitParallaxAck(token)) {
+                            val stop = prefs.requestParallax()
+                            prefs.markParallaxStop(stop)
+                            prefs.setParallaxBgActive(false)
+                            ParallaxCoverFlag.push(false)
+                            sendParallaxCommand(stop, on = false)
+                            waitParallaxAck(stop)
+                            error("系统界面未确认开启，已请求撤销；如开关仍亮，请重试关闭")
+                        }
+                    }
+                } }
+                toast(result.exceptionOrNull()?.message ?: "视差壁纸已开启", long = result.isFailure)
+            } finally {
+                busy = false
+                refreshLocal()
             }
-            prefs.setParallaxBgActive(true)
-            // 不动「视差效果覆盖桌面」—— 它是独立开关；桌面层级由 hook 端按
-            // 「总开关 AND 覆盖选项」判据决定要不要建。
-            // **但系统属性必须重写**：它代表「桌面层级最终生效」，miwallpaper 侧的
-            // ParallaxDesktopGuard（抑制解锁动画）只读它，不重写就会停在旧值。
-            ParallaxCoverFlag.push(prefs.parallaxCoverDesktop)
-            val token = prefs.requestParallax()
-            sendParallaxCommand(token, on = true)
-            val acknowledged = withContext(Dispatchers.IO) { waitParallaxAck(token) }
-            if (!acknowledged) {
-                prefs.setParallaxBgActive(false)
-                toast("系统界面未响应，请重启系统界面后重试", long = true)
-            } else {
-                toast("已生效")
-            }
-            busy = false
-            refreshLocal()
         }
     }
 
@@ -597,8 +602,13 @@ class MaskUiState(
      * 残留到 SystemUI 下次重启自愈时才消失，提示用户即可）。
      */
     fun disableParallax() {
+        if (busy) return
+        busy = true
         scope.launch {
-            busy = true
+            try {
+            val acknowledged = withContext(Dispatchers.IO) {
+            val token = prefs.requestParallax()
+            prefs.markParallaxStop(token)
             prefs.setParallaxBgActive(false)
             // 基准随关闭清掉（下次开启时重记）；与 hook 侧自动关闭的收尾保持一致。
             prefs.setParallaxWallpaperFp("")
@@ -607,11 +617,11 @@ class MaskUiState(
             ParallaxCoverFlag.push(false)
             // 注意：**不**动「视差效果覆盖桌面」那个选项 —— 它是独立开关，由用户自己管。
             // 总开关关掉时，hook 端按「总开关 AND 覆盖选项」的判据自动销毁桌面层级。
-            val token = prefs.requestParallax()
             sendParallaxCommand(token, on = false)
-            val acknowledged = withContext(Dispatchers.IO) { waitParallaxAck(token) }
+            waitParallaxAck(token)
+            }
             if (!acknowledged) {
-                toast("已请求关闭，系统界面未响应（如仍显示请重启系统界面）", long = true)
+                toast("系统界面未确认关闭，开关暂保留；请重试关闭或重启系统界面", long = true)
             }
             // **兜底：桌面视差生效过就重载一次 miwallpaper**（用户 2026-10-21 定）。
             // 关闭后层虽被 remove，但壁纸层（WallpaperWindowToken 及其子层）里可能仍有
@@ -622,11 +632,13 @@ class MaskUiState(
                     runCatching { RootShell.run("killall com.miui.miwallpaper") }
                 }
             }
-            busy = false
-            refreshLocal()
             // 关闭成功补一句（2026-10-29 用户要求）。超时/未响应上面已经单独提示过，
             // 这里只在真的收到 ack 时播报，避免"失败提示 + 成功提示"并存。
             if (acknowledged) toast("视差壁纸已关闭")
+            } finally {
+                busy = false
+                refreshLocal()
+            }
         }
     }
 
@@ -826,15 +838,20 @@ class MaskUiState(
         return null
     }
 
-    suspend fun importRole(role: MaskRole, source: File) {
-        val result = withContext(Dispatchers.IO) { MaskStore.importFromFile(context, role, source) }
-        withContext(Dispatchers.IO) { source.delete() }
+    suspend fun importRole(role: MaskRole, source: File, wallpaperSize: Pair<Int, Int>) {
+        busy = true
+        val result = try {
+            withContext(Dispatchers.IO) {
+                try { MaskStore.importFromFile(context, role, source, wallpaperSize) }
+                finally { source.delete() }
+            }
+        } finally { busy = false }
         result
             .onSuccess { size ->
                 prefs.bumpRevision()
                 sizes = sizes.toMutableMap().apply { put(role, size) }
                 refreshLocal()
-                toast("${role.title} 已就绪 $size（点「立即替换」生效）", long = true)
+                toast("${role.title} 已自动适配为 $size（等比居中裁剪，点「立即替换」生效）", long = true)
             }
             .onFailure { error ->
                 toast("导入失败：${error.message}")
@@ -982,6 +999,10 @@ class MaskUiState(
     }
 
     fun rootReplace() {
+        if (com.frederic22.hyperextreme.alive.AliveSettings.isRunning(context)) {
+            toast("当前使用 Alive 动态壁纸，请先在系统设置中换回其他壁纸，再替换锁屏遮罩")
+            return
+        }
         if (configuredRoles.isEmpty()) {
             toast("还没有选择任何图片")
             return

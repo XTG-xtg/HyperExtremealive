@@ -1,0 +1,24 @@
+{
+  "version": "0.5-alive.2",
+  "versionCode": 7,
+  "apk_sha256": "d422d76ab1a8d872c8cc55c87a6d3d8c623d04b70d9f44b73fb46d1a71a9bddc",
+  "assemble": true,
+  "signatures_match_installed_v6": true,
+  "zipalign_16k": true,
+  "scope": [
+    "com.miui.aod",
+    "com.android.systemui",
+    "com.miui.home",
+    "com.miui.miwallpaper",
+    "system",
+    "miui.systemui.plugin"
+  ],
+  "permission_check_exit": 10,
+  "device_gpu": "Adreno 830",
+  "offscreen_frames": 15,
+  "installed_v7": false,
+  "system_hook_v2_loaded": false,
+  "wallpaper_apply_tested": false,
+  "photo_full_parity": false,
+  "lint_errors": 3
+}

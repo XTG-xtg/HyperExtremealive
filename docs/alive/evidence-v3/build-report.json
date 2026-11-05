@@ -1,0 +1,25 @@
+{
+  "version": "0.5-alive.3",
+  "version_code": 8,
+  "apk_sha256": "c2c5a530cde37549003861a61f52b4e10c844719588207d58034b79954db2302",
+  "packaged_photo_library_sha256": "0190688c4f3a370e5798a0dc5fd7196f112a3a4f6ed09894c6329ab8b2fb2c7f",
+  "tested_unstripped_photo_library_sha256": "8ebe841bd87bb539624261e42690078820f20683512e5870f8c3884e72f46141",
+  "certificate_sha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d",
+  "apk_signature_verified": true,
+  "zipalign_16kb_verified": true,
+  "photo_gpu_frames": 7588,
+  "photo_reference_parity_tested": false,
+  "cosmic_gradient_comparisons": 1400,
+  "installation_performed": false,
+  "wallpaper_changed": false,
+  "scope_db_changed": false,
+  "reboot_performed": false,
+  "device_preflight_ambient_permission": -1,
+  "scope_includes_system": true,
+  "lint": {
+    "errors": 3,
+    "warnings": 226,
+    "hints": 17
+  },
+  "limits": "No live wallpaper binding, real SystemUI/AOD transition, photo pixel parity with HyperAlive, native-resolution memory or power validation. See REPAIR-03.zh-CN.md."
+}

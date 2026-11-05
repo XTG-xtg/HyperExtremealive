@@ -1,0 +1,37 @@
+{
+  "at": "2026-11-05T16:31:02.114605",
+  "operation": "read-only helper query; no install/apply/reboot/scope change",
+  "helper_stage": [
+    {
+      "exit": 0,
+      "text": ""
+    },
+    {
+      "exit": 0,
+      "text": "C:\\Users\\Administrator\\Documents\\Codex\\2026-11-05\\ce\\outputs\\HyperExtreme\\build\\alive-verification\\helper-assets\\alive_root.dex: 1 file pushed, 0 skipped. 2.1 MB/s (5160 bytes in 0.002s)"
+    },
+    {
+      "exit": 0,
+      "text": ""
+    }
+  ],
+  "query": {
+    "exit": 0,
+    "text": "STATE which=1 component=com.qihang.aod/com.qihang.aod.QihangHomeWallpaper\r\nSTATE which=2 component=com.qihang.aod/com.qihang.aod.QihangWallpaper"
+  },
+  "aod_uid": {
+    "exit": 0,
+    "text": "package:com.miui.aod uid:1000"
+  },
+  "before": [
+    "mWallpaperComponent=ComponentInfo{com.qihang.aod/com.qihang.aod.QihangHomeWallpaper}",
+    "mWallpaperComponent=ComponentInfo{com.qihang.aod/com.qihang.aod.QihangWallpaper}",
+    "mWallpaperComponent=ComponentInfo{com.miui.miwallpaper/com.miui.miwallpaper.wallpaperservice.ImageWallpaper}"
+  ],
+  "after": [
+    "mWallpaperComponent=ComponentInfo{com.qihang.aod/com.qihang.aod.QihangHomeWallpaper}",
+    "mWallpaperComponent=ComponentInfo{com.qihang.aod/com.qihang.aod.QihangWallpaper}",
+    "mWallpaperComponent=ComponentInfo{com.miui.miwallpaper/com.miui.miwallpaper.wallpaperservice.ImageWallpaper}"
+  ],
+  "components_unchanged": true
+}

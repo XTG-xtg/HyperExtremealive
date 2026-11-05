@@ -47,17 +47,20 @@ object ParallaxCoverFlag {
      *
      * **注意传值**：调用方必须传 `cover && active` 的最终结果，不能只传覆盖选项。
      */
+    private val writes = java.util.concurrent.Executors.newSingleThreadExecutor { task ->
+        Thread(task, "ParallaxCover").apply { isDaemon = true }
+    }
+
     fun push(value: Boolean) {
-        Thread {
-            val r = runCatching { RootShell.run("setprop $PROP ${if (value) 1 else 0}") }
-                .getOrNull()
-            if (r == null || !r.ok) {
+        writes.execute {
+            val result = runCatching { RootShell.run("setprop $PROP ${if (value) 1 else 0}") }.getOrNull()
+            if (result == null || !result.ok) {
                 android.util.Log.w(
                     "HyperExtreme",
-                    "ParallaxCoverFlag: setprop $PROP 失败（${r?.output?.take(160) ?: "异常"}）" +
-                        "—— 主通道是模块 prefs，不影响功能",
+                    "ParallaxCoverFlag: setprop $PROP failed (${result?.output?.take(160) ?: "error"})",
                 )
             }
-        }.start()
+        }
     }
+
 }

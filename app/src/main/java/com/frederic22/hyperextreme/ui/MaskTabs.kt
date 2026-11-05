@@ -234,6 +234,11 @@ internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
             onClick = { onOpen(DetailPage.SpatialWallpaper) },
         )
         AppEntryCard(
+            packageName = MiuiWallpaperPackageName,
+            title = androidx.compose.ui.res.stringResource(R.string.alive_title),
+            onClick = { onOpen(DetailPage.Alive) },
+        )
+        AppEntryCard(
             packageName = SystemUiPackageName,
             title = "系统界面",
             onClick = { onOpen(DetailPage.SystemUi) },
@@ -434,6 +439,10 @@ internal fun MaskReplaceDetail(state: MaskUiState, onPick: (MaskRole) -> Unit) {
                 .padding(horizontal = 12.dp),
             insideMargin = PaddingValues(0.dp),
         ) {
+            BasicComponent(
+                title = "图片尺寸自动适配",
+                summary = "导入时按当前壁纸原图的尺寸等比缩放、居中裁剪，保留透明通道。若原壁纸有手动偏移或放大，仍需核对主体位置。",
+            )
             // 「替换前备份原文件」开关 2026-10-15 随备份/还原整组逻辑删除（用户要求"删干净"）。
             // 「替换后自动灭亮屏一次」（2026-10-04 用户要求）：
             // 灭亮屏从"固定行为"改成可选（注入改走 hook 后，刷新已经由切
@@ -509,14 +518,17 @@ internal fun ParallaxBgDetail(state: MaskUiState, onPick: () -> Unit) {
                 .padding(top = 12.dp),
             insideMargin = PaddingValues(0.dp),
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                TextButton(
-                    text = if (state.parallaxActive) "关闭替换" else "立即替换",
-                    onClick = {
+            SwitchRow(
+                    title = "启用视差壁纸",
+                    checked = state.parallaxActive,
+                    summary = if (prefs.parallaxStopPending) "等待系统界面确认停用，可重试关闭"
+                        else "与 Alive、空间壁纸互斥；关闭后保留图片和参数",
+                    enabled = !state.busy,
+                    onCheckedChange = { next ->
                         haptic()
-                        if (state.requireActivated() && !state.busy) {
+                        if ((!next || state.requireActivated()) && !state.busy) {
                             when {
-                                state.parallaxActive -> state.disableParallax()
+                                !next -> state.disableParallax()
                                 // **最后**才查互斥：激活 / busy 这些「本来就能不能开」的条件
                                 // 已经过了（它们不满足时自己会弹 toast），这时才轮到外部状态。
                                 prefs.spatialActive && prefs.spatialKey.isNotEmpty() ->
@@ -525,10 +537,7 @@ internal fun ParallaxBgDetail(state: MaskUiState, onPick: () -> Unit) {
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.textButtonColorsPrimary(),
                 )
-            }
         }
 
         // 「参数调整」（2026-10-13 加）：**卡外标题**（SmallTitle，同设置页"外观 / 测试"那类）
@@ -1297,6 +1306,10 @@ private data class OpenSourceEntry(
  * - `Depth Anything V2 Small` 同理：只有 Small/Base/Large 权重是 Apache-2.0，**Giant 是 CC-BY-NC-4.0**。
  */
 private val OpenSourceLicenses = listOf(
+    OpenSourceEntry(
+        "OpenAlive · 源码渲染器", "Maga-King", "MIT（官方素材权利另计）",
+        "https://github.com/Maga-King/OpenAlive",
+    ),
     OpenSourceEntry(
         "miuix", "compose-miuix-ui（YuKongA）", "Apache-2.0",
         "https://github.com/compose-miuix-ui/miuix",

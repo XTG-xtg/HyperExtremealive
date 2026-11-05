@@ -1,0 +1,352 @@
+[
+  {
+    "variant": 1,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 1,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 10,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 10,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 101,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 101,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 102,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 102,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 103,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 103,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 104,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 104,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 105,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 105,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 11,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 11,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 12,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 12,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 13,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 13,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 14,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 14,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 15,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 15,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 16,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 16,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 17,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 17,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 18,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 18,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 19,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 19,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 3,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 3,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 301,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 301,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 302,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 302,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 303,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 303,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 4,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 4,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 6,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 6,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 7,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 7,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 8,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 8,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 9,
+    "dark": false,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  },
+  {
+    "variant": 9,
+    "dark": true,
+    "max_motion_error": 0.0,
+    "max_pixel_mae": 0.0,
+    "comparisons": 28
+  }
+]

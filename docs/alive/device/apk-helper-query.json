@@ -1,0 +1,7 @@
+{
+  "helper_sha256": "b634d8c47d39e03196b1b086a261357a6d3af8e482bb12480c005bcd04441af7",
+  "matches_apk_asset": true,
+  "operation": "query 0, no apply",
+  "exit": 0,
+  "result": "STATE which=1 component=com.qihang.aod/com.qihang.aod.QihangHomeWallpaper\r\nSTATE which=2 component=com.qihang.aod/com.qihang.aod.QihangWallpaper"
+}

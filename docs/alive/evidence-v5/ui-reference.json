@@ -1,0 +1,13 @@
+{
+  "source": "User-provided HyperAlive_1.0.apk",
+  "inspection": "Local static layout and event definitions of EditorActivity and LibraryActivity",
+  "adopted": [
+    "full-display preview",
+    "three-state editing",
+    "context tools",
+    "apply without leaving editor"
+  ],
+  "original_executable_classes_included": false,
+  "candidate_ui_device_clickthrough_tested": false,
+  "candidate_ui_screenshot_parity_tested": false
+}

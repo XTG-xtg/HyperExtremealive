@@ -26,6 +26,12 @@ import java.lang.reflect.Method
  */
 class HookEntry : XposedModule() {
 
+    override fun onSystemServerStarting(param: XposedModuleInterface.SystemServerStartingParam) {
+        guard("Alive-system") {
+            com.frederic22.hyperextreme.alive.AliveHooks.installSystem(this, param.classLoader)
+        }
+    }
+
     override fun onModuleLoaded(param: XposedModuleInterface.ModuleLoadedParam) {
         HookRuntime.installLogger(param.processName) { message -> log(Log.INFO, TAG, message) }
         HookRuntime.log(
@@ -34,7 +40,7 @@ class HookEntry : XposedModule() {
                 " systemServer=${param.isSystemServer()}",
         )
         // 版本自证：排查"到底装的是哪一版"用。每次改动都更新 [BUILD_TAG]。
-        HookRuntime.log("模块构建：$BUILD_TAG（进程=${param.processName}）")
+        HookRuntime.log("模块构建：$BUILD_TAG + Alive integration 05（进程=${param.processName}）")
         // ⚠️⚠️ **这里不要装 SystemUI 的 hook** —— 2026-09-28 真机日志实测的结论：
         //
         // `ModuleLoadedParam` **不提供宿主的 classLoader**，而 `javaClass.classLoader` 是
@@ -78,6 +84,11 @@ class HookEntry : XposedModule() {
      * 真正的文件替换在第一次读配置时做（那时 Application 已经可用）。
      */
     override fun onPackageReady(param: XposedModuleInterface.PackageReadyParam) {
+        if (param.packageName in setOf("com.android.systemui", "com.miui.aod", "miui.systemui.plugin")) {
+            guard("Alive-ui") {
+                com.frederic22.hyperextreme.alive.AliveHooks.installUi(this, param.classLoader)
+            }
+        }
         // **在这里读模块偏好**（不是 onModuleLoaded）—— HyperChanger 就是这么做的：
         // 那时框架已经完全就绪，`getRemotePreferences` 一定拿得到；而我们原先放在 onModuleLoaded，
         // 一旦那次拿到 null，SystemUI 里又没有可靠的 Context，整个「景深」功能就会**静默失效**。

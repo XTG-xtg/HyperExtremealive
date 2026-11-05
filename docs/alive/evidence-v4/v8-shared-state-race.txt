@@ -1,0 +1,9 @@
+Installed version: v8 / 0.5-alive.3. Shared state trace captured with variant=1 (Cosmic), NOT a photo-specific visual failure capture.
+11-05 18:45:13.595 state=AOD seq=56 reason=screen-off
+11-05 18:45:13.632 visible slot=2 value=true
+11-05 18:45:13.633 state=LOCK seq=57 reason=visible-slot-2
+11-05 18:45:13.713 state=AOD seq=58 reason=screen-off
+11-05 18:45:13.746 state=LOCK seq=59 reason=scrim-keyguard
+11-05 18:45:13.786 state=AOD seq=60 reason=scrim-aod
+
+V8_REPRODUCED screen-off -> visible-slot-2 changed AOD to LOCK after 38ms

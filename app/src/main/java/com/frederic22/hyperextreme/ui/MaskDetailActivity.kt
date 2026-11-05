@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.frederic22.hyperextreme.applyAppSystemBars
+import com.frederic22.hyperextreme.alive.AliveDetail
 import com.frederic22.hyperextreme.data.MaskPrefs
 import com.frederic22.hyperextreme.data.MaskRole
 import com.frederic22.hyperextreme.data.MaskStore
@@ -140,15 +141,16 @@ class MaskDetailActivity : ComponentActivity() {
  */
 @Composable
 internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
+    // Alive owns its drafts; opening it must not start the mask import/replace workflow.
+    if (page == DetailPage.Alive) {
+        AliveDetail(onBack = onClose)
+        return
+    }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val prefs = remember { MaskPrefs(context) }
     val state = remember { MaskUiState(context, prefs, scope) }
 
-    var pendingImport by remember { mutableStateOf<PendingImport?>(null) }
-    // 退出动画期间 pendingImport 已经置空，但弹窗内容还要渲染 —— 用最后一份数据兜住。
-    var lastPendingImport by remember { mutableStateOf<PendingImport?>(null) }
-    if (pendingImport != null) lastPendingImport = pendingImport
     var askRestartAod by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.revision) {
@@ -182,12 +184,6 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
                 AppToast.show(context, "无法读取所选图片")
                 return@launch
             }
-            val imageSize = withContext(Dispatchers.IO) { MaskStore.readSize(cached) }
-            if (imageSize == null) {
-                withContext(Dispatchers.IO) { cached.delete() }
-                AppToast.show(context, "无法识别所选图片的尺寸")
-                return@launch
-            }
             // 对齐锚点用**当前壁纸原图**（`templates/current/wallpaper`）的尺寸，不是屏幕尺寸：
             // 替换的是抠像层，它和壁纸的像素网格对齐。
             //
@@ -196,11 +192,11 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
             // 两条不冲突）→ 超时就 toast「分辨率对比失败，请手动检查后再开始替换」并跳过尺寸检查。
             // null 时**跳过检查**（不弹窗），绝不再退回旧缓存乱报分辨率。
             val anchor = state.awaitWallpaperSize()
-            if (anchor != null && !sameSize(imageSize, anchor)) {
-                pendingImport = PendingImport(role, cached, imageSize, anchor)
-            } else {
-                state.importRole(role, cached)
+            if (anchor == null) {
+                withContext(Dispatchers.IO) { cached.delete() }
+                return@launch
             }
+            state.importRole(role, cached, anchor)
         }
     }
 
@@ -280,6 +276,7 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
                 DetailPage.MaskReplace -> "锁屏遮罩替换"
                 DetailPage.ParallaxBg -> "视差壁纸"
                 DetailPage.SpatialWallpaper -> "空间壁纸"
+                DetailPage.Alive -> "Alive 动态壁纸"
                 DetailPage.SystemUi -> "系统界面"
                 DetailPage.Desktop -> "系统桌面"
             },
@@ -291,46 +288,9 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
                 DetailPage.ParallaxBg -> ParallaxBgDetail(state = state, onPick = pickParallaxBg)
                 // 「空间壁纸」：**独立链**，暂不接收选图回调（深度模型流程还没接）。
                 DetailPage.SpatialWallpaper -> SpatialWallpaperDetail(state)
+                DetailPage.Alive -> Unit // Handled by the independent gallery above.
                 DetailPage.SystemUi -> SystemUiDetail(state)
                 DetailPage.Desktop -> DesktopDetail(state)
-            }
-        }
-    }
-
-    lastPendingImport?.let { pending ->
-        WindowDialog(
-            title = "尺寸与壁纸不一致",
-            summary = "所选图片 ${pending.imageSize.first}×${pending.imageSize.second}，" +
-                "壁纸 ${pending.wallpaperSize.first}×${pending.wallpaperSize.second}。\n" +
-                "尺寸不一致时抠像可能错位。仍要继续吗？",
-            show = pendingImport != null,
-            onDismissRequest = { pendingImport = null },
-        ) {
-            val dismissState = LocalDismissState.current
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                TextButtonLike(
-                    text = "取消",
-                    onClick = {
-                        val source = pending.source
-                        pendingImport = null
-                        dismissState?.invoke()
-                        source.delete()
-                    },
-                )
-                Spacer(Modifier.width(20.dp))
-                TextButtonLike(
-                    text = "确定",
-                    primary = true,
-                    onClick = {
-                        val source = pending.source
-                        pendingImport = null
-                        dismissState?.invoke()
-                        scope.launch { state.importRole(pending.role, source) }
-                    },
-                )
             }
         }
     }
@@ -356,16 +316,3 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
     // 是否灭亮屏改由「替换行为 → 替换后自动灭亮屏一次」开关决定（见 MaskReplaceDetail）。
 }
 
-/** 等待用户确认"分辨率不一致"的替换请求。（2026-09-29 从 `MaskSwapScreen.kt` 搬来：只有本页用。） */
-internal data class PendingImport(
-    val role: MaskRole,
-    val source: File,
-    val imageSize: Pair<Int, Int>,
-    /** 当前壁纸的尺寸 —— 对齐锚点，不是屏幕尺寸。 */
-    val wallpaperSize: Pair<Int, Int>,
-)
-
-/** 图片和锚点尺寸一致（含旋转 90°）就算匹配。 */
-internal fun sameSize(image: Pair<Int, Int>, anchor: Pair<Int, Int>): Boolean =
-    (image.first == anchor.first && image.second == anchor.second) ||
-        (image.first == anchor.second && image.second == anchor.first)

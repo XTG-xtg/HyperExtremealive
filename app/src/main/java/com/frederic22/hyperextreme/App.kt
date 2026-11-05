@@ -7,9 +7,6 @@ import com.frederic22.hyperextreme.data.MaskStore
 import com.frederic22.hyperextreme.data.ParallaxCoverFlag
 import com.frederic22.hyperextreme.data.ParallaxFeed
 import com.frederic22.hyperextreme.data.SpatialFlag
-import com.frederic22.hyperextreme.spatial.SpatialDepth
-import com.frederic22.hyperextreme.wallpaper.SpatialServiceMode
-import java.io.File
 
 /**
  * 进程启动时做一次**残留候选清理**。
@@ -75,56 +72,13 @@ class App : Application() {
                 Thread { runCatching { ParallaxFeed.push(this) } }.apply { isDaemon = true }.start()
             }
             val cleared = MaskStore.clearCandidates(this)
-            // 「视差壁纸效果」的背景候选：**开启中（生效中）必须保留** ——
-            // SystemUI 重启后要靠它重新显示、二级页的预览也要显示；
-            // 未开启时按普通候选语义随启动清空（用户定的"回到软件重启候选清空"）。
-            val parallaxCleared = !prefs.parallaxBgActive && MaskStore.parallaxExists(this) &&
-                run { MaskStore.clearParallax(this); true }
-            // 「空间壁纸」的候选：同样「关闭状态下一进进程就清空」（2026-10-29 用户要求，同视差）。
-            //
-            // 清三样：`source` 原图副本、`spatialSourceKey`（候选键）、`spatialLastKey`（已生成键）。
-            // 为什么要连 lastKey 一起清：空间壁纸的「立即替换」只依赖 layers/，不依赖 source，
-            // 单清候选会出现「预览空着、却能立即替换」的新不一致。
-            // 深度 / 层图**不删** —— 下次重新选同一张图会直接命中缓存。
-            //
-            // 2026-10-31：判据从 `spatialActive` 换成 [spatialRunning] —— **系统壁纸服务
-            // 正在运行时也算生效**。服务链不写 `spatialActive`（恒 false），原来服务模式
-            // 一重开 app 就把候选清掉 ⇒ 预览框空着、跟屏幕上正在渲染的图对不上。
-            val spatialCleared = !spatialRunning(prefs) && prefs.spatialSourceKey.isNotEmpty() && run {
-                runCatching {
-                    File(SpatialDepth.cacheRoot(this), prefs.spatialSourceKey)
-                        .resolve(SpatialDepth.SOURCE_NAME)
-                        .delete()
-                }
-                prefs.setSpatialSourceKey(null)
-                prefs.setSpatialLastKey(null)
-                true
-            }
-            if (cleared.isNotEmpty() || parallaxCleared || spatialCleared) {
-                val detail = buildList {
-                    if (cleared.isNotEmpty()) add(cleared.joinToString("、") { it.title })
-                    if (parallaxCleared) add("背景")
-                    if (spatialCleared) add("空间壁纸")
-                }.joinToString("、")
-                prefs.setDiagNote("启动清理：已清空残留候选（$detail）")
+            // Wallpaper switches are reversible: keep parallax photos and spatial layer caches
+            // while disabled. Only explicit "clear selection" removes them now.
+            if (cleared.isNotEmpty()) {
+                prefs.setDiagNote("启动清理：已清空遮罩替换候选（${cleared.joinToString("、") { it.title }}）")
             }
         }
     }
-
-    /**
-     * 空间壁纸是否**正在生效** —— 两条链都算（2026-10-31）。
-     *
-     * * LSPosed 链：`spatialActive`（渲染器由 SystemUI 侧属性驱动）；
-     * * 系统壁纸服务链：`WallpaperManager.getWallpaperInfo()` 是不是我们 ——
-     *   这条链**不写** `spatialActive`，只写 `SpatialServiceTarget`。
-     *
-     * 只在「挂载模式 = 服务」时才去查系统（多一次 binder，没必要给 LSPosed 用户加）。
-     * 判据与 `SpatialWallpaperPage.locked` 保持一致：**生效中就保留候选**。
-     */
-    private fun spatialRunning(prefs: MaskPrefs): Boolean =
-        prefs.spatialActive ||
-            (prefs.spatialMountMode == MaskPrefs.SPATIAL_MOUNT_SERVICE &&
-                SpatialServiceMode.isRunning(this))
 
     companion object {
         /**

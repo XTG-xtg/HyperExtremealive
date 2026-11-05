@@ -26,6 +26,9 @@ package com.frederic22.hyperextreme.data
  *    重启手机后会丢）—— 见 `App.kt`。
  */
 object SpatialFlag {
+    private val writes = java.util.concurrent.Executors.newSingleThreadExecutor { task ->
+        Thread(task, "SpatialFlags").apply { isDaemon = true }
+    }
 
     /** 1 = 生效，0 = 关闭。 */
     const val PROP_ACTIVE = "debug.hyperextreme.spatial_active"
@@ -73,23 +76,40 @@ object SpatialFlag {
      */
     const val PROP_RENDERING = "debug.hyperextreme.spatial_rendering"
 
-    /** 异步写属性；root 不可用时静默失败（界面上的开关状态仍然正确，只是不生效）。 */
-    fun push(active: Boolean, key: String?, scope: Int, lockDepth: Boolean) {
-        Thread {
-            val r = runCatching {
-                RootShell.run(
-                    "setprop $PROP_ACTIVE ${if (active) 1 else 0}; " +
-                        "setprop $PROP_KEY ${key.orEmpty()}; " +
-                        "setprop $PROP_SCOPE $scope; " +
-                        "setprop $PROP_LOCKDEPTH ${if (lockDepth) 1 else 0}",
-                )
-            }.getOrNull()
-            if (r == null || !r.ok) {
-                android.util.Log.w(
-                    "HyperExtreme",
-                    "SpatialFlag: setprop 失败（${r?.output?.take(160) ?: "异常"}）",
-                )
+    /** Serial writes prevent a slow enable request from arriving after a later disable. */
+    fun push(active: Boolean, key: String?, scope: Int, lockDepth: Boolean, onComplete: ((Boolean) -> Unit)? = null) {
+        require(key.isNullOrEmpty() || key.matches(Regex("[0-9a-fA-F]{16}")))
+        val safeScope = scope.coerceIn(0, 2)
+        val safeKey = key.orEmpty()
+        val waitForRenderer = !active && onComplete != null
+        val script = script(active, safeKey, safeScope, lockDepth, waitForRenderer)
+        val expected = "SPATIAL_FLAG:${if (active) 1 else 0}:$safeKey:$safeScope:${if (lockDepth) 1 else 0}"
+        writes.execute {
+            val result = runCatching { RootShell.run(script) }.getOrNull()
+            val verified = result?.ok == true && result.output.lineSequence().any { it.trim() == expected }
+            if (!verified) {
+                android.util.Log.w("HyperExtreme", "SpatialFlag: setprop 失败（${result?.output?.take(160) ?: "异常"}）")
             }
-        }.start()
+            runCatching { onComplete?.invoke(verified) }
+        }
+    }
+
+    /**
+     * One `&&` chain. A failed setprop must not reach the read-back echo, and the renderer wait
+     * must not be split off by a semicolon.
+     */
+    internal fun script(active: Boolean, key: String, scope: Int, lockDepth: Boolean, waitForRenderer: Boolean): String {
+        val activeBit = if (active) 1 else 0
+        val depthBit = if (lockDepth) 1 else 0
+        val wait = if (!waitForRenderer) "" else
+            "i=0 && while [ \"$(getprop $PROP_RENDERING)\" = 1 ] && [ \"${'$'}i\" -lt 30 ]; do sleep 0.1; i=\$((i+1)); done && " +
+                "[ \"$(getprop $PROP_RENDERING)\" != 1 ] && "
+        return "setprop $PROP_ACTIVE 0 && " +
+            "setprop $PROP_KEY '$key' && " +
+            "setprop $PROP_SCOPE $scope && " +
+            "setprop $PROP_LOCKDEPTH $depthBit && " +
+            "setprop $PROP_ACTIVE $activeBit && " +
+            wait +
+            "echo SPATIAL_FLAG:\$(getprop $PROP_ACTIVE):\$(getprop $PROP_KEY):\$(getprop $PROP_SCOPE):\$(getprop $PROP_LOCKDEPTH)"
     }
 }

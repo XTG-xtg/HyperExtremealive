@@ -9,6 +9,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.util.Log
+import com.frederic22.hyperextreme.data.WallpaperFeatures
+import com.frederic22.hyperextreme.data.WallpaperFeaturePolicy.Feature
 
 /**
  * 「系统壁纸服务」模式的开关与状态查询（2026-10-30，v1.5.82）。
@@ -38,7 +40,7 @@ object SpatialServiceMode {
     fun isRunning(ctx: Context): Boolean = runCatching {
         val wm = WallpaperManager.getInstance(ctx)
         fun ours(info: android.app.WallpaperInfo?): Boolean =
-            info?.component?.packageName == ctx.packageName
+            info?.component == ComponentName(ctx, SpatialWallpaperService::class.java)
         if (Build.VERSION.SDK_INT >= 34) {
             ours(wm.getWallpaperInfo(WallpaperManager.FLAG_SYSTEM)) ||
                 ours(wm.getWallpaperInfo(WallpaperManager.FLAG_LOCK))
@@ -110,7 +112,10 @@ object SpatialServiceMode {
                 val ri = pm.queryIntentServices(
                     Intent(WallpaperService.SERVICE_INTERFACE),
                     PackageManager.GET_META_DATA,
-                ).firstOrNull { it.serviceInfo.packageName == app.packageName }
+                ).firstOrNull {
+                    it.serviceInfo.packageName == app.packageName &&
+                        it.serviceInfo.name == SpatialWallpaperService::class.java.name
+                }
                     ?: error("查不到自己的壁纸 service")
                 ctx.startActivity(
                     Intent()
@@ -140,6 +145,7 @@ object SpatialServiceMode {
             }.getOrNull()
         }
         Log.i(TAG, "openPicker: A=$a B=$b C=$c")
+        check(a != null || b != null || c != null) { "无法打开系统壁纸服务页，本次没有开启空间壁纸" }
     }
 
     /**
@@ -149,8 +155,13 @@ object SpatialServiceMode {
      * **先写文件再跳转** —— 用户从系统页返回时壁纸进程可能已经开始渲染了。
      */
     fun enable(ctx: Context, key: String) {
-        SpatialServiceTarget.write(ctx, key)
-        openPicker(ctx)
+        WallpaperFeatures.activate(ctx, Feature.SPATIAL) {
+            check(!com.frederic22.hyperextreme.data.MaskPrefs(ctx).spatialActive) {
+                "请先关闭空间壁纸的 LSPosed 模式，再切换挂载方式"
+            }
+            SpatialServiceTarget.write(ctx, key)
+            openPicker(ctx)
+        }
     }
 
     /**
@@ -159,11 +170,8 @@ object SpatialServiceMode {
      * ⚠️ 必须清 **both**：只清 `FLAG_SYSTEM` 的话，之前设成 both 的壁纸会"退化成只剩锁屏"，
      * 我们的 service 还赖在锁屏上（官方文档原话："it will become lock screen only"）。
      */
-    fun disable(ctx: Context) {
-        runCatching {
-            WallpaperManager.getInstance(ctx)
-                .clear(WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK)
-        }.onFailure { Log.w(TAG, "clear 壁纸失败：${it.javaClass.simpleName}: ${it.message}") }
-        SpatialServiceTarget.clear(ctx)
+    fun disable(ctx: Context): Result<Unit> = runCatching {
+        WallpaperFeatures.clearOwned(ctx, Feature.SPATIAL)
+        // Keep the selected layers so the switch can restore this scene without regenerating it.
     }
 }

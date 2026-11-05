@@ -1,0 +1,67 @@
+{
+  "apk_sha256": "f8cf0fcb70dc039350f4390fd0c32f3cbeefab68a6b6b43d378f6f907c55dade",
+  "apk_bytes": 159328019,
+  "version": "0.5-alive.1",
+  "version_code": 6,
+  "package": "com.frederic22.hyperextreme",
+  "class_definitions": 16182,
+  "legacy_api_definitions": false,
+  "libxposed_api_bundled": false,
+  "single_module_entry": true,
+  "root_dex": "039",
+  "signature_valid": true,
+  "zip_16k_alignment_valid": true,
+  "native": [
+    {
+      "name": "lib/arm64-v8a/libandroidx.graphics.path.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "at_least_16k": true
+    },
+    {
+      "name": "lib/arm64-v8a/libhome_bridge.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "at_least_16k": true
+    },
+    {
+      "name": "lib/arm64-v8a/libonnxruntime.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "at_least_16k": true
+    },
+    {
+      "name": "lib/arm64-v8a/libonnxruntime4j_jni.so",
+      "load_alignments": [
+        16384,
+        16384
+      ],
+      "at_least_16k": true
+    },
+    {
+      "name": "lib/arm64-v8a/libspatial_fill.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "at_least_16k": true
+    }
+  ],
+  "signer": [
+    "V2 Signer: certificate SHA-256 digest: 52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d"
+  ],
+  "installed_on_phone": false,
+  "installation_blocker": "Signing certificate differs from installed HyperExtreme; no uninstall or overwrite attempted."
+}

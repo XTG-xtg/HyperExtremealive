@@ -85,7 +85,7 @@ object MaskStore {
      * 所以选中后立刻把字节复制到缓存目录，后续一律操作本地副本。
      */
     fun cachePicked(context: Context, uri: Uri): File? = runCatching {
-        val target = File(context.cacheDir, "picked.png")
+        val target = File.createTempFile("picked-", ".image", context.cacheDir)
         val copied = context.contentResolver.openInputStream(uri)?.use { input ->
             target.outputStream().use { output -> input.copyTo(output) }
             true
@@ -132,27 +132,12 @@ object MaskStore {
     }
 
     /** 把缓存副本导入成该角色的替换图，返回 "宽×高"。 */
-    fun importFromFile(context: Context, role: MaskRole, source: File): Result<String> =
-        importTo(file(context, role), source)
+    fun importFromFile(context: Context, role: MaskRole, source: File, wallpaperSize: Pair<Int, Int>): Result<String> =
+        runCatching { ImageImporter.importPng(source, file(context, role), wallpaperSize.first, wallpaperSize.second) }
 
     /** 把缓存副本重编码（PNG、[MAX_EDGE] 上限）写进目标文件，返回 "宽×高"。 */
     fun importTo(target: File, source: File): Result<String> = runCatching {
-        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(source.absolutePath, bounds)
-        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) error("无法识别图片尺寸")
-
-        val options = BitmapFactory.Options().apply {
-            inSampleSize = sampleSize(bounds.outWidth, bounds.outHeight, MAX_EDGE)
-            inPreferredConfig = Bitmap.Config.ARGB_8888
-        }
-        val bitmap = BitmapFactory.decodeFile(source.absolutePath, options) ?: error("图片解码失败")
-
-        try {
-            write(bitmap, target)
-            "${bitmap.width}×${bitmap.height}"
-        } finally {
-            bitmap.recycle()
-        }
+        ImageImporter.importPng(source, target, 0, 0)
     }
 
     // ---------------------------------------------------------------- 视差壁纸效果的背景图（2026-10-12 加）

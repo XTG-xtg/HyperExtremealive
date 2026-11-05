@@ -1,0 +1,1891 @@
+{
+  "repository": "https://github.com/Maga-King/OpenAlive",
+  "commit": "2d54c72a573b2f66e20b558283bef58cdb0ada60",
+  "modifications": "Namespace relocation; Cosmic AOD anchor; shared Cosmic/Gradient CPU sessions and vsync host; OpenAlive-derived Rust photo frame graph with JNI namespace, photo crop and source build; Android curve event-time evaluation, bounded event replay, immutable mask samples and independent draft/applied crop settings. No HyperAlive decompiled classes included.",
+  "files": [
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/AssetGl.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/AssetGl.java",
+      "upstream_sha256": "816f4e0f8302ea7b43bfcd7a1de33faf55e9563a5713717b36785e567ceb9404"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/WallpaperRenderer.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/WallpaperRenderer.java",
+      "upstream_sha256": "9747a652df4f9f231659405bc517324e3dc1d68019dbbc2032b61ae0f3774444"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/WallpaperMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/WallpaperMotion.java",
+      "upstream_sha256": "ad7148f22efd9cf0f794f31abdf863a121bbca61d646387cb07b392043ad749c"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/WallpaperTransitionTime.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/WallpaperTransitionTime.java",
+      "upstream_sha256": "70b83a21c4263498df7fde0995160fc21eeca797b0de7ae13c615ed58d72892e"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/CosmicRenderer.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/CosmicRenderer.java",
+      "upstream_sha256": "46c485a992285a90baca36ce7c0635946d9e59b73b757eb32c294fad1cbbe910"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/CosmicMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/CosmicMotion.java",
+      "upstream_sha256": "2850fb124be2e649cc56f3d916b7172d015b47b343b2f0e8b988fd1cb5d9467e"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/CosmicEgl.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/CosmicEgl.java",
+      "upstream_sha256": "6f4c4035b7e3b2477edca1e87864af771ff2a1d580487666d86baf6c3a832357"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/GradientRenderer.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/GradientRenderer.java",
+      "upstream_sha256": "3e4d256665668419d59aab7ff3ce81ee15bf60273d6f1d8b60816f6dc1cf092d"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/GradientMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/GradientMotion.java",
+      "upstream_sha256": "38753b26cc2df03cfd21ee3719d2f1d923d0cfd29d6b3d4022b6604a33b6bb57"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/GradientSpline.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/GradientSpline.java",
+      "upstream_sha256": "b6d0439cd6ab4b061ea5fa06861c0b08904e57242da65a9f00d35ca562e1fab6"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/BubbleRenderer.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/BubbleRenderer.java",
+      "upstream_sha256": "08686af80b74801409ff67688f029f46f9e35a507acabf4381f8a6e79ac38286"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/BubbleMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/BubbleMotion.java",
+      "upstream_sha256": "5363f120d70ef322af07a54ec9aba8f405bd0a9bb4a017f3fe80f923133aa17c"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/StereoRenderer.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/StereoRenderer.java",
+      "upstream_sha256": "d3e29c60fc61abaa7493145cddd7666fdace60bc6848772f5410e853b4b0cae5"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/StereoMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/StereoMotion.java",
+      "upstream_sha256": "fe17c15efedab99059cadaf7c40fe1474548f701dad4c37050201532b5bee86d"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/StereoSensor.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/StereoSensor.java",
+      "upstream_sha256": "adfbf663136bc56d21c3ca16097b7c5b9fb0093ed8079fb99d0f0e0fe7946ab3"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/FlymeVideoRenderer.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/FlymeVideoRenderer.java",
+      "upstream_sha256": "99b4545212af78aeaa99c9f5bcabeaec6b1bfe1cc3a09a2e654b6cae84d9e08d"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/FlymeVideoMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/FlymeVideoMotion.java",
+      "upstream_sha256": "afb850ef4a63f4f2d036e2782e5320df9f35d6a55c7a921cc17cc60b3b5c47d0"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/FlymeVideoDecoder.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/FlymeVideoDecoder.java",
+      "upstream_sha256": "391b3a11e053ff5dc9c71dff4d4d38c813811f373cb400d938078a0e836fa52a"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/MaskDecoder.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/MaskDecoder.java",
+      "upstream_sha256": "0ac1428131d4e80cc4966f486d36aba967aee58d0eb7cd9b63030959e44c1b4f"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/MaskFrames.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/MaskFrames.java",
+      "upstream_sha256": "43abdc720da39c488da3d82c70a9018bd4584885a9522ce0011e9d4db2e99510"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/PhotoStyle.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/PhotoStyle.java",
+      "upstream_sha256": "b90eaaf08032ec8fb4cf45e0eabe392b65633eb10b195f0880ece234297ff168"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/Diagnostics.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/Diagnostics.java",
+      "upstream_sha256": "a2ca1f0dcbd74e9ccc9cbf03b0c8587894686f02fd9a26490ebe99aa2d4bce15"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/catalog.json",
+      "destination": "app/src/main/assets/cosmic/catalog.json",
+      "sha256": "2210cc331146092c7c67c4bb630a3045ace67fed1c024aed0739a23c5443de68"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/flyme9-source.json",
+      "destination": "app/src/main/assets/cosmic/flyme9-source.json",
+      "sha256": "c90c8b5b0548a3a9b569b593db4c25b26ab19459e36f89ff62d2e4ddca2f206d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/gradient_damos.png",
+      "destination": "app/src/main/assets/cosmic/gradient_damos.png",
+      "sha256": "83e8bdb2c210fcc74bcb3c37082f73b14ac18bafb829cd50d9e1ac1d0a8a2174"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/gradient_jiguang.png",
+      "destination": "app/src/main/assets/cosmic/gradient_jiguang.png",
+      "sha256": "0e63bc737de75b566d768feb75080f9004d073fd6f6b0ebad87db3c02a855440"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/gradient_yuanhai.png",
+      "destination": "app/src/main/assets/cosmic/gradient_yuanhai.png",
+      "sha256": "a8a649d7d528b83c032ecf2670161a59bf0671fa6d641472271548942b9fd4cc"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/phoenix-source.json",
+      "destination": "app/src/main/assets/cosmic/phoenix-source.json",
+      "sha256": "5ce0684e3bc371b995610d38589092f2d7eca3c9376dd8f56e1f8d049d70ccc8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/phoenix.bin",
+      "destination": "app/src/main/assets/cosmic/phoenix.bin",
+      "sha256": "3452562b4bd4921e0f2d3634af9785f1a5dfca1fcd19067f5d1dc0a8384005c1"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/source.json",
+      "destination": "app/src/main/assets/cosmic/source.json",
+      "sha256": "67ed84df77b3ecb76fc6523d5962c9085c3de6e865a3e4af62c34b654e1b8e1c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/sphere.bin",
+      "destination": "app/src/main/assets/cosmic/sphere.bin",
+      "sha256": "b22e21fca4e171ac31ca6921116049182ba0915581252ad3d3fb035e46cd25b7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v1.json",
+      "destination": "app/src/main/assets/cosmic/v1.json",
+      "sha256": "a24661c366c497ca5581d126e20e3d53fca09600e80139b2154f373275741081"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v1.png",
+      "destination": "app/src/main/assets/cosmic/v1.png",
+      "sha256": "60b758cc6acc928f0b65822175adaec7f6c33cd5b2f2734c4a6c7f0bb5c132cf"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v10.json",
+      "destination": "app/src/main/assets/cosmic/v10.json",
+      "sha256": "1c892376dcab7c29dea6f952ff83f7afee451e06fa4b5a14f0db82eb158a0c7b"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v10.png",
+      "destination": "app/src/main/assets/cosmic/v10.png",
+      "sha256": "4e3a507dd46eadd5753bf56234a7c538a0b2a33a638118f2d382591304b46b32"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v101.json",
+      "destination": "app/src/main/assets/cosmic/v101.json",
+      "sha256": "ad0d1d2fa9473d0b3b2b5555dd87f9e059fa62552f9b2924f940e57d1facc6bb"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v101.png",
+      "destination": "app/src/main/assets/cosmic/v101.png",
+      "sha256": "c9c4fba4f6bc947c91ac66e7f03f7d1ba49f0ef65b2189d364d539f81f557ca8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v101_dark.json",
+      "destination": "app/src/main/assets/cosmic/v101_dark.json",
+      "sha256": "68fe18468262f7a9b7c76d8dd63e8a93711f4f79392e074d7f2f947526510df5"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v102.json",
+      "destination": "app/src/main/assets/cosmic/v102.json",
+      "sha256": "9e5306d2032c6690e42397940a1a7fdace752d607dd1b89cb1988ce6b3647263"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v102.png",
+      "destination": "app/src/main/assets/cosmic/v102.png",
+      "sha256": "09afba375be65100844976eb24e1787d1fd9b09d30e696426615427717469be5"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v102_dark.json",
+      "destination": "app/src/main/assets/cosmic/v102_dark.json",
+      "sha256": "829164b4ebbc54b7a912ade7c4fcf5c1f3822b3204770e4925df8b2e767af65a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v103.json",
+      "destination": "app/src/main/assets/cosmic/v103.json",
+      "sha256": "d32b51e90dd0c5e3f96dcb38363409c7f9be31f761e43f327988110a3d02d6ca"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v103.png",
+      "destination": "app/src/main/assets/cosmic/v103.png",
+      "sha256": "acce25bd99c6d6eafc1e461e73d408774b271211f725920b0cdcbec31c38a7d9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v103_dark.json",
+      "destination": "app/src/main/assets/cosmic/v103_dark.json",
+      "sha256": "03ff765ede8786211741e930838941281065587e743ee84ccdd798939d9f265f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v104.json",
+      "destination": "app/src/main/assets/cosmic/v104.json",
+      "sha256": "cac70d39ab5c7170ac4a63089a08bdbe6755b673be25e2970b45b12cde2b9cc8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v104.png",
+      "destination": "app/src/main/assets/cosmic/v104.png",
+      "sha256": "6012fae8c34f29bbd6d5b77a98866a6e41dbab9c78df59e1e6863b3a684951ac"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v104_dark.json",
+      "destination": "app/src/main/assets/cosmic/v104_dark.json",
+      "sha256": "91bce16b32d257cc73c4a81dbbf5552e588e8fe6400789354fec9fc093d0960c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v105.json",
+      "destination": "app/src/main/assets/cosmic/v105.json",
+      "sha256": "ebdf95684ce4ccc0a6e3a585edef8a16634921f65b743863635956bcbd9ba328"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v105.png",
+      "destination": "app/src/main/assets/cosmic/v105.png",
+      "sha256": "3d53cda56b65e8d54d29164edd590cc95f8fb176ed2ad00f775aeef9f583d634"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v105_dark.json",
+      "destination": "app/src/main/assets/cosmic/v105_dark.json",
+      "sha256": "a0d290618238e0a1c7260e36bf5090da725a568c6e81464d1c4df9ba488e1a51"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v10_dark.json",
+      "destination": "app/src/main/assets/cosmic/v10_dark.json",
+      "sha256": "7f52c017f18b6affd014e2206c37b88343fe046caf4bf85fca5e46f9fa739576"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v11.json",
+      "destination": "app/src/main/assets/cosmic/v11.json",
+      "sha256": "4d7c8356f43eb4547f74ac4aa89e220c6a394ff61a874bf94131827bf08246e8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v11.png",
+      "destination": "app/src/main/assets/cosmic/v11.png",
+      "sha256": "88f5a764ec6495097306eb53248cdeff3c8c0870ef36b9b41161acb0a33a4ece"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v11_dark.json",
+      "destination": "app/src/main/assets/cosmic/v11_dark.json",
+      "sha256": "78c074e5c49ff9ef701ac05b2ce4e01272e0e99fe7688352c2b67aabf25e2733"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v12.json",
+      "destination": "app/src/main/assets/cosmic/v12.json",
+      "sha256": "94edfb2ba1a4dfb54c888233ce40e353ab36a88901b2aaabbe1d39e2d24f2bc3"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v12.png",
+      "destination": "app/src/main/assets/cosmic/v12.png",
+      "sha256": "9391b1e94801f44c705a3e911573b7313ad0695f6b3a0a989bc53914b0fea547"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v12_dark.json",
+      "destination": "app/src/main/assets/cosmic/v12_dark.json",
+      "sha256": "b219770eb048b68fb02e9aa93434891ea9c135701b16bc50062dfbed904d5161"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v13.json",
+      "destination": "app/src/main/assets/cosmic/v13.json",
+      "sha256": "d381b0c1e8b21152123d24aa28cc43a1bb17683221898653240c5e11d7dd3f33"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v13.png",
+      "destination": "app/src/main/assets/cosmic/v13.png",
+      "sha256": "6c774a5fd1cd0061d667934f8754face13a0ea3a737fc5921f856a8aee7649c5"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v13_dark.json",
+      "destination": "app/src/main/assets/cosmic/v13_dark.json",
+      "sha256": "aa4e5ce8a07ee4b15e1d86b48f73cf7867d4784864192942d2e44b88c6623c9d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v14.json",
+      "destination": "app/src/main/assets/cosmic/v14.json",
+      "sha256": "26d9b36f330088d826b830fb21f0fda0e580ae8b1ef0ab5d5ce42367399d3238"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v14.png",
+      "destination": "app/src/main/assets/cosmic/v14.png",
+      "sha256": "2e84c2683020be080380796e82768f584ed569e4d12e9542beb430c7060f6669"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v14_dark.json",
+      "destination": "app/src/main/assets/cosmic/v14_dark.json",
+      "sha256": "d978181609265bacee1e0901487cdbbe0364e06eada55f7afe4d2385d2b4c9a7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v15.json",
+      "destination": "app/src/main/assets/cosmic/v15.json",
+      "sha256": "aa434639e1e7c01b317be3b2cde70615676de963b30f2d16cc931e4183435763"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v15.png",
+      "destination": "app/src/main/assets/cosmic/v15.png",
+      "sha256": "a13ef111dbff699b4da9a8ab9a97775e45f91b4ce84b5baed00713625dd95acf"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v15_dark.json",
+      "destination": "app/src/main/assets/cosmic/v15_dark.json",
+      "sha256": "e3600d88cf058922ec40c27fe78b9f9d79ccd8187c40de5adf382c6dec68c589"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v16.json",
+      "destination": "app/src/main/assets/cosmic/v16.json",
+      "sha256": "db0c29a2b6c9de3c9aca7bde08f47d9000a6df52b5f1ae5ebb87c9f8d55e3aac"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v16.png",
+      "destination": "app/src/main/assets/cosmic/v16.png",
+      "sha256": "eb4afbb0223dcd81091dce333ce9bdeebdc85ef567bda2e2636845f41b0e3667"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v16_dark.json",
+      "destination": "app/src/main/assets/cosmic/v16_dark.json",
+      "sha256": "1a50c8e8a3c55ed53fbfeee58bcdb0679aa1428c7b5f4d2b8745b1e8917cc5d8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v17.json",
+      "destination": "app/src/main/assets/cosmic/v17.json",
+      "sha256": "6d28bfa568866f61417234c81852d4f90ee2bce11da1c480a2d3b0cdf72791b7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v17.png",
+      "destination": "app/src/main/assets/cosmic/v17.png",
+      "sha256": "28d9ba60c80d6214ee28e5227c11c1e7b8c031caf0a1ac3f6d5eb012546ba1b0"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v17_dark.json",
+      "destination": "app/src/main/assets/cosmic/v17_dark.json",
+      "sha256": "843f06a7fb999c73f48764daa7f8edcf5808ffc7b67fcacb3e8f0527a59c0031"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v18.json",
+      "destination": "app/src/main/assets/cosmic/v18.json",
+      "sha256": "0cc33bec8e6cbf7448ff78ca39a02e17fc8fd4f728d017f10716cddd248d1137"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v18.png",
+      "destination": "app/src/main/assets/cosmic/v18.png",
+      "sha256": "ecccaa298e8523e6a81b66ec6b3a8b9bfeab8b822692dbd0fd00831a193c5df1"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v18_dark.json",
+      "destination": "app/src/main/assets/cosmic/v18_dark.json",
+      "sha256": "63e3b77331b53a3cb4fd486ea39663191783e079ebcc34b4ff642a78c95fbfc8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v19.json",
+      "destination": "app/src/main/assets/cosmic/v19.json",
+      "sha256": "2b2f408afe9d98db51f31079c4e7007960d9ab58ec5bddc95f9afa789a2e8bb7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v19.png",
+      "destination": "app/src/main/assets/cosmic/v19.png",
+      "sha256": "05664492351cf7ad1c248275a654383067c482ee186ed8666d53a47e7bb6ff64"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v19_dark.json",
+      "destination": "app/src/main/assets/cosmic/v19_dark.json",
+      "sha256": "74a75a4a157e77725a2d1a6aa5dd1fce28ea415848807b2127089658515a9c2a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v1_dark.json",
+      "destination": "app/src/main/assets/cosmic/v1_dark.json",
+      "sha256": "d3c5e6a05026d4a54600013e6a2bc2dea097626206aaea719b3f35bd1a2f01d9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v201.png",
+      "destination": "app/src/main/assets/cosmic/v201.png",
+      "sha256": "67a4f877844c9da5e8025f2341e9be16739f165289050c4524b41f55c3558758"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v202.png",
+      "destination": "app/src/main/assets/cosmic/v202.png",
+      "sha256": "2eac78c03e2618daf69ef8ddd02ed21cae80f3ed4cdce707516b13c79ecb12b8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v203.png",
+      "destination": "app/src/main/assets/cosmic/v203.png",
+      "sha256": "0cdcbad035c62e724894cd224046afc30a5c287173ba2b431a4a1c5e09159d04"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v204.png",
+      "destination": "app/src/main/assets/cosmic/v204.png",
+      "sha256": "a7302236bf63540e15da7a5900c67b2073dd87e638870db9dc740216fc95ff37"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v205.png",
+      "destination": "app/src/main/assets/cosmic/v205.png",
+      "sha256": "3e9ba0f6172465fa18106ea99ae182253e9e607ee80f3fb6e671dca82b55302b"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v3.json",
+      "destination": "app/src/main/assets/cosmic/v3.json",
+      "sha256": "a4cb4fd908f91bae54b93887c1a694625421144496b1b9211656c832348c50fa"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v3.png",
+      "destination": "app/src/main/assets/cosmic/v3.png",
+      "sha256": "437a9b18082a559e862e2113eeea6db9ef2386b54cabdbc60ffea2e80dec6ff6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v3_dark.json",
+      "destination": "app/src/main/assets/cosmic/v3_dark.json",
+      "sha256": "b5a34785b4b83f90ddae88776b4143e49a0cd7a6e3fded8e5a1e22d50d9be2e1"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v4.json",
+      "destination": "app/src/main/assets/cosmic/v4.json",
+      "sha256": "1c6e7432e0d928939ba3be495d74a691016a7d7b79e3d49e3726c1a112603258"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v4.png",
+      "destination": "app/src/main/assets/cosmic/v4.png",
+      "sha256": "930acd63d2c814b45563109ff073098accfe2b6b3827e421df1f8d3fa1c91cda"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v4_dark.json",
+      "destination": "app/src/main/assets/cosmic/v4_dark.json",
+      "sha256": "b7066407fcf1bcc721df5ea6ab64217499ff16b31a406e909c0a31e39a32e5c9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v6.json",
+      "destination": "app/src/main/assets/cosmic/v6.json",
+      "sha256": "77c541b1366bb63619282f6a58aed4329ab56ac61a3d161a47eade184fad8184"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v6.png",
+      "destination": "app/src/main/assets/cosmic/v6.png",
+      "sha256": "53aa2dc5be1957c5d57ad191b925f06a1a28336fe37461a2a43d43805574d53a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v6_dark.json",
+      "destination": "app/src/main/assets/cosmic/v6_dark.json",
+      "sha256": "618301f766c08c4ba0d8cb57af0b1bc953552ac264b0b3752d9c7c0f2b2efc50"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v7.json",
+      "destination": "app/src/main/assets/cosmic/v7.json",
+      "sha256": "99e70dc8d9f784bd8c09b5842fb58fd25a228ed28dd0b72093c85c837f6f7427"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v7.png",
+      "destination": "app/src/main/assets/cosmic/v7.png",
+      "sha256": "215f9de8331a2ec3b546fcd0b6c2c40f792af48b0e516df381ca3d540a205af7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v7_dark.json",
+      "destination": "app/src/main/assets/cosmic/v7_dark.json",
+      "sha256": "fcf800a42b2f00dfba45c57c2134ee545a17e27834e6a8ef36d76def6f24b2e4"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v8.json",
+      "destination": "app/src/main/assets/cosmic/v8.json",
+      "sha256": "95e3d2d45fe2dd849188fc0e1351f2ba01b2b3bf7dcd848ebe0ec525ff34b6f0"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v8.png",
+      "destination": "app/src/main/assets/cosmic/v8.png",
+      "sha256": "23c40d73a2ab7b2715bac9b9b5ab132540a3c85693df320e2393b9bdb040d38d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v8_dark.json",
+      "destination": "app/src/main/assets/cosmic/v8_dark.json",
+      "sha256": "9ad72fad0a4c145213fa7ec4199912594219c74a55163f4f8632a52389187165"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v9.json",
+      "destination": "app/src/main/assets/cosmic/v9.json",
+      "sha256": "a2ffeec633792ee12166305d9cd59a5c94e60e781cb8940695f9b39d4af5ca6a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v9.png",
+      "destination": "app/src/main/assets/cosmic/v9.png",
+      "sha256": "ff594f03b318f4427307d1aeb33f6208e6542cacd3c54168b63ae340f18cd5e2"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/cosmic/v9_dark.json",
+      "destination": "app/src/main/assets/cosmic/v9_dark.json",
+      "sha256": "28a6f2a16445a7c5548fa073b2a8a9e60cfde118cb6900c9fe59dd2210decd29"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/source.json",
+      "destination": "app/src/main/assets/bubble/source.json",
+      "sha256": "a79799a99452a978b32c1aa5e4c47fccf59adf33bd76c5434929f9f120a3bdcb"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v201.json",
+      "destination": "app/src/main/assets/bubble/v201.json",
+      "sha256": "d2b212200732cfaaeb1d34a2eccb0089e0dd4fca600333d8a5d7b0e3f0288278"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v201_dark.json",
+      "destination": "app/src/main/assets/bubble/v201_dark.json",
+      "sha256": "d2b212200732cfaaeb1d34a2eccb0089e0dd4fca600333d8a5d7b0e3f0288278"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v202.json",
+      "destination": "app/src/main/assets/bubble/v202.json",
+      "sha256": "17c3ef5be3bb6e696322b048d31cc6a4be2794bfae145430a4f9c43864c220fa"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v202_dark.json",
+      "destination": "app/src/main/assets/bubble/v202_dark.json",
+      "sha256": "17c3ef5be3bb6e696322b048d31cc6a4be2794bfae145430a4f9c43864c220fa"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v203.json",
+      "destination": "app/src/main/assets/bubble/v203.json",
+      "sha256": "2c5145c17e1d2699898423ac7898d5ec00326da8fdb3cad66e29ef7ffc73164a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v203_dark.json",
+      "destination": "app/src/main/assets/bubble/v203_dark.json",
+      "sha256": "2c5145c17e1d2699898423ac7898d5ec00326da8fdb3cad66e29ef7ffc73164a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v204.json",
+      "destination": "app/src/main/assets/bubble/v204.json",
+      "sha256": "177469ba82a6e6fefefcbee8fa41609eab7c92287d81df647ecd6b9ebc9b6390"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v204_dark.json",
+      "destination": "app/src/main/assets/bubble/v204_dark.json",
+      "sha256": "177469ba82a6e6fefefcbee8fa41609eab7c92287d81df647ecd6b9ebc9b6390"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v205.json",
+      "destination": "app/src/main/assets/bubble/v205.json",
+      "sha256": "c927312ff7c27954c28be420de51f43037e5ba8cb28cfd2bfa4aadbe02c49934"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/bubble/v205_dark.json",
+      "destination": "app/src/main/assets/bubble/v205_dark.json",
+      "sha256": "c927312ff7c27954c28be420de51f43037e5ba8cb28cfd2bfa4aadbe02c49934"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/gradient/catalog.json",
+      "destination": "app/src/main/assets/gradient/catalog.json",
+      "sha256": "28c7defda05fb3897ec53d617f0cc297f5800b3b9ace1a4124f70094132fb9a2"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/gradient/damos.json",
+      "destination": "app/src/main/assets/gradient/damos.json",
+      "sha256": "448c1446613b2932421c0b0602ba51b778c898b18abaa40933f69802c030a789"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/gradient/jiguang.json",
+      "destination": "app/src/main/assets/gradient/jiguang.json",
+      "sha256": "eda3d9fcfe18a4e49bc1cde04b8c48c915f83568fe7d4e69b3d6d7e2393efca7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/gradient/source.json",
+      "destination": "app/src/main/assets/gradient/source.json",
+      "sha256": "fa8cf20b970841a5514870ae12c028e361a2b3aee86fe7652318331f7fff1e42"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/gradient/yuanhai.json",
+      "destination": "app/src/main/assets/gradient/yuanhai.json",
+      "sha256": "cd5ce505a2f2dae5f2f8c9c39c5522c22af0052b460e1bfa3d98843b8971a244"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/base/blend_utils.glsl",
+      "destination": "app/src/main/assets/shader/base/blend_utils.glsl",
+      "sha256": "ca1fdf31b151bb1a3880c5d55b9c47861e6730d2e526415aa033db12e7f4954b"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/base/dark_utlis.glsl",
+      "destination": "app/src/main/assets/shader/base/dark_utlis.glsl",
+      "sha256": "a46c43b407f41451962513cca3baf163ebba30358f529962b4c78edd6034ff6d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/base/dithering_utils.glsl",
+      "destination": "app/src/main/assets/shader/base/dithering_utils.glsl",
+      "sha256": "7b09500f2ff9fc7a386e43fa7e7ce50d3eb3dbf3dafbd603efa71f785b1bb888"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/base/noise_2d.glsl",
+      "destination": "app/src/main/assets/shader/base/noise_2d.glsl",
+      "sha256": "0fdb9fbbae8d13edf5c4f0fb15faae4f725be0c33ded9386dd49ed8e8f952bdb"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/base/noise_3d.glsl",
+      "destination": "app/src/main/assets/shader/base/noise_3d.glsl",
+      "sha256": "9b9372714920a24a2b9c9a3257cfc16deef56fd1da532c401b91e1ef3dcc19ca"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/base/noise_3d_classic.glsl",
+      "destination": "app/src/main/assets/shader/base/noise_3d_classic.glsl",
+      "sha256": "4a7ed66a36c375b2a9f9b97c32fc4f7230a01fbde6cd78a05bfaf945470e8cae"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/base/noise_3d_grad.glsl",
+      "destination": "app/src/main/assets/shader/base/noise_3d_grad.glsl",
+      "sha256": "6c305c98e828ed4b1e10e3da6020f580c3132a842ce0c8c63f950c315f3402d7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/blur/down_sample_frag.glsl",
+      "destination": "app/src/main/assets/shader/blur/down_sample_frag.glsl",
+      "sha256": "5308b6943870310c13c91321d9a1ef0cb88609c2c431966cc4a8506491feb72e"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/blur/down_sample_vertex.glsl",
+      "destination": "app/src/main/assets/shader/blur/down_sample_vertex.glsl",
+      "sha256": "89081ba61fb8a7f1b0a83906ff8e359bd44f0a08c1ca2d9e98264fbc52d34ee6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/blur/gaussian_frag.glsl",
+      "destination": "app/src/main/assets/shader/blur/gaussian_frag.glsl",
+      "sha256": "1ca2c1136afc4b0feefb8cd58490bfbbc7c79fc52005a15038abe46bc082f821"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/blur/gaussian_vertex.glsl",
+      "destination": "app/src/main/assets/shader/blur/gaussian_vertex.glsl",
+      "sha256": "76e90ad3a2bfed17d40632f3d5a36ea8cd3dcc1b6f9424745cd5ee9c88890f4c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/blur/up_sample_frag.glsl",
+      "destination": "app/src/main/assets/shader/blur/up_sample_frag.glsl",
+      "sha256": "a2e16258053ac8388a19034531802f7b9dfca1c72d5852e25e3c48ef1bd5dad7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/blur/up_sample_vertex.glsl",
+      "destination": "app/src/main/assets/shader/blur/up_sample_vertex.glsl",
+      "sha256": "c37f563620b7dbee165919d867f929fdf4cce1124ee251221ebb3450b90de8a3"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/bubble/bubble_bg_frag.glsl",
+      "destination": "app/src/main/assets/shader/bubble/bubble_bg_frag.glsl",
+      "sha256": "1bd645dc496f5ed7754da65f4072dd369d18a77dfd8c31820dabd3d148a3e70b"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/bubble/bubble_bg_vertex.glsl",
+      "destination": "app/src/main/assets/shader/bubble/bubble_bg_vertex.glsl",
+      "sha256": "46b990250422c0fe014b093027773a2acac694a42e45a50c48aef2bc02cef796"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/bubble/bubble_frag.glsl",
+      "destination": "app/src/main/assets/shader/bubble/bubble_frag.glsl",
+      "sha256": "ccde22315ec42e1dd21a6c43d97c3359d8b6c44c5cefff789af7bd8673776ffb"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/bubble/bubble_vertex.glsl",
+      "destination": "app/src/main/assets/shader/bubble/bubble_vertex.glsl",
+      "sha256": "69d9a24b28b74a3209fcef920f2fef886aee92f9932601690e54d66319fbf0ee"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/bubble/comp.frag",
+      "destination": "app/src/main/assets/shader/bubble/comp.frag",
+      "sha256": "3c667ae9d7fa7e5340afbb23ac14c995075e2c72be367a4d5867d933ed01ac42"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/bubble/comp.vert",
+      "destination": "app/src/main/assets/shader/bubble/comp.vert",
+      "sha256": "db03be471dae1289488f4ef76a2ede33ffaf36f6b7132c732ddea275d3189550"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_frag.glsl",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_frag.glsl",
+      "sha256": "33d5a02d7acb34703c30c1cfc115ac8cb7b33cfa29d74e6bd7c2af888fac2eef"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_utils.glsl",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_utils.glsl",
+      "sha256": "1553d82d7edeb5d1d1c4fe43fda8092aa34d1392f6d0ae8f64bc2d37e56c092c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_v1.json",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_v1.json",
+      "sha256": "a24661c366c497ca5581d126e20e3d53fca09600e80139b2154f373275741081"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_v1_dark.json",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_v1_dark.json",
+      "sha256": "d3c5e6a05026d4a54600013e6a2bc2dea097626206aaea719b3f35bd1a2f01d9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_v2.json",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_v2.json",
+      "sha256": "17cff0bf1cac54cc56acd35f3f0e0109bfdff8df8a37d636a34b1ea930137ab8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_v2_dark.json",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_v2_dark.json",
+      "sha256": "41a78bf4b5b66233952dcf9bdd84d8ebedeaea06d260ea6e94c874c472b637bd"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_v3.json",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_v3.json",
+      "sha256": "a4cb4fd908f91bae54b93887c1a694625421144496b1b9211656c832348c50fa"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_v3_dark.json",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_v3_dark.json",
+      "sha256": "b5a34785b4b83f90ddae88776b4143e49a0cd7a6e3fded8e5a1e22d50d9be2e1"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_v4.json",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_v4.json",
+      "sha256": "1c6e7432e0d928939ba3be495d74a691016a7d7b79e3d49e3726c1a112603258"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_v4_dark.json",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_v4_dark.json",
+      "sha256": "b7066407fcf1bcc721df5ea6ab64217499ff16b31a406e909c0a31e39a32e5c9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/cosmic_vertex.glsl",
+      "destination": "app/src/main/assets/shader/cosmic/cosmic_vertex.glsl",
+      "sha256": "7e8f535e2f329693da2a794a3d4b86297003b39816267b34bd52eba08a015bd6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/gradient_background_frag.glsl",
+      "destination": "app/src/main/assets/shader/cosmic/gradient_background_frag.glsl",
+      "sha256": "da00b50e4341c90f67d4ab50fbbe768f95b1d43db0994c09b189394824144998"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/cosmic/gradient_background_vertex.glsl",
+      "destination": "app/src/main/assets/shader/cosmic/gradient_background_vertex.glsl",
+      "sha256": "0154c6caa5b30918676dc213c9c7574d9ad8eb0bce7d3b33adf30e5f966ebd92"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/gradient/gradient.frag",
+      "destination": "app/src/main/assets/shader/gradient/gradient.frag",
+      "sha256": "73730ef3593c8d5d85d3257d2909badea08c31d415bac13a4cfee105058ec109"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/gradient/gradient.vert",
+      "destination": "app/src/main/assets/shader/gradient/gradient.vert",
+      "sha256": "32bc6f224586b2d0a8ea6342abd358628cd8f4ef84dddd6b98cf28ed07b5cca3"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/phoenix/cosmicPhoenix_frag.glsl",
+      "destination": "app/src/main/assets/shader/phoenix/cosmicPhoenix_frag.glsl",
+      "sha256": "cfd575061181c77372be9c39979c7e8e9d3a548f73c44e2b9770bd7ece522218"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/phoenix/cosmicPhoenix_vertex.glsl",
+      "destination": "app/src/main/assets/shader/phoenix/cosmicPhoenix_vertex.glsl",
+      "sha256": "574b12496ff0ce1e31077fabfdfbe3efdab42e376f088426aee2a7e6ca77627a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/phoenix/Noise6.png",
+      "destination": "app/src/main/assets/shader/phoenix/Noise6.png",
+      "sha256": "f87b3afb8e7b864b40079140fb9e1d95bb6d469b53f48a5e1674e192ea0b90b7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/chromakey/chromakey_photo_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/aod/chromakey/chromakey_photo_frag.glsl",
+      "sha256": "0505afe10b437b8e8959c9fb39e30807fba794e96274f7e2e6550fabb62d240c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/chromakey/chromakey_photo_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/aod/chromakey/chromakey_photo_vertex.glsl",
+      "sha256": "a530e9b92074e9fbd79817eacd8906390ab134032af49c9230ad2403bbe17d3e"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/fullAod/full_aod_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/aod/fullAod/full_aod_frag.glsl",
+      "sha256": "5c4255049f414fba3accaa591cdb385e4a8a2cd9f9847a494fa10b56175909b0"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/fullAod/full_aod_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/aod/fullAod/full_aod_vertex.glsl",
+      "sha256": "003747071c5b42a5d2aeaa0936e4881d01fe6761b19435a15862b0fa59be7f82"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/fullAod/gray.png",
+      "destination": "app/src/main/assets/shader/photo/aod/fullAod/gray.png",
+      "sha256": "9c1b846857b1a721fadabd58c95c75e8cf017f0810ac0726dcb12b89b2399243"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/fullAod/gray1.png",
+      "destination": "app/src/main/assets/shader/photo/aod/fullAod/gray1.png",
+      "sha256": "8650e88818f41124d8fe1eb45db429e60b464c28d8f7e01526b9ceb3350bee8c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/fullAod/gray2.png",
+      "destination": "app/src/main/assets/shader/photo/aod/fullAod/gray2.png",
+      "sha256": "a726ea1a9ea88baeba2e7e46ddfcd8006ada6c021ca5a73fa8f1e3fe255c37d6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/lensPhoto/lens_decorator.png",
+      "destination": "app/src/main/assets/shader/photo/aod/lensPhoto/lens_decorator.png",
+      "sha256": "ac3026679ace9397b2f0d772b16fe685996f6aea38e66142a670fef9ad4bf156"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/lensPhoto/lens_photo_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/aod/lensPhoto/lens_photo_frag.glsl",
+      "sha256": "59478ff42960d1cf7a6f45247236ed6c6eccedba4dd727fbe6587ef5ca94ee6f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/aod/lensPhoto/lens_photo_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/aod/lensPhoto/lens_photo_vertex.glsl",
+      "sha256": "7fc532e29c4d72272db21cd863ed3e02e0b1c03f86b05b5a6ca001a830ece817"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/chromakey/chromakey_blend_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/chromakey/chromakey_blend_frag.glsl",
+      "sha256": "930d0563114b8d911c280b82daea4f1124178e2c5f00abb63011dd1a50d30f4f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/chromakey/chromakey_blend_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/chromakey/chromakey_blend_vertex.glsl",
+      "sha256": "cb6ab70bb392cacb6e564c1ed2e43f63577c06c27616bad30bc6b17d4be9628d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/common/common_blend_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/common/common_blend_frag.glsl",
+      "sha256": "c885bda33b70e485ecd7882b0b7531662fb6a24d874cca47eb506f4897cb55b5"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/common/common_blend_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/common/common_blend_vertex.glsl",
+      "sha256": "cb6ab70bb392cacb6e564c1ed2e43f63577c06c27616bad30bc6b17d4be9628d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/fullCommon/full_common_blend_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/fullCommon/full_common_blend_frag.glsl",
+      "sha256": "526a8f2259c73f182012a413455d157acdda902c86c11f7723a89e055953376d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/fullCommon/full_common_blend_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/fullCommon/full_common_blend_vertex.glsl",
+      "sha256": "cb6ab70bb392cacb6e564c1ed2e43f63577c06c27616bad30bc6b17d4be9628d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/holdHand/holdhand_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/holdHand/holdhand_frag.glsl",
+      "sha256": "0059dc5e6a8499ee3aad411466aaa5b70faaf5e7e535684224b31bbf891a97f9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/holdHand/holdhand_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/holdHand/holdhand_vertex.glsl",
+      "sha256": "25d6914ac4bf3dbd8ecd4bbfea817ad9ec8dd8f3f8b45f3eb4e21e3d9b84e5ec"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/lens/lens_blend_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/lens/lens_blend_frag.glsl",
+      "sha256": "0fef49734019b1f60a6e68c8336846ecd616f365d14a98463427b360a10fb470"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/blend/lens/lens_blend_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/blend/lens/lens_blend_vertex.glsl",
+      "sha256": "cb6ab70bb392cacb6e564c1ed2e43f63577c06c27616bad30bc6b17d4be9628d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/blur/blur_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/blur/blur_frag.glsl",
+      "sha256": "da78a55b8de74f2f0b12c980622e214391b45ec26498c38d8eadf70b964b828a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/blur/blur_vert.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/blur/blur_vert.glsl",
+      "sha256": "4383184090081017ec5949b47ca47aed09bd712e17de6ba5592c8d747b9c966f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/color/color_effect_0.png",
+      "destination": "app/src/main/assets/shader/photo/launcher/color/color_effect_0.png",
+      "sha256": "0e2d8e603d58f77004ce49a7bca6ec7c7dd1854b9f4b5f83234c99566d74a889"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/color/color_effect_1.png",
+      "destination": "app/src/main/assets/shader/photo/launcher/color/color_effect_1.png",
+      "sha256": "1687c9f9fc476d148866bd2a86ecc81891b0eaf998d631882067357b2175cd6d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/color/color_effect_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/color/color_effect_frag.glsl",
+      "sha256": "1e0b5213a9bfa4897754d0d6241f1df0fe89d16e0c6e5d09f2f10f3b73939109"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/color/color_effect_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/color/color_effect_vertex.glsl",
+      "sha256": "b26ef5f09e339e23a15c7e8a58217f0695be5957ee679ea236b9be2ad782b2fc"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/common/common_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/common/common_vertex.glsl",
+      "sha256": "704894d66d5de2f64173a03744c115cb05d92e482d531d84b18de2c78acd32d2"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/ether/ether_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/ether/ether_frag.glsl",
+      "sha256": "1a743009259c957a46ce5b6d938f0597281acd5ff906f0970b6bae7ef5cdfe19"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/gradient/gradient_effect_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/gradient/gradient_effect_frag.glsl",
+      "sha256": "445fef2a1e048e1b931cf7ccd3f7092394721541794e8f51823f688cdf9f9380"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/gradient/gradient_effect_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/gradient/gradient_effect_vertex.glsl",
+      "sha256": "237d67b5f72e7cf6a075b52aae8d1f5aee865792ff123b8f4975389d862fd3a9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/gradientFlow/gradient_flow_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/gradientFlow/gradient_flow_frag.glsl",
+      "sha256": "5a6793aaeefe4bdbc01284d0a03d045b350825d89b60a2f82473a648ca992f96"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/melt/melt_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/melt/melt_frag.glsl",
+      "sha256": "37952b101d043ea0fa12232f852f09247e9a530feb62d7289960dd0287955cc7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/original/original_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/original/original_frag.glsl",
+      "sha256": "5878a3766c8ddbf155e31aac4b4a41d0fb15941b04cc46878faaeb601a72ad65"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/launcher/original/original_vert.glsl",
+      "destination": "app/src/main/assets/shader/photo/launcher/original/original_vert.glsl",
+      "sha256": "4383184090081017ec5949b47ca47aed09bd712e17de6ba5592c8d747b9c966f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/curveGlass/curve_glass_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/curveGlass/curve_glass_frag.glsl",
+      "sha256": "3ee13522eb4271954a43e4940e18c73a0a63cff7a63cf2cdcf82fd0fb96e03d4"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/curveGlass/curve_glass_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/curveGlass/curve_glass_vertex.glsl",
+      "sha256": "77daf30625cce7e803c146c8373420a13ab23b53e73bc1cd01ab3b543aeab71c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/fillMask/fill_mask_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/fillMask/fill_mask_frag.glsl",
+      "sha256": "0c092ae14465b75223309a12e82fcacbc2961de764348e747582a96a81351238"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/fillMask/fill_mask_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/fillMask/fill_mask_vertex.glsl",
+      "sha256": "d9e649e6672e2cef573721bdf2c5d98329d6ee7df59be55dc129460012be13da"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/groundGlass/gray.png",
+      "destination": "app/src/main/assets/shader/photo/lock/groundGlass/gray.png",
+      "sha256": "1719d0bb4ed4c5fbd8b28efcdc984f064f203ddcac7141606c48288a4ccc7d47"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/groundGlass/ground_glass_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/groundGlass/ground_glass_frag.glsl",
+      "sha256": "443ed9fce70508b13c79fb6077c17586c0aa62fd568b43ab2a83d6e89f01fded"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/groundGlass/ground_glass_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/groundGlass/ground_glass_vertex.glsl",
+      "sha256": "98f05cf3ef500c5fe57c00d63628136a8985d4cc5bba5b44e79dd6acf18c61eb"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/groundGlass/mask.png",
+      "destination": "app/src/main/assets/shader/photo/lock/groundGlass/mask.png",
+      "sha256": "851ece9134cf7af190ac784bc13ce5dc255b07ca513a6130cf74d833fb6aab3b"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/original/original_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/original/original_frag.glsl",
+      "sha256": "5878a3766c8ddbf155e31aac4b4a41d0fb15941b04cc46878faaeb601a72ad65"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/original/original_vert.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/original/original_vert.glsl",
+      "sha256": "4383184090081017ec5949b47ca47aed09bd712e17de6ba5592c8d747b9c966f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/straightGlass/straight_glass_frag.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/straightGlass/straight_glass_frag.glsl",
+      "sha256": "3eb9ba6f44b3dbdde89566fd71775c8101a60f7a0f5facfd09d06e0fb47f8041"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/photo/lock/straightGlass/straight_glass_vertex.glsl",
+      "destination": "app/src/main/assets/shader/photo/lock/straightGlass/straight_glass_vertex.glsl",
+      "sha256": "77daf30625cce7e803c146c8373420a13ab23b53e73bc1cd01ab3b543aeab71c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/text/text_frag.glsl",
+      "destination": "app/src/main/assets/shader/text/text_frag.glsl",
+      "sha256": "b77990334b5d29fd38b8d020ef31819e3779bfdd5eb19a476dce191f336d8c00"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/text/text_vertex.glsl",
+      "destination": "app/src/main/assets/shader/text/text_vertex.glsl",
+      "sha256": "4e4740caa383c64122132efd4237960995ecf350966348fced4fd193a4f8c507"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/utils/dark_utils.glsl",
+      "destination": "app/src/main/assets/shader/utils/dark_utils.glsl",
+      "sha256": "c45b6da130948b7f6d67b19dbc22bf679ad5710b22827b0eacd7797dbd4902fd"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/v1/music_frag.glsl",
+      "destination": "app/src/main/assets/shader/v1/music_frag.glsl",
+      "sha256": "d5799aded48a0ab126abc3359a6e433fd6275889375fff484722b2b05705705a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/v1/music_vertex.glsl",
+      "destination": "app/src/main/assets/shader/v1/music_vertex.glsl",
+      "sha256": "158f161e1b1de23ef2914bf3d639410d8c90b53d46729d5158c421939afb6b3c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/v2/music_frag.glsl",
+      "destination": "app/src/main/assets/shader/v2/music_frag.glsl",
+      "sha256": "0145f665206d6ddc2d66d33f372dd2af519452e2a11303cd7a10d405d8554f28"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/shader/v2/music_vertex.glsl",
+      "destination": "app/src/main/assets/shader/v2/music_vertex.glsl",
+      "sha256": "158f161e1b1de23ef2914bf3d639410d8c90b53d46729d5158c421939afb6b3c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/soundviz/disk.frag",
+      "destination": "app/src/main/assets/soundviz/disk.frag",
+      "sha256": "e07ea087cbe39ced81458c09c913d8559318aed23d8ae9ed5686b234e587e0e6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/soundviz/disk.vert",
+      "destination": "app/src/main/assets/soundviz/disk.vert",
+      "sha256": "a57c7329220d9fbd9bf7e1ea7647f279d824ac96c50016535fa9572324cca7ae"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/fragment_blur.glsl",
+      "destination": "app/src/main/assets/stereo/fragment_blur.glsl",
+      "sha256": "549de334e0266ccd02f0fd17d889251669da0f6db1e419ce097e80960573856a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/fragment_mixformanual.glsl",
+      "destination": "app/src/main/assets/stereo/fragment_mixformanual.glsl",
+      "sha256": "9e23079101b2b996ad98fdbd71bc8cd4cf257876c1a5a7c18c8b724bf10abea9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/mz_stereo_depth_v4.png",
+      "destination": "app/src/main/assets/stereo/mz_stereo_depth_v4.png",
+      "sha256": "5cd156298e48bc06aa32d73c78efe2033f434f6dd17784dfddf50afbaf2b3314"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/mz_stereo_depth_v5.png",
+      "destination": "app/src/main/assets/stereo/mz_stereo_depth_v5.png",
+      "sha256": "e489aed47ae52ed8420442e1c8c28d30b590ef218622b92ba2c243cf2331f11f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/mz_stereo_depth_v6.png",
+      "destination": "app/src/main/assets/stereo/mz_stereo_depth_v6.png",
+      "sha256": "5046d45ca6c78ddf7ec3fe179e1282533d833cb14d50a9f67e5ba43bf93c6b3f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/mz_stereo_main_v4.webp",
+      "destination": "app/src/main/assets/stereo/mz_stereo_main_v4.webp",
+      "sha256": "48655ebd138aa999228a0814692c857aaf1e19c7a0e2763bd9de5cf48fdce784"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/mz_stereo_main_v5.webp",
+      "destination": "app/src/main/assets/stereo/mz_stereo_main_v5.webp",
+      "sha256": "5891c00a8e72de0d4bdefbb4ca5349f4133267a804645b48e0ada7224bad2409"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/mz_stereo_main_v6.webp",
+      "destination": "app/src/main/assets/stereo/mz_stereo_main_v6.webp",
+      "sha256": "fbfda975895c701e255b10fc1c97ebe385c0dc66e80664403004de5728e81181"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/preview_v4.png",
+      "destination": "app/src/main/assets/stereo/preview_v4.png",
+      "sha256": "29de5cb882cae3a6ce3006962a4096bc4d5bc558f60e42b5632803e18334d3e8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/preview_v5.png",
+      "destination": "app/src/main/assets/stereo/preview_v5.png",
+      "sha256": "b08057fe945af9f0a6c77b3bac60ffe928a275977c818316df8140271e9ee13b"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/preview_v6.png",
+      "destination": "app/src/main/assets/stereo/preview_v6.png",
+      "sha256": "bf6e5e1a0645935c0a74d24634d4ebd3f46950dc23836cf0fee9b8f1720335a3"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/provenance.json",
+      "destination": "app/src/main/assets/stereo/provenance.json",
+      "sha256": "e27eec3e1f7343bd8951ea725d48b94a93d1daaf1dc4d07938c08f3dad7efc45"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/vertex.glsl",
+      "destination": "app/src/main/assets/stereo/vertex.glsl",
+      "sha256": "e81d5409a66a04b698364c4285ffda7e6b007e9df12fe792a09769e9d54f66f0"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/stereo/vertex_split.glsl",
+      "destination": "app/src/main/assets/stereo/vertex_split.glsl",
+      "sha256": "d632e0de0835b176acde63bcd4b6f5acf64931175662c2e44aefa0a501ea1df0"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/catalog.json",
+      "destination": "app/src/main/assets/flyme-video/catalog.json",
+      "sha256": "d827461b542294b0793acfcc7ed1d4fa60105548526fa2ed70b0d66188b48aa2"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/dark_utlis.glsl",
+      "destination": "app/src/main/assets/flyme-video/dark_utlis.glsl",
+      "sha256": "ae04848bf67d57c3bac415abae85c12b674698c8df1598b717887d283ed8ab63"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/langliu.png",
+      "destination": "app/src/main/assets/flyme-video/langliu.png",
+      "sha256": "c167de3ba14a067eb6f8d01706450531b047afe2235a616f585b916d0451bbb9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/lianyi.png",
+      "destination": "app/src/main/assets/flyme-video/lianyi.png",
+      "sha256": "f489bc7f04f55b772f85cae4d3994758e89f48829f6479df79a6c04a3bf5dc6e"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/mz_video_wallpaper_v1_1080.mp4",
+      "destination": "app/src/main/assets/flyme-video/mz_video_wallpaper_v1_1080.mp4",
+      "sha256": "9ddcc780647e53144dffa66e84a885322cba13a80cb1e55e11a20dffd06d58ae"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/mz_video_wallpaper_v2_1080.mp4",
+      "destination": "app/src/main/assets/flyme-video/mz_video_wallpaper_v2_1080.mp4",
+      "sha256": "5b7b2bb59fce1560f1676fc672b55ca8bbc8b7198323d11494a247279b30f6f6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/mz_video_wallpaper_v3_1080.mp4",
+      "destination": "app/src/main/assets/flyme-video/mz_video_wallpaper_v3_1080.mp4",
+      "sha256": "3d4721f370bc15234525c8b331725be399a2b7826f4ba3fe51cbd5c4af66cdbc"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/playback.json",
+      "destination": "app/src/main/assets/flyme-video/playback.json",
+      "sha256": "51ee2392ed62f6df02e13be0ca021d227f5bdc8747990d2bdcf4a85f2ce32b78"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/shenqian.png",
+      "destination": "app/src/main/assets/flyme-video/shenqian.png",
+      "sha256": "3336b2a39ac09fb7d5c598b528af634c0d5668833cadff2ff3a3bdcadddef6df"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/source.json",
+      "destination": "app/src/main/assets/flyme-video/source.json",
+      "sha256": "2c326f4083b6fd5d6370b7d33f3966027060a2c08cc765dd0178daedc25d29d0"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/thumbnail_runtime_frag.glsl",
+      "destination": "app/src/main/assets/flyme-video/thumbnail_runtime_frag.glsl",
+      "sha256": "de31f2b9044bc320f0e7d6b651ac7d3f7c701706b8e9025aef797dbb626c5ab0"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/video_frag.glsl",
+      "destination": "app/src/main/assets/flyme-video/video_frag.glsl",
+      "sha256": "8539bde3f9c463bad2bfa382fef797edea1ad768911d86d1667cff01fb537cfd"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/video_runtime_frag.glsl",
+      "destination": "app/src/main/assets/flyme-video/video_runtime_frag.glsl",
+      "sha256": "494e0c8c1697fde5513102190bad32987a22164146fbe374f4b53effe507a736"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/flyme-video/video_vertex.glsl",
+      "destination": "app/src/main/assets/flyme-video/video_vertex.glsl",
+      "sha256": "56caad19b37e6f14836bd0a466933b50a01b0e894b41f562526b7e8a8d61fdf7"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/000.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/000.rgbz",
+      "sha256": "bd1a4c3e34546198a1f43014a6198ef3fd92a691b90a55926b88560c74d82b4d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/001.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/001.rgbz",
+      "sha256": "711f4c8ada2dee1c288e4613ae8f957dd268f9a16646f12ba8dd2e0d36a2fd8d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/002.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/002.rgbz",
+      "sha256": "f86197352a85fe6069df46ea28e5525c2291c2114c48a6141d9671c932867961"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/003.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/003.rgbz",
+      "sha256": "30008fd661ff10f4522dc8a1a98834a46801c1b496ead17cfb667bdfca6b5b99"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/004.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/004.rgbz",
+      "sha256": "b8eaf2c89585d23c6dd9a6a36024bc2fd51c35ba629c02967260142be184843a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/005.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/005.rgbz",
+      "sha256": "8a5e8eefa34bb608377bc2e02b97aa12119645da949fadf2ad2e4d71ac67bada"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/006.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/006.rgbz",
+      "sha256": "1ede8fd1ebb1a4d176982e5ef8fab54a5abe1b4337166cc22f53edd7562ff9a6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/007.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/007.rgbz",
+      "sha256": "8c4a2b54e78deab01448e802b47cbace77edecc7f21a220770fa312769ca1bef"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/008.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/008.rgbz",
+      "sha256": "d8b758f5fc303204d525f2b0e3dc193d32c623d96c25a48d090dc93ad173333e"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/009.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/009.rgbz",
+      "sha256": "bd6210dfb022ffd41d29dd4eef0ed870f0736341c62283d504d927e9014f6f99"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/010.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/010.rgbz",
+      "sha256": "62e14b04e4f91abcd647314f973d7769f4a2eb3a9d24aea64a93c0c5c6b8f21f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/011.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/011.rgbz",
+      "sha256": "2912339db2003000a054c48bb5db35c8cf4798fa459f1097b15d837a61c37f5c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/012.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/012.rgbz",
+      "sha256": "c517b5cb84f83ab3c63710cee966db399d3eae24b3fbe5197b1d8dc881d6aef6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/013.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/013.rgbz",
+      "sha256": "f6e04cf640b03101f3bd190fd8251bdc7d9c0422a055a490173bd18fcbf5436c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/014.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/014.rgbz",
+      "sha256": "419482c5b17793e6eaa5fcbb89c971ecd02e55fd8a098ce65add0376eb90716d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/015.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/015.rgbz",
+      "sha256": "414a16b621e0849282ad03f226b918fda396a1725bea6119b9f4cfd2ad53834f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/016.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/016.rgbz",
+      "sha256": "4f25fec3714d4039bf226aa7ddccf9738885008a4c3cb8673afa3abc628d9035"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/017.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/017.rgbz",
+      "sha256": "b8a8dd5b8b85c5dbbaf4a06f5cc4e4b44611d41a74725ec52c0d7ef476d5f907"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/018.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/018.rgbz",
+      "sha256": "1057140a4b3e99040435f977c5cb93a3b2ad0f4ad0f35945b2ee6ea6ae623d5a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/019.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/019.rgbz",
+      "sha256": "7c859c7bab63fc2afb1cf4f9e8dbd309783b2c254380cef609285dc3d0aa3412"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/020.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/020.rgbz",
+      "sha256": "9b0d701b508f422d95ed21a14041ba2cf9a50f2e857d4b4ad331787436eab437"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/021.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/021.rgbz",
+      "sha256": "c45306f21f9537d53b8f210e2009dec1cf572d469660907dee855f9ef132c187"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/022.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/022.rgbz",
+      "sha256": "bc4a2dc0544ce369d41f17383d41ce349fb37ec8e8c5b30fe932e0b59a273b13"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/023.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/023.rgbz",
+      "sha256": "ebcd10559e76222373dbe8f2e9eba818a361f8792364144f61d9ad6c12c44de9"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/024.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/024.rgbz",
+      "sha256": "ffcd159ae6feccd363419220fb0ca16e6ffa8ac9ca154f5bf0bb2c06d61fa92a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/025.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/025.rgbz",
+      "sha256": "7b66f577c2c577980a2d4cc6a4ad4f7d7cf8efcd2a101b67a2bd0a81c2f4c335"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/026.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/026.rgbz",
+      "sha256": "3f219067380a4134fd29949e9de5718807b822a06a161406f6b2ec38593351f6"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/027.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/027.rgbz",
+      "sha256": "17fa752cb20ff99920c035bb36b5c3e628feca52fe15171e8a48525259d7dd72"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/028.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/028.rgbz",
+      "sha256": "ea508ab3838bfa0c21aa59b46285ba5d9c02c854ee371cde3a4e48921f9e64a8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/029.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/029.rgbz",
+      "sha256": "1e3c85df63fbbf0b8055336b57d2f2c405c53634aacab0e22806447fd7e69ece"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/030.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/030.rgbz",
+      "sha256": "a0515b3789c5a2164598acb7096d560ab84c086caec4323655f16295dcf599cb"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/031.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/031.rgbz",
+      "sha256": "9afbd5ed0f50cc5f30ce2bc8b69188363c078a7d2142c6df1dec0264cd69e1bc"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/032.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/032.rgbz",
+      "sha256": "61bf24599921553b7583cdfb432a53c909d0ae120133be944380708b96a78803"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/033.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/033.rgbz",
+      "sha256": "fcfea91b48bebe80c0b3c6134b634fde7513fcd5e02e49058949918d954439a8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/034.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/034.rgbz",
+      "sha256": "d330c26051baec378c90908118a02fbed8ff7e498be8d92c0e9d37a069c21eb8"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/035.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/035.rgbz",
+      "sha256": "afeeb820dfddafca9eb023e635d6465e47ec68c44c60a8eb03b7ec33a893a32d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/036.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/036.rgbz",
+      "sha256": "ad7246848365f606b81da93a6d6cdcf213f0ecbe40fafa2cb52fbbbe5d1d127e"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/037.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/037.rgbz",
+      "sha256": "ca29f58c17f109552c435c9dd013a4c14e8634d3d5d9b8c3ab674781f1e57187"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/038.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/038.rgbz",
+      "sha256": "8a6ea315114aab04a0d34ffdaacd14b65afca25741fdc980698380ef2cc6448b"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/039.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/039.rgbz",
+      "sha256": "e79b2390c860536e96849bef86373cfb5932eb1a0783751f24d940d7496c06ac"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/040.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/040.rgbz",
+      "sha256": "f74c94ec9d8aecc748867f707fde59632b8454f32f93bb952199dec7e4a8cf51"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/041.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/041.rgbz",
+      "sha256": "81b352261491a24efeef88aa7bff25923c48766efb93909cdb683b439633769c"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/042.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/042.rgbz",
+      "sha256": "cac5eb52733e6a4b990dbd3a46f3f1657f3b68018a362cfd44d5659963485c37"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/043.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/043.rgbz",
+      "sha256": "fddf304b19d084bd68c723ba3d89c173d5c4287faffa8312141d084450879b00"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/044.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/044.rgbz",
+      "sha256": "159bab9f96a361ac946890c54ada541ced4a67bd9b3e78ce688d88c830f4ad99"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/045.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/045.rgbz",
+      "sha256": "82f4d454d88030855c2f9fc61f11d947a6e6835bfa28c68157d3f64e2d743217"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/046.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/046.rgbz",
+      "sha256": "388b00202999fac43c141a58f8e8a8ce833c454cd5f2bc0034359ce976f89f7d"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/047.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/047.rgbz",
+      "sha256": "d4727f1ad36e188a1283ec416176a4dfda68a64b37e9813b063dd17dfe7989eb"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/048.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/048.rgbz",
+      "sha256": "0b142f04494dd97bd3d72905eefdfc7d3f45f070e3401727da79ee96b87e7aa2"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/049.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/049.rgbz",
+      "sha256": "d7ffd518d5c502beaf8abaad4830e6f47297a0b8e5f9e8af56f162c625049eec"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/050.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/050.rgbz",
+      "sha256": "676154a112656b49c49912efea979ea924a1e76d6f823310e7bb8c4d6b19d923"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/051.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/051.rgbz",
+      "sha256": "1ae2fbc3b0a1896b4acebfa77181741ea4d9912be3e65bad1482239b8fe8861f"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/052.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/052.rgbz",
+      "sha256": "cc0580fe9239e0c0189a1fa0e6b1f1430cb51b95203372d6078bcfeee9de8a9a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/053.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/053.rgbz",
+      "sha256": "5d6128a8eaa17772580d0f727512c1bab80c2d42b4042e99a96bab9bbc282a29"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/054.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/054.rgbz",
+      "sha256": "8b0c96b70a360b4d62797ce7cca0b7d9b1382dd4328e0cc53d109e8d5dd6ef6a"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/055.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/055.rgbz",
+      "sha256": "c7234b0a98428295e0fa27958c606e6abe14d9a7aa54ff1bbe388ee76c5e7dae"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/056.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/056.rgbz",
+      "sha256": "bc0547154b9b6b5673512e51820798278fe717b9ba77e679ee823851557672ea"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/057.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/057.rgbz",
+      "sha256": "9f01a0ac2f38dccabb386e33e99c3a07b4cc7b4171f91a3adb8335c74898c418"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/058.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/058.rgbz",
+      "sha256": "9f01a0ac2f38dccabb386e33e99c3a07b4cc7b4171f91a3adb8335c74898c418"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/059.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/059.rgbz",
+      "sha256": "9f01a0ac2f38dccabb386e33e99c3a07b4cc7b4171f91a3adb8335c74898c418"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/060.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/060.rgbz",
+      "sha256": "9f01a0ac2f38dccabb386e33e99c3a07b4cc7b4171f91a3adb8335c74898c418"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/end.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/end.rgbz",
+      "sha256": "024082a6253e6093a3b93143df248b060c36bb2f37a0f15a07398aaae27f4d96"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/manifest.json",
+      "destination": "app/src/main/assets/masks/leave_light/manifest.json",
+      "sha256": "ce4c3e49e101036d138e895b3397439c4c1a8c044e1de6980ff98fb63694f730"
+    },
+    {
+      "kind": "third-party reference asset, NOT automatically MIT",
+      "upstream": "app/assets/masks/leave_light/start.rgbz",
+      "destination": "app/src/main/assets/masks/leave_light/start.rgbz",
+      "sha256": "c20bd97ca96300abf013f6151b01dd50bbd21120fc752aa5bb34b059b880f8c9"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/NativeScene.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/NativeScene.java",
+      "upstream_sha256": "c4ad8bbd974c694ecaca7438a942cb7bbe3ea6f11a4f1db0bbaaea996952a94e"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/SceneMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/SceneMotion.java",
+      "upstream_sha256": "de297b034739d238202d0ee0d5db660156e6420738f1568d2a6ca3f08b8d4e03"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/SceneMatrices.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/SceneMatrices.java",
+      "upstream_sha256": "9d41b76e2ea93041eb883a0d8e97e2c4ced6992199c1be1cdd3fb1f639485f4b"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/FrameMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/FrameMotion.java",
+      "upstream_sha256": "6d1fbc198481383d032765bb89fd14e30168aa476cc411c66eb78150b4877269"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/FrameSample.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/FrameSample.java",
+      "upstream_sha256": "e39989a059e963c342de9f56312b7f4bfecae7051db158ec0be1ddb023db2a15"
+    },
+    {
+      "kind": "MIT Java source",
+      "upstream": "app/java/org/aliveclean/TextureMotion.java",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/TextureMotion.java",
+      "upstream_sha256": "039f98b0d67f16fa9cec0069b1e02f1d70e6aab40efb2b802dbd2422fe5e6c23"
+    },
+    {
+      "kind": "MIT Rust source",
+      "upstream": "native/blur.rs",
+      "destination": "alive-photo/native/blur.rs",
+      "upstream_sha256": "e6187e32035b4d74a468d16632e21d99475c0b7478d05f51ba1e97e2a3986cb9"
+    },
+    {
+      "kind": "MIT Rust source",
+      "upstream": "native/frame_rear.rs",
+      "destination": "alive-photo/native/frame_rear.rs",
+      "upstream_sha256": "55bdaeb9f6769039ac0ef5168af2ddeed2ad75fae9a98d2f71cb327c2887bcec"
+    },
+    {
+      "kind": "MIT Rust source",
+      "upstream": "native/gl.rs",
+      "destination": "alive-photo/native/gl.rs",
+      "upstream_sha256": "8e8017cfee9576e36505c87df96148766f958c2185b4b13ad62967e059479fd2"
+    },
+    {
+      "kind": "MIT Rust source",
+      "upstream": "native/math.rs",
+      "destination": "alive-photo/native/math.rs",
+      "upstream_sha256": "28b8fa3378701b5be4bb601470d59c941f6e740ad46aafb1b8ced235a363f97f"
+    },
+    {
+      "kind": "MIT Rust source",
+      "upstream": "native/renderer.rs",
+      "destination": "alive-photo/native/renderer.rs",
+      "upstream_sha256": "4148ee1491e4bc933e22a9ae7ac10bde28eff8282a99da3ae10d4126bb3c829b"
+    },
+    {
+      "kind": "Third-party shaders (see resource notice)",
+      "upstream": "native/shaders.rs",
+      "destination": "alive-photo/native/shaders.rs",
+      "upstream_sha256": "dcc9d05c8ddec3023ed901ae2777e5fc8b93e578bd4d762156fba769d251259a"
+    }
+  ]
+}

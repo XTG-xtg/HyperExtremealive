@@ -1,0 +1,29 @@
+{
+  "version": "0.5-alive.4",
+  "version_code": 9,
+  "assemble_debug_passed": true,
+  "apk_sha256": "64a65be30fd56afc07ae620c544aa307dc7cf0c08a51a8b5c2155606b83a76e7",
+  "apk_bytes": 159197306,
+  "certificate_sha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d",
+  "apk_signature_v2_verified": true,
+  "zipalign_16kb_verified": true,
+  "root_helper_dex": "039",
+  "packaged_photo_library_sha256": "0190688c4f3a370e5798a0dc5fd7196f112a3a4f6ed09894c6329ab8b2fb2c7f",
+  "photo_library_identical_to_v8": true,
+  "source_assets_verified": 283,
+  "lint": {
+    "errors": 3,
+    "warnings": 226,
+    "hints": 17,
+    "error_details": [
+      "data\\DesktopWallpaperInjector.kt:104: Error: Missing permissions required by WallpaperManager.getDrawable: android.permission.MANAGE_EXTERNAL_STORAGE or android.permission.READ_WALLPAPER_INTERNAL [MissingPermission]",
+      "hook\\ParallaxBg.kt:1070: Error: receiver is missing RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED flag for unprotected broadcasts registered for com.frederic22.hyperextreme.action.PARALLAX_BG [UnspecifiedRegisterReceiverFlag]",
+      "hook\\ScreenFlash.kt:51: Error: receiver is missing RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED flag for unprotected broadcasts registered for com.frederic22.hyperextreme.action.FLASH [UnspecifiedRegisterReceiverFlag]"
+    ]
+  },
+  "installation_performed": false,
+  "wallpaper_changed": false,
+  "scope_db_changed": false,
+  "reboot_performed": false,
+  "limits": "No actual v9 wallpaper/AOD lifecycle, power or OEM callback-order acceptance test."
+}

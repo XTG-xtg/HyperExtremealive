@@ -1,0 +1,16 @@
+{
+  "compared_to": "0.5-alive.3 source ZIP",
+  "unchanged_files_sha256": {
+    "CosmicRenderer.java": "1c59dff1a1c50509b1fd6cfac66ea4ae768426f77e7ca8e7a8195decfd72cf55",
+    "CosmicMotion.java": "630bac4de76dd1add2f38c5cdb0cd9c478a2851a6a05ba27ebbf4f244969b269",
+    "GradientRenderer.java": "e3e7bc77d5dcb902085d91b35d0796f7cbbd7dd223d17bf518f324198ccbb18d",
+    "GradientMotion.java": "85e48fd9699ed151fa4a0be5762605713d7672645c588d4f1a72f92da683cb60",
+    "PhotoRenderer.java": "23083478b547fd8d50ce6021a4efe8efa79141b92ee85babdf905edb91984ef6",
+    "SceneMotion.java": "f6daaf34d356e583d1f76faf6ba94afd10a1334ed938940858e5ae9307b937d5",
+    "FrameMotion.java": "146de6a9184ef7536809d662d50c12abdc63a464c92f44cb504a7b64b41023c5",
+    "EglWorker.java": "0ed2973933ffb8c55d284897e65e298a9143bfba0bc8d77de3d275c8bf534905",
+    "MotionSession.java": "90d0090b8bc3537bab1386c2e0a080ca4f0233078a8ea75c1d8e7f6b2e58c67c",
+    "AliveHooks.java": "9992c105e244717fcc875f200d982812687b38eb631d2e36ad7240d4e9c56238"
+  },
+  "native_sources_unchanged": true
+}

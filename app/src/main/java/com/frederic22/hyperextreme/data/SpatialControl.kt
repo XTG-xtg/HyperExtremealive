@@ -45,27 +45,30 @@ object SpatialControl {
     fun disable(ctx: Context, toastText: String? = "空间壁纸已关闭") {
         val app = ctx.applicationContext ?: ctx
         val prefs = MaskPrefs(app)
-        if (!prefs.spatialActive) return
+        if (!prefs.spatialActive && !prefs.spatialStopPending) return
         // ⚠️ **状态写入必须同步**（2026-10-29 实测）：
         // provider 的 `call` 跑在 binder 线程，早期版本把整个方法都 post 到主线程 ⇒
         // prefs 晚几百毫秒才变，aod 侧下一次 config 读到的还是 active=true ⇒ 重复触发关闭
         // （日志里连打三次「壁纸已变化」）。状态立刻写、只有 toast 需要切线程。
+        prefs.setSpatialStopPending(true)
         prefs.setSpatialActive(null)
         // 壁纸基准随关闭一起清 —— 下次开启时重新记（与视差同款语义）。
         prefs.setSpatialWallpaperFp("")
         // SystemUI 侧读的是系统属性，prefs 通道在那里不可用。
-        SpatialFlag.push(false, null, prefs.spatialScope, prefs.spatialLockDepth)
-        restartWallpaperService()
-        // Toast 需要 Looper：binder 线程直接弹会抛
-        // "Can't create handler inside thread that has not called Looper.prepare()"。
-        // toastText == null ⇒ 完全不弹（调用方自己会弹一条）。
-        if (toastText != null) {
-            if (Looper.myLooper() == null) {
-                Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(app, toastText, Toast.LENGTH_LONG).show()
-                }
+        SpatialFlag.push(false, null, prefs.spatialScope, prefs.spatialLockDepth) { verified ->
+            if (verified) {
+                restartWallpaperService()
+                prefs.setSpatialStopPending(false)
             } else {
-                Toast.makeText(app, toastText, Toast.LENGTH_LONG).show()
+                prefs.setDiagNote("空间壁纸关闭未获确认，请重试关闭开关；其他壁纸功能暂不启用")
+            }
+            // Toast 需要 Looper：binder 线程直接弹会抛
+            // "Can't create handler inside thread that has not called Looper.prepare()"。
+            // toastText == null ⇒ 完全不弹（调用方自己会弹一条）。
+            if (toastText != null || !verified) {
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(app, if (verified) toastText else "系统未确认关闭空间壁纸，请重试关闭开关", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

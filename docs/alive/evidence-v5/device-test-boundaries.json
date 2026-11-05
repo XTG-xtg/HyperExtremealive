@@ -1,0 +1,12 @@
+{
+  "device": "Xiaomi 15 / Android 17 / Adreno 830",
+  "method": "isolated app_process, synthetic images, no wallpaper registration or display-power commands",
+  "gpu_photo_frames": 7588,
+  "photo_power_jvm_assertions": 454,
+  "interrupted_sleep_event_count": 14,
+  "real_looper_assertions": 60869,
+  "final_circle_scale": 0.22,
+  "final_leave_light_mask": 0.0,
+  "all_eight_cases_passed": true,
+  "actual_v10_wallpaper_aod_tested": false
+}

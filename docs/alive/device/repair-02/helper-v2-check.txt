@@ -1,0 +1,6 @@
+PREFLIGHT uid=1000 user=0 AMBIENT_WALLPAPER=-1
+SERVICE_OK com.frederic22.hyperextreme/com.frederic22.hyperextreme.alive.HomeWallpaperService
+SERVICE_OK com.frederic22.hyperextreme/com.frederic22.hyperextreme.alive.LockWallpaperService
+FRAMEWORK_REQUIRED: enable HyperExtreme scope System Framework (system), then reboot. No wallpaper was changed by preflight.
+
+exit=10

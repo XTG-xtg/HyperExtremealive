@@ -1098,11 +1098,19 @@ internal object ParallaxBg {
         HookRuntime.log("视差壁纸效果：收到指令 token=$token on=$on（config.active=${config?.active}）")
         // 视图操作必须回主线程（本函数在 daemon 线程上）；回执等视图操作真正做完再发。
         mainHandler.post {
-            runCatching { applyState(context, config, "指令 on=$on") }
+            if (token < lastCommandToken) return@post
+            lastCommandToken = token
             // **指令就是权威状态**（2026-10-21）。prefs 文件通道有延迟 ——
             // 实测点「立即替换」后 hook 侧仍读到旧的 `bg_active=false`，导致每帧都在销毁、
             // 层永远建不起来。广播里的 `on` 是明确的，直接写进状态。
             commandOn = on
+            // Explicit commands outrank a stale provider snapshot; acknowledge only after removal.
+            val effective = (config ?: defaultConfig).copy(active = on)
+            val applied = runCatching { applyState(context, effective, "指令 on=$on") }
+            if (applied.isFailure) {
+                HookRuntime.log("视差壁纸指令执行失败，不发送成功回执：${applied.exceptionOrNull()}")
+                return@post
+            }
             if (!on) {
                 runCatching { ParallaxSubjectLayer.destroy() }
                 desktopLoader?.let { runCatching { ParallaxDesktopLeash.reset(it, 0, 0) } }
@@ -1123,7 +1131,7 @@ internal object ParallaxBg {
                     context.contentResolver.call(
                         MaskProvider.configUri(),
                         MaskProvider.METHOD_NOTE,
-                        "视差壁纸效果：${if (config?.active == true) "已开启" else "已关闭"}" +
+                        "视差壁纸效果：${if (on) "已开启" else "已关闭"}" +
                             "（背景层${if (placed) "已就位" else "未就位"}）",
                         null,
                     )
@@ -1295,7 +1303,7 @@ internal object ParallaxBg {
 
     /** **主线程**上的实际应用：按配置决定「显示背景层 + 位移」或「移除背景层 + 复位位移」。 */
     private fun applyState(context: Context, config: ParallaxConfig?, reason: String) {
-        val active = config?.active == true
+        val active = commandOn != false && config?.active == true
         if (active) {
             // v21a：锚点 = 背景层槽（仍在树里、空着）或主体任一 → 向上找窗口根 → 搬家插入。
             // v22：宿主按当前模式取——树内（槽本身）或整窗（窗口根）；槽拿不到时降级整窗（标记随实际落位）。
@@ -2151,6 +2159,7 @@ internal object ParallaxBg {
      * （表现为每帧都调 destroy、层怎么都出不来）。广播指令里的 `on` 是权威的，优先於 prefs。
      */
     private var commandOn: Boolean? = null
+    private var lastCommandToken: Long = 0L
 
     /**
      * 最近一次「视差效果覆盖桌面」选项的明确状态（`null` = 还没收到过通知）。
