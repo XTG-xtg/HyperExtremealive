@@ -1,0 +1,31 @@
+PASS 18 state assertions
+V8_REPRODUCED screen-off -> visible-slot-2 changed AOD to LOCK after 38ms
+PASS 454 photo power assertions
+Permission/crop regression assertions: 57
+MotionSession assertions: 23
+PASS 6 stereo motion assertions
+警告: [options] 源值 8 已过时，将在未来发行版中删除
+警告: [options] 目标值 8 已过时，将在未来发行版中删除
+警告: [options] 要隐藏有关已过时选项的警告, 请使用 -Xlint:-options。
+3 个警告
+警告: [options] 源值 8 已过时，将在未来发行版中删除
+警告: [options] 目标值 8 已过时，将在未来发行版中删除
+警告: [options] 要隐藏有关已过时选项的警告, 请使用 -Xlint:-options。
+注: 某些输入文件使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+3 个警告
+Alive root helper built from source: C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-verification\helper-assets\alive_root.dex
+{
+  "passed": true,
+  "structural_asset_checks": 1275,
+  "state_assertions": 18,
+  "photo_power_assertions": 454,
+  "permission_crop_assertions": 57,
+  "motion_session_assertions": 23,
+  "stereo_motion_assertions": 6,
+  "java_sources_compiled": 81,
+  "compile_sdk": "34",
+  "helper_dex": "039",
+  "resources_compiled": true,
+  "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."
+}

@@ -129,7 +129,7 @@ internal fun AliveDiagnostics() {
     var busy by remember { mutableStateOf(false) }
     var detail by remember { mutableStateOf(RootBridge.lastResult(app)) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text(stringResource(R.string.alive_framework_note), style = MiuixTheme.textStyles.body2)
+        Text(stringResource(R.string.alive_framework_note, stringResource(R.string.app_name)), style = MiuixTheme.textStyles.body2)
         Card(insideMargin = PaddingValues(0.dp)) {
             BasicComponent(title = stringResource(R.string.alive_runtime), summary = stringResource(R.string.alive_runtime_format,
                 stringResource(if (runtime.getBoolean("home_engine")) R.string.alive_running else R.string.alive_not_running),

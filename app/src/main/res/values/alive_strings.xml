@@ -19,7 +19,7 @@
     <string name="alive_photo_angle">相框内照片旋转</string>
     <string-array name="alive_photo_lock_styles"><item>原图</item><item>条纹玻璃</item><item>曲面玻璃</item><item>磨砂玻璃</item></string-array>
     <string-array name="alive_photo_crop_targets"><item>整张照片</item><item>留光相框</item></string-array>
-    <string name="alive_framework_note">必须勾选 HyperExtreme 的“系统框架（system）”并重启。旧版错误推荐的 android 不等于系统框架。下方查询会检查 AMBIENT_WALLPAPER：0 表示权限检查通过，-1 表示适配未就绪。勾选列表本身不代表 Hook 已加载。</string>
+    <string name="alive_framework_note">必须勾选 %1$s 的“系统框架（system）”并重启。旧版错误推荐的 android 不等于系统框架。下方查询会检查 AMBIENT_WALLPAPER：0 表示权限检查通过，-1 表示适配未就绪。勾选列表本身不代表 Hook 已加载。</string>
     <string name="alive_framework_missing">系统框架适配未就绪，本次预检没有更换壁纸。请到诊断页查看。</string>
     <string name="alive_dark">深色壁纸配色</string>
     <string name="alive_dark_note">用于支持深色变体的场景，不改变应用主题</string>

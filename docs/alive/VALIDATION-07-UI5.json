@@ -1,0 +1,118 @@
+{
+  "version": "0.5-alive.7-ui.5",
+  "version_code": 20,
+  "date": "2026-11-07",
+  "candidate": true,
+  "app_name": "HyperExtreme Alive",
+  "application_id": "com.xtg.hyperextremealive",
+  "code_namespace": "com.frederic22.hyperextreme",
+  "upstream": {
+    "repository": "https://github.com/22Frederic/HyperExtreme",
+    "commit": "e4f7626d9f5ee77ea3603ddbd6f90ea8781119d8",
+    "release": "0.5 Beta2",
+    "paths_changed_from_common_base": 49
+  },
+  "apk": {
+    "bytes": 203053236,
+    "sha256": "d6abd45876a3d836d9c2dcd8402746bfd38039301bdd0366e959428062ec902a",
+    "v2_signature_verified": true,
+    "zipalign_16kb_verified": true,
+    "helper_identity_verified": true,
+    "signer_certificate_sha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d"
+  },
+  "gradle": {
+    "build": "passed",
+    "unit_tests": {
+      "tests": 98,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": {
+      "com.frederic22.hyperextreme.alive.AliveEditorScreenshotTest": 15,
+      "com.frederic22.hyperextreme.alive.AliveHomeScreenshotTest": 10,
+      "com.frederic22.hyperextreme.alive.AliveIntegrationTest": 6,
+      "com.frederic22.hyperextreme.alive.AlivePowerLifecycleTest": 4,
+      "com.frederic22.hyperextreme.alive.PhotoMediaTest": 10,
+      "com.frederic22.hyperextreme.alive.SystemClockTrackerTest": 2,
+      "com.frederic22.hyperextreme.alive.VivoIntegrationTest": 7,
+      "com.frederic22.hyperextreme.data.ImageFitGeometryTest": 4,
+      "com.frederic22.hyperextreme.data.ModuleIdentityTest": 2,
+      "com.frederic22.hyperextreme.data.RasterFlagScriptTest": 3,
+      "com.frederic22.hyperextreme.data.ServiceTargetTest": 3,
+      "com.frederic22.hyperextreme.data.SpatialCropTest": 4,
+      "com.frederic22.hyperextreme.data.SpatialFlagScriptTest": 4,
+      "com.frederic22.hyperextreme.data.WallpaperFeaturesTest": 14,
+      "com.frederic22.hyperextreme.ui.AboutContributorsTest": 7,
+      "com.frederic22.hyperextreme.ui.AppBrandingTest": 3
+    },
+    "lint": {
+      "passed": false,
+      "counts": {
+        "Error": 3,
+        "Warning": 311,
+        "Hint": 17
+      },
+      "errors": [
+        {
+          "id": "MissingPermission",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/data/DesktopWallpaperInjector.kt",
+          "line": 104
+        },
+        {
+          "id": "UnspecifiedRegisterReceiverFlag",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/hook/ParallaxBg.kt",
+          "line": 1088
+        },
+        {
+          "id": "UnspecifiedRegisterReceiverFlag",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/hook/ScreenFlash.kt",
+          "line": 53
+        }
+      ],
+      "errors_unchanged_from_ui4": true
+    }
+  },
+  "offline": {
+    "passed": true,
+    "structural_asset_checks": 1275,
+    "state_assertions": 18,
+    "photo_power_assertions": 454,
+    "permission_crop_assertions": 57,
+    "motion_session_assertions": 23,
+    "stereo_motion_assertions": 6,
+    "java_sources_compiled": 81,
+    "compile_sdk": "34",
+    "helper_dex": "039",
+    "resources_compiled": true,
+    "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."
+  },
+  "review": {
+    "method": "Read-only second pass of merge/identity/ownership diffs and test evidence; no independent agent review",
+    "accepted_fixes": [
+      "Package vs class identity separated",
+      "Raster participates in all-feature exclusion",
+      "Failed/unacknowledged stop preserves cache and remains retryable",
+      "Cache removal rechecks under activation lock",
+      "Serialized renderer flags and complete crop payload",
+      "Atomic target writes fail before picker launch"
+    ],
+    "remaining_blocking_findings": [],
+    "preexisting_lint_errors_retained": true,
+    "about_contributors_source_unchanged": true
+  },
+  "publication": {
+    "release_created": false,
+    "tag_pushed": false,
+    "apk_uploaded": false
+  },
+  "openalive_full_merge_complete": false,
+  "limits": [
+    "No APK installed or device/power/wallpaper/LSPosed state changed",
+    "Robolectric screenshots are not device captures",
+    "AICR and new spatial/raster behavior require target-ROM testing",
+    "No automatic migration from old package identity",
+    "Co-installation does not make overlapping enabled system hooks compatible",
+    "Lint retains three pre-existing errors"
+  ]
+}

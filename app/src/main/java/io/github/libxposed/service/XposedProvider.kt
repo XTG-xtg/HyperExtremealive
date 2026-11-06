@@ -1,5 +1,7 @@
 package io.github.libxposed.service
 
+import com.frederic22.hyperextreme.alive.core.ModuleIdentity
+
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
@@ -55,7 +57,7 @@ class XposedProvider : ContentProvider() {
     companion object {
         const val METHOD_SEND_BINDER = "SendBinder"
         const val KEY_BINDER = "binder"
-        const val AUTHORITY = "com.frederic22.hyperextreme.XposedService"
+        const val AUTHORITY = ModuleIdentity.XPOSED_AUTHORITY
 
         @Volatile
         private var frameworkBinder: IBinder? = null

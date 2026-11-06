@@ -6,6 +6,6 @@ public final class AlivePermissionPolicy {
 
     public static boolean grants(String permission, String packageName) {
         return "android.permission.AMBIENT_WALLPAPER".equals(permission)
-            && "com.frederic22.hyperextreme".equals(packageName);
+            && ModuleIdentity.PACKAGE.equals(packageName);
     }
 }

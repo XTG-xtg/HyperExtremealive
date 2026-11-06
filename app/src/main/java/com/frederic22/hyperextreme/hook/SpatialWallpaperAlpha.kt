@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * ## 怎么跨进程
  *
- * 写系统属性 `debug.hyperextreme.spatial_wp_alpha`（int，0..1000 ≈ alpha×1000）：
+ * 写系统属性 `debug.hyperextremealive.spatial_wp_alpha`（int，0..1000 ≈ alpha×1000）：
  * 所有进程都能读、不需要 Context / 框架通道，与 `SpatialFlag` 同一套路。
  *
  * * 写：`SystemProperties.set`（反射，**不 fork**，共享内存级）；
@@ -50,7 +50,7 @@ internal object SpatialWallpaperAlpha {
         "com.miui.miwallpaper.wallpaperservice.UniversalWallpaper\$UniversalEngine"
 
     /** 系统壁纸真实 alpha ×1000。空 = 没写过（SystemUI 侧按"未知"处理）。 */
-    const val PROP_ALPHA = "debug.hyperextreme.spatial_wp_alpha"
+    const val PROP_ALPHA = "debug.hyperextremealive.spatial_wp_alpha"
 
     private val logged = ConcurrentHashMap<String, Boolean>()
 
@@ -162,14 +162,23 @@ internal object SpatialWallpaperAlpha {
 
     /** 与 SystemUI 侧同一判据：生效中且不是「桌面」档。读不到属性按关处理。 */
     private fun enabled(): Boolean {
-        val active = HookRuntime.systemProperty(
-            com.frederic22.hyperextreme.data.SpatialFlag.PROP_ACTIVE,
-        ).trim() == "1"
-        if (!active) return false
+        // 空间壁纸生效中
         val scope = HookRuntime.systemProperty(
             com.frederic22.hyperextreme.data.SpatialFlag.PROP_SCOPE,
         ).trim().toIntOrNull() ?: MaskPrefs.SPATIAL_SCOPE_LOCK
-        return scope != MaskPrefs.SPATIAL_SCOPE_DESKTOP
+        val spatialOn = HookRuntime.systemProperty(
+            com.frederic22.hyperextreme.data.SpatialFlag.PROP_ACTIVE,
+        ).trim() == "1" && scope != MaskPrefs.SPATIAL_SCOPE_DESKTOP
+        if (spatialOn) return true
+        // **光栅壁纸也要**（2026-11-04）：它同样是 leash 的兄弟层，解锁时不会跟着淡，
+        // 需要这条真值来对齐淡出曲线。
+        val rScope = HookRuntime.systemProperty(
+            com.frederic22.hyperextreme.data.RasterFlag.PROP_SCOPE,
+        ).trim().toIntOrNull() ?: MaskPrefs.SPATIAL_SCOPE_LOCK
+        val rasterOn = HookRuntime.systemProperty(
+            com.frederic22.hyperextreme.data.RasterFlag.PROP_ACTIVE,
+        ).trim() == "1" && rScope != MaskPrefs.SPATIAL_SCOPE_DESKTOP
+        return rasterOn
     }
 
     private fun log(msg: String) = HookRuntime.log("SPATIAL 壁纸alpha $msg")

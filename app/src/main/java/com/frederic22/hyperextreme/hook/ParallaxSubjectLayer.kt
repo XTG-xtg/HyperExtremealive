@@ -139,11 +139,11 @@ internal object ParallaxSubjectLayer {
      */
     const val MARGIN = 280
 
-    /** 合成器模式开关（`debug.hyperextreme.parallax_compositor=0` 可回退到画布重绘）。 */
+    /** 合成器模式开关（`debug.hyperextremealive.parallax_compositor=0` 可回退到画布重绘）。 */
     private fun compositorEnabled(): Boolean = runCatching {
         val cls = Class.forName("android.os.SystemProperties")
         val get = cls.getMethod("get", String::class.java, String::class.java)
-        (get.invoke(null, "debug.hyperextreme.parallax_compositor", "") as? String) != "0"
+        (get.invoke(null, "debug.hyperextremealive.parallax_compositor", "") as? String) != "0"
     }.getOrDefault(true)
 
     /** 内容在 buffer 内的偏移（居中，= 实际余量）。主线程写、下发线程读，故 volatile。 */
@@ -153,7 +153,7 @@ internal object ParallaxSubjectLayer {
     @Volatile
     private var contentOffY = 0f
 
-    /** 现场微调偏移（`debug.hyperextreme.parallax_off_x/y`，单位屏幕像素），10s 缓存。 */
+    /** 现场微调偏移（`debug.hyperextremealive.parallax_off_x/y`，单位屏幕像素），10s 缓存。 */
     private var offXCache = 0f
     private var offYCache = 0f
     private var offCacheAt = 0L
@@ -165,9 +165,9 @@ internal object ParallaxSubjectLayer {
         runCatching {
             val cls = Class.forName("android.os.SystemProperties")
             val get = cls.getMethod("get", String::class.java, String::class.java)
-            offXCache = (get.invoke(null, "debug.hyperextreme.parallax_off_x", "0") as? String)
+            offXCache = (get.invoke(null, "debug.hyperextremealive.parallax_off_x", "0") as? String)
                 ?.toFloatOrNull() ?: 0f
-            offYCache = (get.invoke(null, "debug.hyperextreme.parallax_off_y", "0") as? String)
+            offYCache = (get.invoke(null, "debug.hyperextremealive.parallax_off_y", "0") as? String)
                 ?.toFloatOrNull() ?: 0f
         }
         return offXCache to offYCache
@@ -516,7 +516,7 @@ internal object ParallaxSubjectLayer {
             applyTransform(layer, scale, tx, ty, pivotX, pivotY)
             return
         }
-        // ---- 兜底：旧的全屏重绘路径（`debug.hyperextreme.parallax_compositor=0`）----
+        // ---- 兜底：旧的全屏重绘路径（`debug.hyperextremealive.parallax_compositor=0`）----
         val surface = layer.surface ?: return
         // 时间节流：两次重绘至少隔 REDRAW_MIN_INTERVAL_MS（满分辨率绘制很贵）。
         if (now - layer.lastDrawAt < REDRAW_MIN_INTERVAL_MS) return

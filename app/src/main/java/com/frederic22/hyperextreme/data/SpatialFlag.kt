@@ -31,10 +31,10 @@ object SpatialFlag {
     }
 
     /** 1 = 生效，0 = 关闭。 */
-    const val PROP_ACTIVE = "debug.hyperextreme.spatial_active"
+    const val PROP_ACTIVE = "debug.hyperextremealive.spatial_active"
 
     /** 图层缓存键（16 位 hex）；关闭时置空。 */
-    const val PROP_KEY = "debug.hyperextreme.spatial_key"
+    const val PROP_KEY = "debug.hyperextremealive.spatial_key"
 
     /**
      * 生效范围（`MaskPrefs.SPATIAL_SCOPE_*`）：0 锁屏 / 1 桌面 / 2 全局。
@@ -42,7 +42,7 @@ object SpatialFlag {
      * 单独一条属性的原因：SystemUI 侧轮询要把「active / key / scope」三者**原子地**读一遍，
      * 若 scope 混在 prefs 里，就会出现"active 已刷新、scope 还是旧的"的半新半旧状态。
      */
-    const val PROP_SCOPE = "debug.hyperextreme.spatial_scope"
+    const val PROP_SCOPE = "debug.hyperextremealive.spatial_scope"
 
     /**
      * 「**启用空间壁纸锁屏景深**」：`1` = 开，`0` = 关（2026-10-29）。
@@ -53,7 +53,7 @@ object SpatialFlag {
      *
      * **语义与 scope 完全一致**：生效中改不动渲染，下一次替换才随 push 一起下发。
      */
-    const val PROP_LOCKDEPTH = "debug.hyperextreme.spatial_lockdepth"
+    const val PROP_LOCKDEPTH = "debug.hyperextremealive.spatial_lockdepth"
 
     /**
      * 锁屏是否在前台（`1` = 是，`0` / 空 = 桌面或未知）。
@@ -62,7 +62,7 @@ object SpatialFlag {
      * **用途**：miwallpaper 只在锁屏前台时才把系统壁纸的 alpha 压 0 —— 桌面态压 0
      * 一旦我们的图画慢了就是一片黑，而锁屏态压 0 是消重影的必要手段。
      */
-    const val PROP_KEYGUARD = "debug.hyperextreme.spatial_keyguard"
+    const val PROP_KEYGUARD = "debug.hyperextremealive.spatial_keyguard"
 
     /**
      * **渲染器是否真的在跑**（1 = SystemUI 里的 GL 层已挂上并出过帧）。
@@ -74,15 +74,25 @@ object SpatialFlag {
      * 这是**唯一**能安全压的前提 —— 我们的图没在显示时压 0 就是锁屏黑屏。
      * 所以这个属性是那条改动的硬前置。
      */
-    const val PROP_RENDERING = "debug.hyperextreme.spatial_rendering"
+    const val PROP_RENDERING = "debug.hyperextremealive.spatial_rendering"
+
+    const val PROP_CROP = "debug.hyperextremealive.spatial_crop"
+
+    fun pushRestart(active: Boolean, key: String?, scope: Int, lockDepth: Boolean, crop: String = "") {
+        enqueue(active, key, scope, lockDepth, crop, true, null)
+    }
 
     /** Serial writes prevent a slow enable request from arriving after a later disable. */
-    fun push(active: Boolean, key: String?, scope: Int, lockDepth: Boolean, onComplete: ((Boolean) -> Unit)? = null) {
+    fun push(active: Boolean, key: String?, scope: Int, lockDepth: Boolean, crop: String = "", onComplete: ((Boolean) -> Unit)? = null) {
+        enqueue(active, key, scope, lockDepth, crop, false, onComplete)
+    }
+
+    private fun enqueue(active: Boolean, key: String?, scope: Int, lockDepth: Boolean, crop: String, restart: Boolean, onComplete: ((Boolean) -> Unit)?) {
         require(key.isNullOrEmpty() || key.matches(Regex("[0-9a-fA-F]{16}")))
         val safeScope = scope.coerceIn(0, 2)
         val safeKey = key.orEmpty()
         val waitForRenderer = !active && onComplete != null
-        val script = script(active, safeKey, safeScope, lockDepth, waitForRenderer)
+        val script = script(active, safeKey, safeScope, lockDepth, waitForRenderer, crop, restart)
         val expected = "SPATIAL_FLAG:${if (active) 1 else 0}:$safeKey:$safeScope:${if (lockDepth) 1 else 0}"
         writes.execute {
             val result = runCatching { RootShell.run(script) }.getOrNull()
@@ -98,16 +108,20 @@ object SpatialFlag {
      * One `&&` chain. A failed setprop must not reach the read-back echo, and the renderer wait
      * must not be split off by a semicolon.
      */
-    internal fun script(active: Boolean, key: String, scope: Int, lockDepth: Boolean, waitForRenderer: Boolean): String {
+    internal fun script(active: Boolean, key: String, scope: Int, lockDepth: Boolean, waitForRenderer: Boolean, crop: String = "", restart: Boolean = false): String {
+        require(crop.isEmpty() || (crop.split(',').size == 3 && crop.split(',').all { it.toFloatOrNull()?.isFinite() == true }))
+        require(key.isEmpty() || key.matches(Regex("[0-9a-fA-F]{16}")))
         val activeBit = if (active) 1 else 0
         val depthBit = if (lockDepth) 1 else 0
         val wait = if (!waitForRenderer) "" else
             "i=0 && while [ \"$(getprop $PROP_RENDERING)\" = 1 ] && [ \"${'$'}i\" -lt 30 ]; do sleep 0.1; i=\$((i+1)); done && " +
                 "[ \"$(getprop $PROP_RENDERING)\" != 1 ] && "
         return "setprop $PROP_ACTIVE 0 && " +
+            (if (restart) "sleep 1.3 && " else "") +
             "setprop $PROP_KEY '$key' && " +
             "setprop $PROP_SCOPE $scope && " +
             "setprop $PROP_LOCKDEPTH $depthBit && " +
+            "setprop $PROP_CROP '$crop' && " +
             "setprop $PROP_ACTIVE $activeBit && " +
             wait +
             "echo SPATIAL_FLAG:\$(getprop $PROP_ACTIVE):\$(getprop $PROP_KEY):\$(getprop $PROP_SCOPE):\$(getprop $PROP_LOCKDEPTH)"

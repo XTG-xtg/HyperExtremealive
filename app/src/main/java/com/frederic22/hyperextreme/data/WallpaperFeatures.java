@@ -36,11 +36,16 @@ public final class WallpaperFeatures {
         boolean stopping = prefs.getLong(WallpaperFeaturePolicy.PARALLAX_STOP_TOKEN, 0) >
             prefs.getLong("parallax_ack", 0);
         boolean parallax = prefs.getBoolean(WallpaperFeaturePolicy.PARALLAX_ACTIVE, false) || stopping;
+        boolean rasterStopping = prefs.getBoolean(WallpaperFeaturePolicy.RASTER_STOP_PENDING, false);
+        boolean raster = rasterStopping || (prefs.getInt("raster_mount_mode", 0) == 0 &&
+            !prefs.getString("raster_active_id", "").isEmpty()) ||
+            WallpaperFeaturePolicy.ownedSlots(Feature.RASTER, slots[0], slots[1]) != 0;
         List<String> conflicts = new ArrayList<>();
         if (target != Feature.ALIVE && alive) conflicts.add("Alive 壁纸");
         if (target != Feature.SPATIAL && spatial) conflicts.add("空间壁纸");
         if (target != Feature.PARALLAX && parallax) conflicts.add("视差壁纸");
-        if (WallpaperFeaturePolicy.conflicts(target, alive, spatial, parallax)) {
+        if (target != Feature.RASTER && raster) conflicts.add("光栅壁纸");
+        if (WallpaperFeaturePolicy.conflicts(target, alive, spatial, parallax, raster)) {
             throw new IllegalStateException("请先关闭" + String.join("、", conflicts) + "的启用开关，再切换壁纸功能");
         }
         if (target == Feature.PARALLAX && stopping) {
@@ -48,6 +53,9 @@ public final class WallpaperFeatures {
         }
         if (target == Feature.SPATIAL && spatialStopping) {
             throw new IllegalStateException("空间壁纸尚未确认关闭，请先重试关闭开关");
+        }
+        if (target == Feature.RASTER && rasterStopping) {
+            throw new IllegalStateException("光栅壁纸尚未确认关闭，请先重试取消应用");
         }
         boolean protecting = prefs.contains("protecting") ? prefs.getBoolean("protecting", false) :
             !prefs.getString("injected_wallpaper_md5", "").isEmpty();
@@ -59,6 +67,20 @@ public final class WallpaperFeatures {
     public static boolean isBound(Context context, Feature feature) {
         String[] slots = components(context);
         return WallpaperFeaturePolicy.ownedSlots(feature, slots[0], slots[1]) != 0;
+    }
+
+    /** Recheck under the activation lock: another Activity may have applied while stop was pending. */
+    public static <T> T removeInactiveCaches(Context context, Feature feature, Callable<T> action) throws Exception {
+        if (feature != Feature.SPATIAL && feature != Feature.RASTER) throw new IllegalArgumentException("Unsupported cache owner");
+        if (!TRANSITION.tryLock()) throw new IllegalStateException("正在切换壁纸，图片已保留");
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(WallpaperFeaturePolicy.PREFS, 0);
+            boolean active = feature == Feature.SPATIAL
+                ? prefs.getBoolean(WallpaperFeaturePolicy.SPATIAL_ACTIVE, false) || prefs.getBoolean(WallpaperFeaturePolicy.SPATIAL_STOP_PENDING, false)
+                : prefs.getBoolean(WallpaperFeaturePolicy.RASTER_STOP_PENDING, false) || (prefs.getInt("raster_mount_mode", 0) == 0 && !prefs.getString("raster_active_id", "").isEmpty());
+            if (active || isBound(context, feature)) throw new IllegalStateException("壁纸仍在使用，图片已保留");
+            return action.call();
+        } finally { TRANSITION.unlock(); }
     }
 
     private static String component(WallpaperInfo info) {

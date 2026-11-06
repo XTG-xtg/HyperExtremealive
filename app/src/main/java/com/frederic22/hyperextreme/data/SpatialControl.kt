@@ -24,13 +24,10 @@ import android.widget.Toast
  * matrix —— 只删 SurfaceControl 不够，得让壁纸服务重建壁纸层才彻底复位
  * （视差侧的同款结论见 `MaskUiState.disableParallax`）。
  *
- * 延迟 [RESTART_DELAY_MS] 再杀：先让 SystemUI 的轮询读到 `active=0` 把渲染器停掉，
+ * 确认 SystemUI 的轮询读到 `active=0` 并停止渲染后，再重载壁纸进程，
  * 否则渲染器还攥着即将被销毁的 leash。
  */
 object SpatialControl {
-
-    /** 关闭后等 SystemUI 停渲染器的时间（轮询周期 ~200ms，留一倍余量）。 */
-    const val RESTART_DELAY_MS = 400L
 
     /**
      * 关闭空间壁纸。**已经关着就什么都不做**（不重复 toast、不重复杀进程）。
@@ -57,7 +54,9 @@ object SpatialControl {
         // SystemUI 侧读的是系统属性，prefs 通道在那里不可用。
         SpatialFlag.push(false, null, prefs.spatialScope, prefs.spatialLockDepth) { verified ->
             if (verified) {
-                restartWallpaperService()
+                // Complete the reload before releasing the switch guard; a delayed reload could
+                // otherwise kill a newly selected wallpaper after this stop has been acknowledged.
+                runCatching { RootShell.run("killall com.miui.miwallpaper") }
                 prefs.setSpatialStopPending(false)
             } else {
                 prefs.setDiagNote("空间壁纸关闭未获确认，请重试关闭开关；其他壁纸功能暂不启用")
@@ -73,13 +72,4 @@ object SpatialControl {
         }
     }
 
-    /** 后台重启 miwallpaper（强制重建壁纸层）。 */
-    fun restartWallpaperService(delayMs: Long = RESTART_DELAY_MS) {
-        Thread {
-            runCatching {
-                if (delayMs > 0L) Thread.sleep(delayMs)
-                RootShell.run("killall com.miui.miwallpaper")
-            }
-        }.apply { isDaemon = true }.start()
-    }
 }

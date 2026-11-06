@@ -1,5 +1,7 @@
 package com.frederic22.hyperextreme.hook
 
+import com.frederic22.hyperextreme.alive.core.ModuleIdentity
+
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -20,7 +22,7 @@ import com.frederic22.hyperextreme.data.MaskProvider
  */
 internal object ScreenFlash {
 
-    const val ACTION = "com.frederic22.hyperextreme.action.FLASH"
+    const val ACTION = ModuleIdentity.PACKAGE + ".action.FLASH"
     const val EXTRA_TOKEN = "token"
 
     @Volatile

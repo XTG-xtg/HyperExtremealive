@@ -29,6 +29,7 @@ def build(sdk, java_home, platform, build_tools, output):
         classes, dex = temp / "classes", temp / "dex"
         classes.mkdir(); dex.mkdir()
         sources = sorted((ROOT / "alive-root/src").rglob("*.java"))
+        sources.append(ROOT / "app/src/main/java/com/frederic22/hyperextreme/alive/core/ModuleIdentity.java")
         options = ["-encoding", "UTF-8", "-source", "8", "-target", "8", "-bootclasspath",
                    str(android), "-d", str(classes), *map(str, sources)]
         args = temp / "javac.args"

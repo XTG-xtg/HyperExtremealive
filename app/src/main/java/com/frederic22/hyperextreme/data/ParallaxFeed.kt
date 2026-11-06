@@ -16,8 +16,8 @@ import java.io.File
  * ## 落点
  *
  * ```
- * /data/data/com.miui.miwallpaper/files/he_parallax_bg.png       背景（用户导入的视差背景）
- * /data/data/com.miui.miwallpaper/files/he_parallax_subject.png  主体（theme_magic 的 crop_subject 抠像）
+ * /data/data/com.miui.miwallpaper/files/hea_parallax_bg.png       背景（用户导入的视差背景）
+ * /data/data/com.miui.miwallpaper/files/hea_parallax_subject.png  主体（theme_magic 的 crop_subject 抠像）
  * ```
  *
  * 主体缺失（用户没设主体）时删掉旧文件，让绘制侧按"单层"处理。
@@ -27,8 +27,8 @@ internal object ParallaxFeed {
 
     /** miwallpaper 的私有 files 目录（root 可写）。 */
     const val DIR = "/data/data/com.miui.miwallpaper/files"
-    const val BG_NAME = "he_parallax_bg.png"
-    const val SUBJECT_NAME = "he_parallax_subject.png"
+    const val BG_NAME = "hea_parallax_bg.png"
+    const val SUBJECT_NAME = "hea_parallax_subject.png"
 
     /** 主体的源头：编辑器生成的透明抠像，与「已应用壁纸」逐像素对齐。 */
     private const val CROP_SUBJECT = "/data/system/theme_magic/users/0/wallpaper/crop_subject"

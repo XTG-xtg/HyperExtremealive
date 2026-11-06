@@ -123,11 +123,11 @@ internal object ParallaxDesktopLeash {
         }.onFailure { log("父层 show 失败：$it") }
     }
 
-    /** 现场可切换：`setprop debug.hyperextreme.parallax_leash_kwl 1` 用 `showWhenLocked=true` 的 token。 */
+    /** 现场可切换：`setprop debug.hyperextremealive.parallax_leash_kwl 1` 用 `showWhenLocked=true` 的 token。 */
     private fun leashShowWhenLockedPref(): Boolean = runCatching {
         val cls = Class.forName("android.os.SystemProperties")
         val get = cls.getMethod("get", String::class.java, String::class.java)
-        (get.invoke(null, "debug.hyperextreme.parallax_leash_kwl", "") as? String) == "1"
+        (get.invoke(null, "debug.hyperextremealive.parallax_leash_kwl", "") as? String) == "1"
     }.getOrDefault(false)
 
     /** 每秒最多重新解析一次壁纸 leash（换壁纸后要重新拿）。 */
@@ -205,7 +205,7 @@ internal object ParallaxDesktopLeash {
         // 桌面态它 `flags:0` 可见、锁屏态隐藏 —— 正好符合「只在桌面显示」的需求。
         // （曾改成 `true` 挂 `#42 MiuiKeyguardPictorialWallpaper`，那是**锁屏画报壁纸**，
         //   桌面态被桌面窗口遮住 ⇒ 视差看不见，已回退。）
-        // 现场可切换：`setprop debug.hyperextreme.parallax_leash_kwl 1` → 用 true。
+        // 现场可切换：`setprop debug.hyperextremealive.parallax_leash_kwl 1` → 用 true。
         val sc = currentLeash(loader, leashShowWhenLockedPref())
         if (sc == null) {
             // 诊断（2026-10-21）：重启 SystemUI 后如果一直是 null，就是「桌面层级固定失效」

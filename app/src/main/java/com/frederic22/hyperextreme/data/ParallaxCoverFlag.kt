@@ -5,7 +5,7 @@ package com.frederic22.hyperextreme.data
  *
  * ## 这个属性到底代表什么
  *
- * `debug.hyperextreme.parallax_cover = 1` 的含义已经从「视差效果覆盖桌面 = 开」
+ * `debug.hyperextremealive.parallax_cover = 1` 的含义已经从「视差效果覆盖桌面 = 开」
  * 改成「**桌面层级最终生效** = `cover_desktop && bg_active`」。
  *
  * **为什么**：miwallpaper 进程里的 `ParallaxDesktopGuard`（抑制解锁动画：缩放 / 模糊 /
@@ -34,7 +34,7 @@ package com.frederic22.hyperextreme.data
  */
 object ParallaxCoverFlag {
 
-    const val PROP = "debug.hyperextreme.parallax_cover"
+    const val PROP = "debug.hyperextremealive.parallax_cover"
 
     /**
      * 异步写属性；root 不可用时静默失败（开关退回默认关，不会误抑制）。

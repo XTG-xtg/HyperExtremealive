@@ -2,9 +2,9 @@
   <img src="app/src/main/res/drawable-nodpi/logo.png" alt="LOGO" width="128">
 </p>
 
-<h1 align="center"><strong>HyperExtreme</strong></h1>
+<h1 align="center"><strong>HyperExtreme Alive</strong></h1>
 
-<p align="center">Extreme for HyperOS</p>
+<p align="center">Alive wallpapers for HyperOS</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android-blue?style=flat-square&logo=android" alt="platform">
@@ -22,7 +22,8 @@
 - **动态壁纸**：启航、流光、视频、立体，以及 Vivo 液态、趣味光栅、闪卡等效果。
 - **照片与取景**：锁屏、桌面和相框独立选图、缩放与裁切；桌面可跟随锁屏照片，锁屏与桌面纹理分别设置。
 - **三态预览**：在息屏、锁屏和桌面预览中切换壁纸与样式，确认应用后才生效。
-- **原有功能**：保留 HyperExtreme 的空间壁纸、视差壁纸及系统个性化功能。
+- **光栅与空间壁纸**：支持多图光栅搭配、卡片管理、空间壁纸显示区域裁剪，以及系统壁纸服务模式。
+- **系统个性化**：保留 HyperExtreme 的视差壁纸、景深及其他系统个性化功能。
 
 不包含小米原有超级壁纸。OpenAlive 的通知光效、原版时钟编辑器及完整指纹遮罩联动尚未接入；
 具体范围与兼容性边界见[功能清单](docs/alive/INTEGRATION-MATRIX.zh-CN.md)。
@@ -30,16 +31,17 @@
 ## 使用要求
 
 - 主要适配澎湃 OS 4，面向 ARM64 设备；其他系统及修改较多的第三方 ROM 不保证兼容。
-- 除空间壁纸的系统壁纸服务模式外，其他功能需要 **Root + LSPosed**。
-- 空间壁纸的免 Root 模式最低支持 Android 13，目前主要在 Android 17 上验证。
+- 空间／光栅壁纸的系统壁纸服务模式可免 Root 使用；其余模块功能需要 **Root + LSPosed**。
+- 最低支持 Android 13；系统钩子及渲染效果依赖具体 ROM，需在设备上确认兼容性。
 
 ## 使用方法
 
 1. 安装模块，在 LSPosed 中启用并勾选模块推荐的作用域，按提示重启。首次安装和更新后均需确认作用域生效。
 2. 打开 **功能 → Alive 动态壁纸**，选择壁纸、编辑照片并预览，满意后点击应用。
-3. Alive、空间壁纸和视差壁纸不能同时启用，切换前请先关闭正在使用的另一项。
+3. Alive、空间、光栅和视差壁纸不能同时启用，切换前请先关闭正在使用的另一项。
 
-与其他修改相同系统功能的模块同时使用可能产生冲突，遇到异常请先排查模块冲突。
+本分支使用独立包名 `com.xtg.hyperextremealive`，可与主线并存，不会覆盖主线或自动迁移旧配置。
+请勿同时启用两个模块中修改相同系统功能的选项，遇到异常请先排查模块冲突。
 
 ## 构建
 

@@ -61,10 +61,10 @@ internal object WallpaperGlOverlay {
         "com.miui.miwallpaper.container.openGL.DesktopAnimImageWallpaperRenderer"
 
     /** 开关的系统属性（与 ParallaxDesktopGuard / ParallaxCoverFlag 一致）。 */
-    private const val PROP_FLAG = "debug.hyperextreme.parallax_cover"
+    private const val PROP_FLAG = "debug.hyperextremealive.parallax_cover"
 
-    private const val BG_PATH = "/data/data/com.miui.miwallpaper/files/he_parallax_bg.png"
-    private const val SUBJECT_PATH = "/data/data/com.miui.miwallpaper/files/he_parallax_subject.png"
+    private const val BG_PATH = "/data/data/com.miui.miwallpaper/files/hea_parallax_bg.png"
+    private const val SUBJECT_PATH = "/data/data/com.miui.miwallpaper/files/hea_parallax_subject.png"
 
     // 与 ParallaxBg 默认值对齐（锁屏那套的默认手感）。
     private const val BG_SCALE = 1.10f
@@ -229,9 +229,9 @@ internal object WallpaperGlOverlay {
             val bx = -sx
             val by = -sy
 
-            // 调试：`debug.hyperextreme.pglo_mode`
+            // 调试：`debug.hyperextremealive.pglo_mode`
             //   0 = 正常；1 = 只画半透明背景（验证顶点是否覆盖全屏）；2 = 只画背景
-            val mode = propInt("debug.hyperextreme.pglo_mode", 0)
+            val mode = propInt("debug.hyperextremealive.pglo_mode", 0)
             val alpha = if (mode == 1) 0.5f else 1f
 
             if (bgTex != 0) {
@@ -509,7 +509,7 @@ internal object WallpaperGlOverlay {
 
         /**
          * 静态壁纸**只在变化时渲染一帧**（实测：hook 后只出现「绘制第 1 帧」）。
-         * 传感器驱动的视差需要持续出帧，所以按 `debug.hyperextreme.pglo_refresh_ms`
+         * 传感器驱动的视差需要持续出帧，所以按 `debug.hyperextremealive.pglo_refresh_ms`
          * 的间隔主动调 `renderer.refresh()` 请求重绘（默认 0 = 关闭）。
          *
          * `refresh()` 走 `CallBack#onRefresh` → 引擎的 requestRender → 同步 `onDrawFrame`，
@@ -519,7 +519,7 @@ internal object WallpaperGlOverlay {
             rendererRef = java.lang.ref.WeakReference(renderer)
             if (refreshStarted) return
             refreshStarted = true
-            val interval = propInt("debug.hyperextreme.pglo_refresh_ms", 0)
+            val interval = propInt("debug.hyperextremealive.pglo_refresh_ms", 0)
             if (interval <= 0) {
                 log("刷新驱动关闭（静态壁纸只出 1 帧；如需视差实时，调 pglo_refresh_ms）")
                 return

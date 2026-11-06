@@ -43,7 +43,7 @@ internal object ParallaxDesktopGuard {
         "com.miui.miwallpaper.wallpaperservice.impl.desktop.DesktopImageEngineImpl"
 
     /** 开关的系统属性通道（与 `ParallaxCoverFlag.PROP` 必须一致）。 */
-    private const val PROP_FLAG = "debug.hyperextreme.parallax_cover"
+    private const val PROP_FLAG = "debug.hyperextremealive.parallax_cover"
 
     /** 每个挂点只在第一次真正短接时打一条日志，避免 updateKeyguardWallpaperRatio 高频刷屏。 */
     private val logged = ConcurrentHashMap<String, Boolean>()
@@ -65,7 +65,7 @@ internal object ParallaxDesktopGuard {
     private val propCache = java.util.concurrent.atomic.AtomicReference<Pair<Long, Boolean?>?>(null)
     private const val PROP_CACHE_MS = 500L
 
-    /** 读 `debug.hyperextreme.parallax_cover`；返回 null 表示读不到（交给兜底通道）。 */
+    /** 读 `debug.hyperextremealive.parallax_cover`；返回 null 表示读不到（交给兜底通道）。 */
     private fun flagFromProp(): Boolean? {
         val now = android.os.SystemClock.elapsedRealtime()
         propCache.get()?.let { (at, v) -> if (now - at < PROP_CACHE_MS) return v }

@@ -1,0 +1,2 @@
+zipalign -c -P 16 4 app-debug.apk
+exit_code=0

@@ -1,5 +1,7 @@
 package com.frederic22.hyperextreme.alive.root;
 
+import com.frederic22.hyperextreme.alive.core.ModuleIdentity;
+
 import android.content.ComponentName;
 import android.content.pm.ServiceInfo;
 import android.os.Process;
@@ -8,7 +10,7 @@ import java.lang.reflect.*;
 
 /** Privileged, allowlisted CLI. Runs as system UID, never as an unrestricted command server. */
 public final class WallpaperTool {
-    private static final String PKG="com.frederic22.hyperextreme";
+    private static final String PKG=ModuleIdentity.PACKAGE;
     private static Object service() throws Exception {
         Object binder=Class.forName("android.os.ServiceManager").getMethod("getService",String.class).invoke(null,"wallpaper");
         return Class.forName("android.app.IWallpaperManager$Stub").getMethod("asInterface",Class.forName("android.os.IBinder")).invoke(null,binder);
@@ -30,7 +32,7 @@ public final class WallpaperTool {
         Method serviceInfo=pm.getClass().getMethod("getServiceInfo",ComponentName.class,long.class,int.class);
         serviceInfo.setAccessible(true);
         for(String name:new String[]{"HomeWallpaperService","LockWallpaperService"}) {
-            ComponentName component=new ComponentName(PKG,PKG+".alive."+name);
+            ComponentName component=new ComponentName(PKG,ModuleIdentity.CODE_PACKAGE+".alive."+name);
             ServiceInfo info=(ServiceInfo)serviceInfo.invoke(pm,component,0L,user);
             if(info==null||!info.enabled||!info.exported||!info.applicationInfo.enabled||
                     !"android.permission.BIND_WALLPAPER".equals(info.permission)) {
@@ -38,11 +40,11 @@ public final class WallpaperTool {
             }
             System.out.println("SERVICE_OK "+component.flattenToString());
         }
-        if(ambient!=0)System.out.println("FRAMEWORK_REQUIRED: enable HyperExtreme scope System Framework (system), then reboot. No wallpaper was changed by preflight.");
+        if(ambient!=0)System.out.println("FRAMEWORK_REQUIRED: enable HyperExtreme Alive scope System Framework (system), then reboot. No wallpaper was changed by preflight.");
         return ambient==0;
     }
     private static void set(Object manager,String service,int which,int user) throws Exception {
-        ComponentName component=new ComponentName(PKG,PKG+".alive."+service);
+        ComponentName component=new ComponentName(PKG,ModuleIdentity.CODE_PACKAGE+".alive."+service);
         for(Method m:manager.getClass().getMethods()) {
             if(!m.getName().equals("setWallpaperComponentChecked"))continue;
             Class<?>[] p=m.getParameterTypes();
@@ -85,7 +87,7 @@ public final class WallpaperTool {
                 set(manager,"HomeWallpaperService",1,user);set(manager,"LockWallpaperService",2,user);
                 for(int which=1;which<=2;which++) {
                     String name=which==1?"HomeWallpaperService":"LockWallpaperService";
-                    String expected=new ComponentName(PKG,PKG+".alive."+name).flattenToString();
+                    String expected=new ComponentName(PKG,ModuleIdentity.CODE_PACKAGE+".alive."+name).flattenToString();
                     if(!expected.equals(query(manager,which,user)))throw new IllegalStateException("Final pair mismatch which="+which);
                 }
                 System.out.println("PAIR_VERIFIED");

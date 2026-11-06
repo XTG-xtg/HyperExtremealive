@@ -44,7 +44,7 @@ with tempfile.TemporaryDirectory(dir=scratch) as temp:
     subprocess.run([str(java / ('java' + exe)), '-cp', temp, 'PhotoPowerStateTest', 'legacy'], check=True)
     subprocess.run([str(java / ('java' + exe)), '-cp', temp, 'PhotoPowerStateTest'], check=True)
     subprocess.run([str(java / ('javac' + exe)), '-d', temp,
-                    str(code / 'core/AlivePermissionPolicy.java'), str(code / 'core/PhotoGeometry.java'),
+                    str(code / 'core/ModuleIdentity.java'), str(code / 'core/AlivePermissionPolicy.java'), str(code / 'core/PhotoGeometry.java'),
                     str(ROOT / 'tests/alive/RegressionTest.java')], check=True)
     subprocess.run([str(java / ('java' + exe)), '-cp', temp, 'RegressionTest'], check=True)
     subprocess.run([str(java / ('javac' + exe)), '-d', temp,
@@ -62,12 +62,12 @@ manifest = ET.parse(ROOT / 'app/src/main/AndroidManifest.xml')
 a = '{http://schemas.android.com/apk/res/android}'
 app = manifest.getroot().find('application')
 for name in ['HomeWallpaperService', 'LockWallpaperService']:
-    service = next(s for s in app.findall('service') if s.get(a + 'name') == '.alive.' + name)
+    service = next(s for s in app.findall('service') if s.get(a + 'name') == 'com.frederic22.hyperextreme.alive.' + name)
     check(service.get(a + 'process') is None, 'Alive slots must share the app process')
     check(service.get(a + 'permission') == 'android.permission.BIND_WALLPAPER', 'Wallpaper binding permission')
-provider = next(p for p in app.findall('provider') if p.get(a + 'name') == '.alive.ConfigProvider')
-check(provider.get(a + 'authorities') == 'com.frederic22.hyperextreme.alive.config', 'Provider authority')
-preview = next(p for p in app.findall('activity') if p.get(a + 'name') == '.alive.AlivePreviewActivity')
+provider = next(p for p in app.findall('provider') if p.get(a + 'name') == 'com.frederic22.hyperextreme.alive.ConfigProvider')
+check(provider.get(a + 'authorities') == '${applicationId}.alive.config', 'Provider authority follows installed package')
+preview = next(p for p in app.findall('activity') if p.get(a + 'name') == 'com.frederic22.hyperextreme.alive.AlivePreviewActivity')
 check(preview.get(a + 'exported') == 'false', 'Nonexported preview')
 check(not (assets / 'xposed_init').exists(), 'No legacy entry point')
 check(not list((ROOT / 'app/libs').glob('*hyperalive*')), 'No opaque HyperAlive core JAR')
@@ -134,7 +134,7 @@ check('LazyVerticalGrid' in gallery_source and 'LruCache' in gallery_source and 
 check('aod_offset_x' in (code / 'PhotoOptions.java').read_text() and 'aod_offset_y' in (code / 'PhotoOptions.java').read_text(),
       'AOD position is separate from photo cropping and migrates with defaults')
 spatial = (ROOT / 'app/src/main/java/com/frederic22/hyperextreme/wallpaper/SpatialServiceMode.kt').read_text(encoding='utf-8')
-check('info?.component == ComponentName(ctx, SpatialWallpaperService::class.java)' in spatial, 'Precise Spatial identity')
+check('c.packageName == pkg && c.className == service.name' in spatial, 'Precise Spatial/Raster identity')
 
 provenance = json.loads((ROOT / 'docs/alive/PROVENANCE.json').read_text(encoding='utf-8'))
 for entry in provenance['files']:
@@ -196,7 +196,7 @@ subprocess.run([str(sdk / f'build-tools/{args.build_tools}/aapt2{exe}'), 'compil
                 str(ROOT / 'app/src/main/res'), '-o', str(scratch / 'resources.zip')], check=True)
 result = {'passed': True, 'structural_asset_checks': checks, 'state_assertions': 18,
           'photo_power_assertions': 454,
-          'permission_crop_assertions': 56,
+          'permission_crop_assertions': 57,
           'motion_session_assertions': 23,
           'stereo_motion_assertions': 6,
           'java_sources_compiled': len(list(code.rglob('*.java'))) + len(list((code.parent / 'data').glob('*.java'))), 'compile_sdk': args.compile_sdk,

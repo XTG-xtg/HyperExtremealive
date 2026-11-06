@@ -8,10 +8,10 @@ public final class RegressionTest {
         checks++;
     }
     public static void main(String[] args) {
-        String pkg = "com.frederic22.hyperextreme";
+        String pkg = "com.xtg.hyperextremealive";
         String ambient = "android.permission.AMBIENT_WALLPAPER";
         check(AlivePermissionPolicy.grants(ambient, pkg));
-        for (String other : new String[]{null, "", "android", "com.qihang.aod", pkg + ".other"}) {
+        for (String other : new String[]{null, "", "android", "com.frederic22.hyperextreme", "com.qihang.aod", pkg + ".other"}) {
             check(!AlivePermissionPolicy.grants(ambient, other));
         }
         for (String permission : new String[]{null, "", "android.permission.SET_WALLPAPER_COMPONENT",

@@ -30,11 +30,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.frederic22.hyperextreme"
+        applicationId = "com.xtg.hyperextremealive"
         minSdk = 33
         targetSdk = 37
-        versionCode = 19
-        versionName = "0.5-alive.7-ui.4"
+        versionCode = 20
+        versionName = "0.5-alive.7-ui.5"
 
         ndk {
             abiFilters += "arm64-v8a"
@@ -149,6 +149,7 @@ dependencies {
 
 val prepareAliveHelper by tasks.registering(Exec::class) {
     inputs.dir(rootProject.file("alive-root/src"))
+    inputs.file(rootProject.file("app/src/main/java/com/frederic22/hyperextreme/alive/core/ModuleIdentity.java"))
     inputs.file(rootProject.file("tools/build_alive_helper.py"))
     outputs.dir(layout.buildDirectory.dir("generated/aliveAssets"))
     workingDir(rootProject.projectDir)

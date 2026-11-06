@@ -49,7 +49,7 @@ final class RootBridge {
         String cmd="mkdir -p "+quote(folder)+" && chmod 755 "+quote(folder)+" && cp "+quote(local.getAbsolutePath())+" "+quote(remote)+" && chmod 644 "+quote(remote)+" && su -M 1000 -c "+quote(inner);
         Result result=run(cmd);
         if(apply&&result.ok()&&!result.text.contains("PAIR_VERIFIED"))result=new Result(3,"Incomplete verification: "+result.text);
-        if(result.code==10)result=new Result(10,"系统框架适配未就绪：请为 HyperExtreme 勾选“系统框架（system）”并重启。android 不是此 LSPosed 的系统框架作用域。本次预检没有修改壁纸。\n"+result.text);
+        if(result.code==10)result=new Result(10,"系统框架适配未就绪：请为 "+c.getApplicationInfo().loadLabel(c.getPackageManager())+" 勾选“系统框架（system）”并重启。android 不是此 LSPosed 的系统框架作用域。本次预检没有修改壁纸。\n"+result.text);
         record(c,operation,result);
         if(apply&&result.ok()){Config.prefs(c).edit().putBoolean("enabled",true).apply();Config.changed(c);}
         return result;

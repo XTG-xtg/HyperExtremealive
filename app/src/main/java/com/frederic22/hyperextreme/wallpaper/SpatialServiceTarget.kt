@@ -22,17 +22,19 @@ internal object SpatialServiceTarget {
     private fun tmp(ctx: Context) = File(ctx.filesDir, "$NAME.tmp")
 
     /** 主进程：点「跳转到服务页设置」后记下要渲染的 key。 */
-    fun write(ctx: Context, key: String) {
-        runCatching {
-            val json = org.json.JSONObject()
-                .put("key", key)
-                .put("at", System.currentTimeMillis())
-            val f = tmp(ctx)
-            f.writeText(json.toString())
-            if (!f.renameTo(file(ctx))) {
-                file(ctx).writeText(json.toString())
-                f.delete()
-            }
+    fun write(ctx: Context, key: String): Result<Unit> = runCatching {
+        require(key.matches(Regex("[0-9a-fA-F]{16}"))) { "无效的壁纸标识" }
+        val json = org.json.JSONObject()
+            .put("key", key)
+            .put("at", System.currentTimeMillis())
+        val target = android.util.AtomicFile(file(ctx))
+        val stream = target.startWrite()
+        try {
+            stream.write(json.toString().toByteArray(Charsets.UTF_8))
+            target.finishWrite(stream)
+        } catch (failure: Exception) {
+            target.failWrite(stream)
+            throw failure
         }
     }
 

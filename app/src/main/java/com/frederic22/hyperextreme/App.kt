@@ -6,6 +6,7 @@ import com.frederic22.hyperextreme.data.MaskPrefs
 import com.frederic22.hyperextreme.data.MaskStore
 import com.frederic22.hyperextreme.data.ParallaxCoverFlag
 import com.frederic22.hyperextreme.data.ParallaxFeed
+import com.frederic22.hyperextreme.data.RasterFlag
 import com.frederic22.hyperextreme.data.SpatialFlag
 
 /**
@@ -63,11 +64,35 @@ class App : Application() {
             ParallaxCoverFlag.push(prefs.parallaxCoverDesktop && prefs.parallaxBgActive)
             // 「空间壁纸」开关的系统属性同步（同上：debug.* 属性不持久化，重启后靠这里补回）。
             // SystemUI 侧读 prefs 不可靠（陈旧快照 + openRemoteFile 读不到），只认这两个属性。
-            SpatialFlag.push(
+            // 「显示区域」也要一起补推：渲染器在 SystemUI 进程读不到模块的 crop.json，
+            // 只认这条属性；`debug.*` 不持久化，重启后不补就是默认（= 不裁剪）。
+            val spatialKey = prefs.spatialKey.takeIf { it.isNotEmpty() }
+            if (prefs.spatialStopPending) com.frederic22.hyperextreme.data.SpatialControl.disable(this, null)
+            else SpatialFlag.push(
                 prefs.spatialActive,
-                prefs.spatialKey.takeIf { it.isNotEmpty() },
+                spatialKey,
                 prefs.spatialScope,
                 prefs.spatialLockDepth,
+                spatialKey?.let {
+                    com.frederic22.hyperextreme.spatial.SpatialCrop.encodeProp(
+                        com.frederic22.hyperextreme.spatial.SpatialCrop.read(this, it),
+                    )
+                }.orEmpty(),
+            )
+            // 「光栅壁纸」同理：属性不持久化，重启后靠这里补回。
+            //
+            // ⚠️ **服务模式必须推 false**（2026-11-04）：那条链由系统壁纸页驱动，
+            // 属性一亮 hook 链也会去挂 leash ⇒ 同一张图被画两遍（错位 + 掉帧）。
+            // `rasterActiveId` 在服务模式下只是 UI 指针，不能当作"要渲染"的判据。
+            val rasterLsposed = prefs.rasterMountMode == MaskPrefs.RASTER_MOUNT_LSPOSED
+            if (prefs.rasterStopPending) com.frederic22.hyperextreme.data.RasterControl.disable(this, null)
+            else RasterFlag.push(
+                rasterLsposed && prefs.rasterActiveId.isNotEmpty(),
+                prefs.rasterActiveId.takeIf { it.isNotEmpty() },
+                prefs.rasterScope,
+                prefs.rasterLockDepth,
+                prefs.rasterMaxAngle,
+                prefs.rasterSettle,
             )
             // 开关开着但图可能失效（重装/换图）——启动时再推一次给 miwallpaper。
             if (prefs.parallaxCoverDesktop) {

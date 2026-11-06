@@ -36,6 +36,8 @@ public final class AliveSettings {
         return WallpaperFeatures.activate(c, Feature.ALIVE, () -> applyChecked(c, variant, dark, clock,options));
     }
 
+    public static synchronized void disable(Context c) throws Exception { setEnabled(c, false); }
+
     static synchronized RootBridge.Result setEnabled(Context c, boolean enabled) throws Exception {
         recoverPendingApply(c);
         if (!enabled) {
