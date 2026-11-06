@@ -23,6 +23,11 @@ public final class ConfigProvider extends ContentProvider {
         if (!trusted() && !(debugShell && "status".equals(method))) throw new SecurityException("Untrusted config caller: " + uid);
         if ("getConfig".equals(method)) return Config.read(getContext());
         if ("status".equals(method)) return EngineRegistry.status(getContext());
+        if ("clockGeometry".equals(method)) {
+            if(extras==null)throw new IllegalArgumentException("Missing clock geometry");
+            if(Config.prefs(getContext()).getBoolean("enabled",false))EngineRegistry.clock(new ClockSnapshot(extras));
+            return Bundle.EMPTY;
+        }
         if ("signal".equals(method)) {
             if (extras == null) throw new IllegalArgumentException("Missing state");
             int mode = extras.getInt("mode", -1);

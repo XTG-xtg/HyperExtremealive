@@ -16,7 +16,7 @@ public final class PhotoPerfProbe {
         Looper.prepareMainLooper();Handler main=new Handler(Looper.getMainLooper());
         Class<?> type=Class.forName("android.app.ActivityThread");
         Context system=(Context)type.getMethod("getSystemContext").invoke(type.getMethod("systemMain").invoke(null));
-        Context installed=system.createPackageContext(Protocol.PACKAGE,Context.CONTEXT_IGNORE_SECURITY);
+        Context installed=ProbeContext.wrap(system.createPackageContext(Protocol.PACKAGE,Context.CONTEXT_IGNORE_SECURITY));
         Context context=new ContextWrapper(installed){
             @Override public Context getApplicationContext(){return this;}
             @Override public File getFilesDir(){return new File("/data/local/tmp/hyperextreme-photo-worker");}

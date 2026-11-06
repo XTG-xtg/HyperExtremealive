@@ -1,0 +1,119 @@
+{
+  "version": "0.5-alive.7-ui.1",
+  "version_code": 16,
+  "candidate": true,
+  "openalive_full_merge_complete": false,
+  "apk": {
+    "bytes": 201758034,
+    "sha256": "4cdd97dca6e5b5cfdcc3e5b3de5187fce80ab6e86c165dbefff94469f861e014",
+    "v2_signature_verified": true,
+    "zipalign_16kb_verified": true,
+    "signer_certificate_sha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d"
+  },
+  "gradle": {
+    "debug_build": "passed",
+    "unit_tests": {
+      "tests": 58,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lint": {
+      "counts": {
+        "Error": 3,
+        "Warning": 256,
+        "Hint": 17
+      },
+      "passed": false,
+      "errors_unchanged_from_delivered_07": true
+    }
+  },
+  "offline": {
+    "passed": true,
+    "structural_asset_checks": 1267,
+    "state_assertions": 18,
+    "photo_power_assertions": 454,
+    "permission_crop_assertions": 56,
+    "motion_session_assertions": 23,
+    "stereo_motion_assertions": 6,
+    "java_sources_compiled": 80,
+    "compile_sdk": "34",
+    "helper_dex": "039",
+    "resources_compiled": true,
+    "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."
+  },
+  "device": {
+    "android_api": 37,
+    "page_size": 4096,
+    "installed_version": "0.5-alive.7",
+    "candidate_installed": false,
+    "system_wallpaper_modified": false,
+    "physical_screen_power_modified": false,
+    "installed_app_data_modified": false,
+    "lsposed_modified": false,
+    "test_storage": "/data/local/tmp/hyperextreme-*",
+    "photo_variants_portrait_landscape": 12,
+    "real_aod_thumbnail_shapes": 6,
+    "patterned_lens_not_flat_circle": true,
+    "brightness_worker_variants": [
+      1,
+      601,
+      602,
+      603,
+      604,
+      605,
+      606
+    ],
+    "gains_tested": [
+      0.25,
+      1,
+      3,
+      0.25
+    ],
+    "tone_shader_samples": 30,
+    "delayed_decoder_3200ms_variants": [
+      602,
+      603,
+      604,
+      605,
+      606
+    ],
+    "hidden_worker_power_variants": [
+      1,
+      101,
+      201
+    ],
+    "live_settled_photo_stops": true,
+    "photo_interruption": "passed"
+  },
+  "limits": [
+    "No candidate installation or physical power-key acceptance in this run",
+    "No verification of physical AOD panel brightness or standby power",
+    "Compose screenshots are Robolectric; GPU artwork was rendered in isolated device processes",
+    "Real system clock appearance is not replicated; optional guide is off by default",
+    "Original notification effects and clock editor remain outside this repair",
+    "Official artwork/runtime rights remain with original owners"
+  ],
+  "evidence_sha256": {
+    "alive-home-light-shapes.png": "bd3b5bec53a6d065026866ce60f6bec7686d8d4b6e4a4210ae78ab49fdbeeafc",
+    "photo-aod-picker-compact-panel.png": "d75b1773fefa7c06bf6d7dbe83e4f1de906ec904e842e671f0de8c6a55845add",
+    "photo-aod-picker-compact.png": "cd006801187e6a7b206955f1a1eecd75f967cb532291008992b42a27cbdbbed5",
+    "photo-aod-picker-panel.png": "70aac2a6bbb593f5b7d6746964a421bc17ae13bfd53801ceb51f5838f0c2dbb2",
+    "photo-aod-picker.png": "fa3d7333592d7a9964a49e48fb48fb0cac57670e9d06ee2bb7667f23d760a8c3",
+    "photo-crop-editor.png": "b519780edce9ae0b8e4d7ad37f6e7e14fa6e69c4178e0c05b0fa04bf84d50113",
+    "photo-home-texture.png": "30b78d831a623f9175dc65ee091476a06aaafca40dfa4af8a3dbff82d21fc3b3",
+    "photo-lock-texture.png": "b8630d57b41294ed9ab15cc4155c7d11292686176923e0b611a812fba210f4f3",
+    "tile-flat-circle-reference.png": "120a102a94c74a45cabd455324e083507bb31acf71127b1a34aa249de2323294",
+    "tile-pattern-601.png": "c9094773e647b57885a5f7d6a524d0b5581d523079c69e6dd46080f8c217a252",
+    "tile-pattern-source.png": "36827406cf50ecc61c28a8fc8a99fbe368a880e54710b1ec5270c53fbbed2e44",
+    "ui1-editor-device-final.log": "071b8da6b527401ee78ed0fa248796078994a6c5114627a9f440050d7eca5d39",
+    "ui1-final.log": "3a0e57125dfdd04bc29e4b8e974a19ab5f8ed88df34da6b25f64c81959b0cab8",
+    "ui1-lint-final.log": "782519935320af0dc2e9d351e5c701dfde4046120dfdc6595c559add077a2fba",
+    "ui1-offline.log": "ac849a9efb74ea279110b3944f8886e48c0a764a9ee7f132ca747fe745e6dc0c",
+    "ui1-photo-regression.log": "23ceb25685e98d49428bb7a88b95e17a2304ffc6c7e40ac22a94728d71041722",
+    "ui1-power-device.log": "f1064f89f49eaca4b73e91a2d637220c3984f96bea17f7489874ce8302db6781",
+    "ui1-signature.log": "b8d9e6ec3ca6df3dbd6366e91afd727fc6c368bc8141cd4adc73722ee2d55a1c",
+    "ui1-state-device.log": "f365cc9b0f52a9364a4bfe4c16a6e044afe6e409f8b477eb949cf5f029bc4eea",
+    "ui1-zipalign.log": "8042b367a5dd3b4a623e873de5b38ad68db270b9ff651afe316adce0bd178cfe"
+  }
+}

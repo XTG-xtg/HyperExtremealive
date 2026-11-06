@@ -8,6 +8,8 @@
 .externalNativeBuild
 .cxx
 app/build
+.reference/
+/deliverables/
 # 参考仓库（HyperChanger）不参与构建，也不需要纳入版本管理
 third_party/
 # 构建/逆向中间产物、签名密钥、个人素材、验证截图

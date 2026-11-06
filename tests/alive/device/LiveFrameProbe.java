@@ -18,7 +18,7 @@ public final class LiveFrameProbe {
         Handler main = new Handler(Looper.getMainLooper());
         Class<?> atClass = Class.forName("android.app.ActivityThread");
         Context system = (Context) atClass.getMethod("getSystemContext").invoke(atClass.getMethod("systemMain").invoke(null));
-        Context installed = system.createPackageContext(Protocol.PACKAGE, Context.CONTEXT_IGNORE_SECURITY);
+        Context installed = ProbeContext.wrap(system.createPackageContext(Protocol.PACKAGE, Context.CONTEXT_IGNORE_SECURITY));
         Context context = new ContextWrapper(installed) {
             @Override public Context getApplicationContext() { return this; }
             @Override public java.io.File getFilesDir() { return new java.io.File("/data/local/tmp/hyperextreme-photo-worker"); }

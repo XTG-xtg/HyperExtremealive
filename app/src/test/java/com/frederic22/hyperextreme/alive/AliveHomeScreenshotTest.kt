@@ -49,7 +49,9 @@ class AliveHomeScreenshotTest {
                     requireNotNull(BitmapFactory.decodeStream(requireNotNull(input))).asImageBitmap()
                 }
             }
-            val texture = activity.assets.open("stereo/preview_v6.png").use { BitmapFactory.decodeStream(it).asImageBitmap() }
+            val shapes = (601..606).map { id ->
+                javaClass.getResourceAsStream("/alive/tile-$id.png").use { BitmapFactory.decodeStream(it).asImageBitmap() }
+            }
             var selected = -1
             var library = false
             var toggle: Boolean? = null
@@ -57,7 +59,7 @@ class AliveHomeScreenshotTest {
                 val controller = remember { ThemeController(if (dark) ColorSchemeMode.Dark else ColorSchemeMode.Light) }
                 MiuixTheme(controller = controller, textStyles = HyperTextStyles) {
                     AliveHomeContent(AliveHomeModel(name = "星云绿", running = false, busy = false, frameworkConnected = true,
-                        frames = if (error) emptyList() else frames, photo = texture,
+                        frames = if (error) emptyList() else frames, photoShapes = shapes,
                         previewError = if (error) "Test unavailable renderer" else ""),
                         onBack = {}, onDiagnostics = {}, onMode = { selected = it }, onPhoto = { selected = it },
                         onLibrary = { library = true }, onToggle = { toggle = it }, onRetry = {})
@@ -86,6 +88,11 @@ class AliveHomeScreenshotTest {
             compose.onNodeWithText("留光").performScrollTo()
             compose.onRoot().captureToImage().asAndroidBitmap().let { bitmap ->
                 File(directory, "$name-bottom.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            }
+            compose.onNodeWithText("银河").performScrollTo().performClick()
+            org.junit.Assert.assertEquals(606, selected)
+            compose.onRoot().captureToImage().asAndroidBitmap().let { bitmap ->
+                File(directory, "$name-shapes.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
             }
         } finally { host.pause().stop().destroy(); RuntimeEnvironment.setFontScale(1f) }
     }

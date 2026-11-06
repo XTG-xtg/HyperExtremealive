@@ -1,0 +1,168 @@
+{
+  "source": "OpenAlive-main.zip / commit 2d54c72a573b2f66e20b558283bef58cdb0ada60",
+  "notice": "OpenAlive host code is MIT. Vivo official runtime and assets retain their original rights; no Xiaomi super wallpapers.",
+  "files": [
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/PhotoViewport.java",
+      "source_sha256": "185539a62143f4eb3f1b74c103bce108c230e9acfd48d9b148619603743321fc"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoCalls.java",
+      "source_sha256": "6f4003e3b14ee413f94099817d1d0093789edb837465aadeadbbf50f523ec395"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoColorSpace.java",
+      "source_sha256": "ab96619e955a5cee704eea179be4011f7268664f14913acf24e1a860feddbec0"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoDimPass.java",
+      "source_sha256": "7b2583a228988bdc46bb3f8e4d8f99db8263f58ec82c021f48303eb536e0b6db"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoEngineRuntime.java",
+      "source_sha256": "904fe0e0b81d1ab8ff8a4d95c4d15af303e6bb4e4ae5b967a40afe50f4f00b53"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoEngineScene.java",
+      "source_sha256": "6107fca77c7c848ad61fca19147e3245397f787a6e4deeac0f4e3641a626fa49"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoImages.java",
+      "source_sha256": "6ade4afc072b6c02a872f88513e9d6383fe0d16d7298e42c16b32952b49c954e"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoLiquidSensitivity.java",
+      "source_sha256": "a0bcc5da893f1b8840771c0d36613226aa6d2245eb95285d488f9690d66b7b08"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoMediaSelection.java",
+      "source_sha256": "fb2c49ea6597c62ebaa446ac5530290160852a623b74aa9a354693c0214739a8"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoOptions.java",
+      "source_sha256": "d12bd43fde983fb5bf4324ff321d55309dc96521dd03b139e2d22abe3d683901"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoSensorGain.java",
+      "source_sha256": "a24bb54a40d01ed40d156c5382a2180910231d90c5ac85fc6fbad465adab1a6d"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoTextureLayer.java",
+      "source_sha256": "7509060a42f922db206e9c32dbf11f7414733d1f957d332b3c0ca9a6d6d91f4b"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoVideoTexture.java",
+      "source_sha256": "cce336dda3f9a9abd9cef056518458fccbfb836b9321c45bb1464417de371769"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoWallpaperDim.java",
+      "source_sha256": "9f6171f59fbf8ecc026fb56c0af915cc6acdba517bc6cea5d40109bd7fa0eada"
+    },
+    {
+      "kind": "MIT Java host",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoWallpaperZoom.java",
+      "source_sha256": "ed8b03c0d6ee41ae6c09b8342a6758eec535c7fbf09ee7c97323727383d2c942"
+    },
+    {
+      "kind": "Vivo official runtime",
+      "destination": "app/src/main/assets/vivo/runtime/engine.apk",
+      "sha256": "0dc2bce2c161457c2770af38111dfd74b3971bbd470447a51363a168ac1170e4"
+    },
+    {
+      "kind": "Vivo official runtime",
+      "destination": "app/src/main/assets/vivo/runtime/engine.apk.sha256",
+      "sha256": "02cc4c9397b2c567080a952a7ed47d709ebe14f749662ad1740bd8bc6a8a35e3"
+    },
+    {
+      "kind": "Vivo official runtime",
+      "destination": "app/src/main/assets/vivo/runtime/textures.zip",
+      "sha256": "a357cb5fe870582b49a1407055c4cfd4ad9dfcd905d8561f5affa70f5c2bc2c2"
+    },
+    {
+      "kind": "Vivo official runtime",
+      "destination": "app/src/main/assets/vivo/runtime/textures.zip.sha256",
+      "sha256": "4e22febb1064019cb7c0d8af5156d16399262d8989a261ed387fb87116026e08"
+    },
+    {
+      "kind": "Vivo official runtime",
+      "destination": "app/src/main/assets/vivo/runtime/libpag.so",
+      "sha256": "bf7a2dcfe1e2fee19f1a8bfd09e03f7618e99def190eb63d0f279558c75dcade"
+    },
+    {
+      "kind": "Vivo official runtime",
+      "destination": "app/src/main/assets/vivo/runtime/libpag.so.sha256",
+      "sha256": "918cb812a8278ae2493b7d5fe01ac7c530320c1481fdf00d58b392c33425d7e0"
+    },
+    {
+      "kind": "Vivo official runtime",
+      "destination": "app/src/main/assets/vivo/runtime/libffavc.so",
+      "sha256": "7847468280b405e69f05cc37bbc2a0b2aa0dd1a07bac4a55243f6d4cb1df28fb"
+    },
+    {
+      "kind": "Vivo official runtime",
+      "destination": "app/src/main/assets/vivo/runtime/libffavc.so.sha256",
+      "sha256": "4ce496ae600736d91991586e2bf7e44334c0ee47ae43f96ae02bbcf56b51358b"
+    },
+    {
+      "kind": "upstream provenance",
+      "destination": "app/src/main/assets/vivo/runtime/source.json",
+      "sha256": "3469f20b6d1673477f4bfed2261148ddb7846c5fce973db4cad5c7ab3b9bc48c"
+    },
+    {
+      "kind": "Vivo factory thumbnail",
+      "destination": "app/src/main/assets/vivo/preview/liquid.jpg",
+      "sha256": "40552365589791393667dc80f5a93391ff1504ca8de05a9d20106f51c94685cd"
+    },
+    {
+      "kind": "Vivo factory thumbnail",
+      "destination": "app/src/main/assets/vivo/preview/raster.jpg",
+      "sha256": "a9048efa9a127d6a6e507ff633770090dc2b704222fba224eda0e07382c9743b"
+    },
+    {
+      "kind": "Vivo factory thumbnail",
+      "destination": "app/src/main/assets/vivo/preview/flash.jpg",
+      "sha256": "49c64b3780aeec8ad543635e57eb8600b5ff5a25f0e85546dfe58f3facb60ed3"
+    },
+    {
+      "kind": "U2NetP model/license",
+      "destination": "app/src/main/assets/vivo/models/LICENSE-U2Net.txt",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "kind": "U2NetP model/license",
+      "destination": "app/src/main/assets/vivo/models/source.json",
+      "sha256": "8b1a71b61356f35991caf28a09c59f67ea01eb48ea8d3a5d3b30d5c73ce0dd4c"
+    },
+    {
+      "kind": "U2NetP model/license",
+      "destination": "app/src/main/assets/vivo/models/u2netp.onnx",
+      "sha256": "309c8469258dda742793dce0ebea8e6dd393174f89934733ecc8b14c76f4ddd8"
+    },
+    {
+      "kind": "MIT algorithm adaptation",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoSubjectMask.kt",
+      "source_path": "app/java/org/aliveclean/VivoSubjectMask.java",
+      "source_sha256": "0c7d237e3c6e5f0121dc73fbe6212c740886d807f243aa3a6f7c70a350a4e7f6"
+    },
+    {
+      "kind": "MIT algorithm adaptation",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/VivoMaskCanvas.java",
+      "source_path": "app/java/org/aliveclean/VivoMaskEditor.java",
+      "source_sha256": "893067a14ae59822079fdce90b8705cab93d342fb1c5e4bbcc9aacfe6b362f40"
+    }
+  ]
+}

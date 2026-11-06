@@ -8,6 +8,7 @@ final class NativeScene {
     static native void tint(long handle,int color);
     static native void frameCrop(long handle,float x,float y,float size,float angle);
     static native void photoCrop(long handle,float x,float y,float zoom);
+    static native void homeCrop(long handle,float x,float y,float zoom);
     static native boolean frame(long handle,java.nio.ByteBuffer frame);
     static native boolean effects(long handle,java.nio.ByteBuffer effects);
     static native boolean render(long handle,int photo,int decorator,float photoAspect,java.nio.ByteBuffer frame);

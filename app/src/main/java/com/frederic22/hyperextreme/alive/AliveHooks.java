@@ -36,6 +36,7 @@ public final class AliveHooks {
     private static long readAt, errorAt;
     private static boolean observing;
     private static XposedModule logger;
+    private static final ThreadLocal<Object> NORMAL_PANEL_HOST=new ThreadLocal<>();
 
     private static synchronized Handler worker() {
         if (ipc == null) {
@@ -110,6 +111,13 @@ public final class AliveHooks {
             } catch (RuntimeException error) { log("Alive 状态发送失败：" + error); }
         });
     }
+    private static void observeClock(android.view.View view){
+        SystemClockTracker.watch(view,()->cached.getBoolean("enabled",false),geometry->worker().post(()->{
+            if(!refresh().getBoolean("enabled",false))return;
+            try{Context c=context();if(c!=null)c.getContentResolver().call(Protocol.CONFIG,"clockGeometry",null,geometry);}
+            catch(RuntimeException error){log("Alive clock geometry unavailable: "+error);}
+        }));
+    }
 
     private interface Interceptor { Object invoke(XposedInterface.Chain chain) throws Throwable; }
 
@@ -144,9 +152,9 @@ public final class AliveHooks {
         });
         for (String type : new String[]{"com.android.server.power.PowerManagerService",
                 "com.android.server.power.PowerManagerService$BinderService"}) {
-            for (String method : new String[]{"goToSleep", "wakeUp", "wakePowerGroup"}) {
+            for (String method : new String[]{"goToSleep", "goToSleepInternal", "goToSleepGroup", "wakeUp", "wakeUpInternal", "wakePowerGroup"}) {
                 hook(module, loader, type, method, chain -> {
-                    boolean sleep = method.equals("goToSleep");
+                    boolean sleep = method.startsWith("goToSleep");
                     boolean biometric = false;
                     for (Object arg : chain.getArgs()) {
                         if (arg instanceof String) {
@@ -182,24 +190,49 @@ public final class AliveHooks {
                 if (state.contains("AOD") || state.contains("PULSING")) signal(0, "scrim-aod");
                 else if (state.contains("UNLOCKED")) signal(2, "scrim-unlocked");
                 else if (state.contains("KEYGUARD")) signal(1, "scrim-keyguard");
+                Object scrim=field(chain.getThisObject(),"mScrimBehind","mScrimInFront");
+                if(scrim instanceof android.view.View)observeClock((android.view.View)scrim);
             }
             return result;
         });
         hook(module, loader, "com.miui.aod.DozeHost", "disableShowWallpaper", chain -> {
-            if (cached.getBoolean("enabled", false) &&
-                ((Method) chain.getExecutable()).getReturnType() == boolean.class) return false;
+            // This ROM's method returns void and paints an opaque background. Suppress only
+            // the normal-clock template's call when the system already permitted wallpaper.
+            if (chain.getThisObject()==NORMAL_PANEL_HOST.get()&&keepAodWallpaper(chain.getThisObject()) &&
+                ((Method) chain.getExecutable()).getReturnType() == void.class) return null;
             return chain.proceed();
         });
-        for (String name : new String[]{"com.miui.aod.AODView", "com.android.keyguard.widget.AodView"}) {
+        hook(module, loader, "com.miui.aod.AODView", "makeNormalPanel", chain -> {
+            Object host=field(chain.getThisObject(),"mHost"),previous=NORMAL_PANEL_HOST.get();
+            NORMAL_PANEL_HOST.set(host);
+            try{
+                Object result=chain.proceed();
+                if(keepAodWallpaper(host)&&chain.getThisObject() instanceof android.view.View)
+                    ((android.view.View)chain.getThisObject()).setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                return result;
+            }finally{if(previous==null)NORMAL_PANEL_HOST.remove();else NORMAL_PANEL_HOST.set(previous);}
+        });
+        for (String name : new String[]{"com.miui.aod.AODView", "com.android.keyguard.widget.AodView",
+                "com.miui.aod.linkagestyle.LinkageStyleClockView", "com.android.keyguard.KeyguardStatusView",
+                "com.android.keyguard.clock.KeyguardClockContainer", "com.android.keyguard.KeyguardClockContainer"}) {
             hook(module, loader, name, "onAttachedToWindow", chain -> {
                 Object result = chain.proceed();
                 if (chain.getThisObject() instanceof ViewGroup) {
                     ViewGroup root = (ViewGroup) chain.getThisObject();
+                    observeClock(root);
                     worker().post(() -> { refresh(); MAIN.post(() -> updateClock(root)); });
                 }
                 return result;
             });
         }
+    }
+
+    private static boolean keepAodWallpaper(Object host){
+        // Never enable an AOD session, modify its schedule, or hide a fingerprint/occlusion mask.
+        return host!=null&&cached.getBoolean("enabled",false)
+            &&Boolean.TRUE.equals(field(host,"mNeedShowWallpaper"))
+            &&Boolean.FALSE.equals(field(host,"mKeyguardOccluded"))
+            &&Boolean.FALSE.equals(field(host,"mFingerprintPressed"));
     }
 
     private static Object field(Object host, String... names) {

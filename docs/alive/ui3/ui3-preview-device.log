@@ -1,0 +1,36 @@
+����: [options] Դֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ŀ��ֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ҫ�����й��ѹ�ʱѡ��ľ���, ��ʹ�� -Xlint:-options��
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+3 ������
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-photo-device\dex\classes.dex: 1 file pushed, 0 skipped. 136.3 MB/s (356392 bytes in 0.002s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\generated\aliveJni\arm64-v8a\libhyperextreme_photo.so: 1 file pushed, 0 skipped. 163.8 MB/s (495808 bytes in 0.003s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\outputs\apk\debug\app-debug.apk: 1 file pushed, 0 skipped. 48.8 MB/s (201938682 bytes in 3.950s)
+preview-switch 0 PREVIEW_SELECTION id=601 mode=0 renderer=PhotoRenderer generation=1 received=75
+
+PREVIEW_SELECTION id=1 mode=0 renderer=CosmicRenderer generation=2 received=301
+
+PREVIEW_SELECTION id=101 mode=0 renderer=CosmicRenderer generation=3 received=276
+
+PREVIEW_SELECTION id=201 mode=0 renderer=BubbleRenderer generation=4 received=302
+
+PREVIEW_SELECTION id=301 mode=1 renderer=GradientRenderer generation=5 received=303
+
+PREVIEW_SELECTION id=401 mode=1 renderer=FlymeVideoRenderer generation=6 received=584
+
+PREVIEW_SELECTION id=501 mode=2 renderer=StereoRenderer generation=7 received=582
+
+PREVIEW_SELECTION id=701 mode=1 renderer=VivoRenderer generation=8 received=267
+
+PREVIEW_SELECTION id=702 mode=0 renderer=VivoRenderer generation=9 received=210
+
+PREVIEW_SELECTION id=703 mode=2 renderer=VivoRenderer generation=10 received=262
+
+PREVIEW_SELECTION id=606 mode=0 renderer=PhotoRenderer generation=11 received=77
+
+PREVIEW_SELECTION id=601 mode=2 renderer=PhotoRenderer generation=12 received=75
+
+PREVIEW_SWITCH_PASS selections=12 same_surface=true all_modes=true egl_released=true
+
+

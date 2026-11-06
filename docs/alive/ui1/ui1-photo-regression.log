@@ -1,0 +1,687 @@
+����: [options] Դֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ŀ��ֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ҫ�����й��ѹ�ʱѡ��ľ���, ��ʹ�� -Xlint:-options��
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+3 ������
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-photo-device\dex\classes.dex: 1 file pushed, 0 skipped. 128.8 MB/s (350488 bytes in 0.003s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\generated\aliveJni\arm64-v8a\libhyperextreme_photo.so: 1 file pushed, 0 skipped. 109.8 MB/s (495808 bytes in 0.004s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\outputs\apk\debug\app-debug.apk: 1 file pushed, 0 skipped. 41.9 MB/s (201758034 bytes in 4.593s)
+photo-601-false 0 PHOTO_PASS variant=601 landscape=false checks=289971 frames=1897 waits=0 intermediate=0 lockHomeMAE=13.288611979166667
+
+
+photo-601-true 0 PHOTO_PASS variant=601 landscape=true checks=289971 frames=1897 waits=0 intermediate=0 lockHomeMAE=12.029106770833334
+
+
+photo-602-false 0 PHOTO_PASS variant=602 landscape=false checks=290336 frames=1897 waits=162 intermediate=28 lockHomeMAE=13.288611979166667
+
+
+photo-602-true 0 PHOTO_PASS variant=602 landscape=true checks=290372 frames=1897 waits=174 intermediate=28 lockHomeMAE=12.029106770833334
+
+
+photo-603-false 0 PHOTO_PASS variant=603 landscape=false checks=290112 frames=1897 waits=80 intermediate=30 lockHomeMAE=13.288611979166667
+
+
+photo-603-true 0 PHOTO_PASS variant=603 landscape=true checks=290087 frames=1897 waits=71 intermediate=30 lockHomeMAE=12.029106770833334
+
+
+photo-604-false 0 PHOTO_PASS variant=604 landscape=false checks=290192 frames=1897 waits=114 intermediate=36 lockHomeMAE=13.288611979166667
+
+
+photo-604-true 0 PHOTO_PASS variant=604 landscape=true checks=290186 frames=1897 waits=112 intermediate=36 lockHomeMAE=12.029106770833334
+
+
+photo-605-false 0 PHOTO_PASS variant=605 landscape=false checks=290532 frames=1897 waits=245 intermediate=42 lockHomeMAE=13.288611979166667
+
+
+photo-605-true 0 PHOTO_PASS variant=605 landscape=true checks=290536 frames=1897 waits=247 intermediate=42 lockHomeMAE=12.029106770833334
+
+
+photo-606-false 0 PHOTO_PASS variant=606 landscape=false checks=290759 frames=1897 waits=335 intermediate=54 lockHomeMAE=13.288611979166667
+
+
+photo-606-true 0 PHOTO_PASS variant=606 landscape=true checks=290800 frames=1897 waits=349 intermediate=54 lockHomeMAE=12.029106770833334
+
+
+presentation 0 TONE source=0.0 gain=0.25 expected=0 actual=0
+
+TONE source=0.05 gain=0.25 expected=3 actual=3
+
+TONE source=0.2 gain=0.25 expected=13 actual=13
+
+TONE source=0.6 gain=0.25 expected=38 actual=38
+
+TONE source=1.0 gain=0.25 expected=64 actual=64
+
+TONE source=0.0 gain=0.5 expected=0 actual=0
+
+TONE source=0.05 gain=0.5 expected=6 actual=7
+
+TONE source=0.2 gain=0.5 expected=26 actual=26
+
+TONE source=0.6 gain=0.5 expected=77 actual=77
+
+TONE source=1.0 gain=0.5 expected=128 actual=128
+
+TONE source=0.0 gain=1.0 expected=0 actual=0
+
+TONE source=0.05 gain=1.0 expected=13 actual=13
+
+TONE source=0.2 gain=1.0 expected=51 actual=51
+
+TONE source=0.6 gain=1.0 expected=153 actual=153
+
+TONE source=1.0 gain=1.0 expected=255 actual=255
+
+TONE source=0.0 gain=1.3 expected=0 actual=0
+
+TONE source=0.05 gain=1.3 expected=16 actual=17
+
+TONE source=0.2 gain=1.3 expected=64 actual=64
+
+TONE source=0.6 gain=1.3 expected=178 actual=178
+
+TONE source=1.0 gain=1.3 expected=255 actual=255
+
+TONE source=0.0 gain=2.0 expected=0 actual=0
+
+TONE source=0.05 gain=2.0 expected=25 actual=25
+
+TONE source=0.2 gain=2.0 expected=92 actual=92
+
+TONE source=0.6 gain=2.0 expected=214 actual=214
+
+TONE source=1.0 gain=2.0 expected=255 actual=255
+
+TONE source=0.0 gain=3.0 expected=0 actual=0
+
+TONE source=0.05 gain=3.0 expected=36 actual=37
+
+TONE source=0.2 gain=3.0 expected=124 actual=124
+
+TONE source=0.6 gain=3.0 expected=239 actual=239
+
+TONE source=1.0 gain=3.0 expected=255 actual=255
+
+PRESENTATION_OK
+
+
+photo-assets 0 PHOTO_ASSETS_PASS checks=29 lock=red home=green frame=blue follow=red
+
+
+power-1 0 HIDDEN_EVENTS_OK variant=1 sequence=4 frames=32
+
+LIVE_POWER_OK variant=1 frames=122
+
+
+power-101 0 HIDDEN_EVENTS_OK variant=101 sequence=4 frames=19
+
+LIVE_POWER_OK variant=101 frames=106
+
+
+power-201 0 HIDDEN_EVENTS_OK variant=201 sequence=4 frames=32
+
+LIVE_POWER_OK variant=201 frames=119
+
+
+photo601 0 LIVE_FRAMES windowMs=3000 frames=67 fps=22.333333333333332 error=
+
+IDLE_WAKE_RESUMED=true
+
+HIDDEN_STOPPED=true
+
+
+photo602 0 LIVE_FRAMES windowMs=3003 frames=1 fps=0.333000333000333 error=
+
+STATIC_IDLE_STOPPED=true
+
+IDLE_WAKE_RESUMED=true
+
+HIDDEN_STOPPED=true
+
+
+dual 0 LIVE_FRAMES windowMs=3001 frames=69 fps=22.99233588803732 error=
+
+GRADIENT_SECONDS=5.9998636
+
+SHARED_MOTION=true framesB=229
+
+HIDDEN_STOPPED=true
+
+
+interrupted-sleep 0 PHOTO_INTERRUPTION_PASS events=14 checks=59041 finalLensScale=0.22 finalMask=0.0
+
+
+/data/local/tmp/hyperextreme-photo-test/portrait.png: 1 file pulled, 0 skipped. 2.8 MB/s (6158 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p0-f0.png: 1 file pulled, 0 skipped. 6.3 MB/s (26855 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p0-f12.png: 1 file pulled, 0 skipped. 12.8 MB/s (26894 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p0-f24.png: 1 file pulled, 0 skipped. 14.3 MB/s (27450 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p0-f48.png: 1 file pulled, 0 skipped. 14.3 MB/s (27166 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p0-f120.png: 1 file pulled, 0 skipped. 11.0 MB/s (21264 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p0-f270.png: 1 file pulled, 0 skipped. 11.4 MB/s (24155 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p1-f0.png: 1 file pulled, 0 skipped. 11.8 MB/s (24297 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p1-f12.png: 1 file pulled, 0 skipped. 14.4 MB/s (24889 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p1-f24.png: 1 file pulled, 0 skipped. 4.3 MB/s (71878 bytes in 0.016s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p1-f48.png: 1 file pulled, 0 skipped. 10.8 MB/s (241721 bytes in 0.021s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p1-f120.png: 1 file pulled, 0 skipped. 28.0 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p1-f270.png: 1 file pulled, 0 skipped. 28.8 MB/s (166268 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p2-f0.png: 1 file pulled, 0 skipped. 27.3 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p2-f12.png: 1 file pulled, 0 skipped. 27.7 MB/s (170844 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p2-f24.png: 1 file pulled, 0 skipped. 27.2 MB/s (135051 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p2-f48.png: 1 file pulled, 0 skipped. 9.4 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p2-f120.png: 1 file pulled, 0 skipped. 9.1 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p2-f270.png: 1 file pulled, 0 skipped. 11.9 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p3-f0.png: 1 file pulled, 0 skipped. 10.2 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p3-f12.png: 1 file pulled, 0 skipped. 16.9 MB/s (42353 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p3-f24.png: 1 file pulled, 0 skipped. 17.8 MB/s (36914 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p3-f48.png: 1 file pulled, 0 skipped. 16.6 MB/s (27657 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p3-f120.png: 1 file pulled, 0 skipped. 16.2 MB/s (22867 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p3-f270.png: 1 file pulled, 0 skipped. 12.7 MB/s (23822 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p4-f0.png: 1 file pulled, 0 skipped. 11.2 MB/s (23891 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p4-f12.png: 1 file pulled, 0 skipped. 10.8 MB/s (24011 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p4-f24.png: 1 file pulled, 0 skipped. 22.5 MB/s (80728 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p4-f48.png: 1 file pulled, 0 skipped. 8.2 MB/s (16784 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p4-f120.png: 1 file pulled, 0 skipped. 7.9 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p4-f270.png: 1 file pulled, 0 skipped. 7.2 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p5-f0.png: 1 file pulled, 0 skipped. 4.6 MB/s (12184 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p5-f12.png: 1 file pulled, 0 skipped. 15.3 MB/s (39961 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p5-f24.png: 1 file pulled, 0 skipped. 23.0 MB/s (86138 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p5-f48.png: 1 file pulled, 0 skipped. 26.0 MB/s (221011 bytes in 0.008s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p5-f120.png: 1 file pulled, 0 skipped. 26.7 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p5-f270.png: 1 file pulled, 0 skipped. 27.7 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p6-f0.png: 1 file pulled, 0 skipped. 28.6 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p6-f12.png: 1 file pulled, 0 skipped. 23.3 MB/s (100317 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p6-f24.png: 1 file pulled, 0 skipped. 14.1 MB/s (39717 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p6-f48.png: 1 file pulled, 0 skipped. 12.2 MB/s (27657 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p6-f120.png: 1 file pulled, 0 skipped. 9.6 MB/s (22867 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-port-p6-f270.png: 1 file pulled, 0 skipped. 9.7 MB/s (23822 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/landscape.png: 1 file pulled, 0 skipped. 2.3 MB/s (4203 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p0-f0.png: 1 file pulled, 0 skipped. 10.6 MB/s (27697 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p0-f12.png: 1 file pulled, 0 skipped. 12.5 MB/s (27944 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p0-f24.png: 1 file pulled, 0 skipped. 11.6 MB/s (28420 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p0-f48.png: 1 file pulled, 0 skipped. 15.2 MB/s (28331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p0-f120.png: 1 file pulled, 0 skipped. 11.9 MB/s (22878 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p0-f270.png: 1 file pulled, 0 skipped. 9.2 MB/s (25766 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p1-f0.png: 1 file pulled, 0 skipped. 13.0 MB/s (25733 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p1-f12.png: 1 file pulled, 0 skipped. 17.0 MB/s (25780 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p1-f24.png: 1 file pulled, 0 skipped. 19.0 MB/s (66116 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p1-f48.png: 1 file pulled, 0 skipped. 8.2 MB/s (195637 bytes in 0.023s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p1-f120.png: 1 file pulled, 0 skipped. 25.4 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p1-f270.png: 1 file pulled, 0 skipped. 22.6 MB/s (137470 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p2-f0.png: 1 file pulled, 0 skipped. 25.6 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p2-f12.png: 1 file pulled, 0 skipped. 22.6 MB/s (134269 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p2-f24.png: 1 file pulled, 0 skipped. 9.5 MB/s (104828 bytes in 0.011s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p2-f48.png: 1 file pulled, 0 skipped. 12.7 MB/s (16618 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p2-f120.png: 1 file pulled, 0 skipped. 9.5 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p2-f270.png: 1 file pulled, 0 skipped. 9.1 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p3-f0.png: 1 file pulled, 0 skipped. 7.3 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p3-f12.png: 1 file pulled, 0 skipped. 16.7 MB/s (54475 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p3-f24.png: 1 file pulled, 0 skipped. 14.4 MB/s (38536 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p3-f48.png: 1 file pulled, 0 skipped. 12.2 MB/s (28521 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p3-f120.png: 1 file pulled, 0 skipped. 11.2 MB/s (24121 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p3-f270.png: 1 file pulled, 0 skipped. 11.9 MB/s (25684 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p4-f0.png: 1 file pulled, 0 skipped. 11.8 MB/s (25827 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p4-f12.png: 1 file pulled, 0 skipped. 10.8 MB/s (25747 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p4-f24.png: 1 file pulled, 0 skipped. 21.6 MB/s (96745 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p4-f48.png: 1 file pulled, 0 skipped. 8.3 MB/s (19900 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p4-f120.png: 1 file pulled, 0 skipped. 7.6 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p4-f270.png: 1 file pulled, 0 skipped. 8.4 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p5-f0.png: 1 file pulled, 0 skipped. 6.8 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p5-f12.png: 1 file pulled, 0 skipped. 17.1 MB/s (35429 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p5-f24.png: 1 file pulled, 0 skipped. 24.9 MB/s (66245 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p5-f48.png: 1 file pulled, 0 skipped. 23.3 MB/s (174002 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p5-f120.png: 1 file pulled, 0 skipped. 21.2 MB/s (137470 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p5-f270.png: 1 file pulled, 0 skipped. 22.2 MB/s (137470 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p6-f0.png: 1 file pulled, 0 skipped. 27.5 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p6-f12.png: 1 file pulled, 0 skipped. 24.3 MB/s (100217 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p6-f24.png: 1 file pulled, 0 skipped. 17.0 MB/s (42781 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p6-f48.png: 1 file pulled, 0 skipped. 10.6 MB/s (28521 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p6-f120.png: 1 file pulled, 0 skipped. 10.9 MB/s (24121 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/601-land-p6-f270.png: 1 file pulled, 0 skipped. 11.3 MB/s (25684 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p0-f0.png: 1 file pulled, 0 skipped. 9.8 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p0-f12.png: 1 file pulled, 0 skipped. 6.9 MB/s (18331 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p0-f24.png: 1 file pulled, 0 skipped. 8.5 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p0-f48.png: 1 file pulled, 0 skipped. 15.6 MB/s (18331 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p0-f120.png: 1 file pulled, 0 skipped. 14.4 MB/s (18331 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p0-f270.png: 1 file pulled, 0 skipped. 13.6 MB/s (18331 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p1-f0.png: 1 file pulled, 0 skipped. 10.7 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p1-f12.png: 1 file pulled, 0 skipped. 8.8 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p1-f24.png: 1 file pulled, 0 skipped. 8.2 MB/s (24345 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p1-f48.png: 1 file pulled, 0 skipped. 30.5 MB/s (239115 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p1-f120.png: 1 file pulled, 0 skipped. 31.4 MB/s (166268 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p1-f270.png: 1 file pulled, 0 skipped. 5.4 MB/s (166268 bytes in 0.029s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p2-f0.png: 1 file pulled, 0 skipped. 6.3 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p2-f12.png: 1 file pulled, 0 skipped. 6.0 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p2-f24.png: 1 file pulled, 0 skipped. 4.7 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p2-f48.png: 1 file pulled, 0 skipped. 6.0 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p2-f120.png: 1 file pulled, 0 skipped. 5.8 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p2-f270.png: 1 file pulled, 0 skipped. 6.8 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p3-f0.png: 1 file pulled, 0 skipped. 28.3 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p3-f24.png: 1 file pulled, 0 skipped. 10.8 MB/s (19934 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p3-f48.png: 1 file pulled, 0 skipped. 8.1 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p4-f0.png: 1 file pulled, 0 skipped. 8.5 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p4-f24.png: 1 file pulled, 0 skipped. 11.1 MB/s (22005 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p4-f270.png: 1 file pulled, 0 skipped. 6.5 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p5-f0.png: 1 file pulled, 0 skipped. 14.4 MB/s (26960 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p5-f12.png: 1 file pulled, 0 skipped. 12.0 MB/s (26960 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p5-f48.png: 1 file pulled, 0 skipped. 29.0 MB/s (211745 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p5-f120.png: 1 file pulled, 0 skipped. 26.3 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p5-f270.png: 1 file pulled, 0 skipped. 24.5 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p6-f0.png: 1 file pulled, 0 skipped. 6.8 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p6-f12.png: 1 file pulled, 0 skipped. 19.2 MB/s (60465 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p6-f24.png: 1 file pulled, 0 skipped. 10.2 MB/s (19934 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p6-f120.png: 1 file pulled, 0 skipped. 9.7 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p6-f270.png: 1 file pulled, 0 skipped. 7.3 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p0-f0.png: 1 file pulled, 0 skipped. 8.8 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p0-f12.png: 1 file pulled, 0 skipped. 9.3 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p0-f48.png: 1 file pulled, 0 skipped. 9.6 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p0-f120.png: 1 file pulled, 0 skipped. 7.6 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p1-f12.png: 1 file pulled, 0 skipped. 8.4 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p1-f48.png: 1 file pulled, 0 skipped. 26.4 MB/s (185160 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p1-f120.png: 1 file pulled, 0 skipped. 25.2 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p1-f270.png: 1 file pulled, 0 skipped. 22.6 MB/s (137470 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p2-f12.png: 1 file pulled, 0 skipped. 9.5 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p2-f24.png: 1 file pulled, 0 skipped. 7.4 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p2-f120.png: 1 file pulled, 0 skipped. 7.9 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p3-f0.png: 1 file pulled, 0 skipped. 25.3 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p3-f270.png: 1 file pulled, 0 skipped. 10.6 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p5-f24.png: 1 file pulled, 0 skipped. 18.7 MB/s (62599 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p5-f48.png: 1 file pulled, 0 skipped. 25.0 MB/s (169162 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p5-f120.png: 1 file pulled, 0 skipped. 29.0 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p6-f0.png: 1 file pulled, 0 skipped. 14.7 MB/s (16618 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p6-f24.png: 1 file pulled, 0 skipped. 9.6 MB/s (20540 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p6-f48.png: 1 file pulled, 0 skipped. 8.8 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p6-f120.png: 1 file pulled, 0 skipped. 7.4 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/crop-false-top.png: 1 file pulled, 0 skipped. 6.0 MB/s (8529 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/crop-true-bottom.png: 1 file pulled, 0 skipped. 3.6 MB/s (5837 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p0-f0.png: 1 file pulled, 0 skipped. 3.9 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p0-f24.png: 1 file pulled, 0 skipped. 3.1 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p0-f48.png: 1 file pulled, 0 skipped. 4.8 MB/s (6811 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p0-f270.png: 1 file pulled, 0 skipped. 3.9 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p1-f24.png: 1 file pulled, 0 skipped. 9.0 MB/s (19192 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p1-f48.png: 1 file pulled, 0 skipped. 27.9 MB/s (241962 bytes in 0.008s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p2-f0.png: 1 file pulled, 0 skipped. 27.1 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p2-f120.png: 1 file pulled, 0 skipped. 7.6 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p3-f12.png: 1 file pulled, 0 skipped. 24.7 MB/s (142977 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p3-f24.png: 1 file pulled, 0 skipped. 10.3 MB/s (23548 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p3-f48.png: 1 file pulled, 0 skipped. 3.2 MB/s (6833 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p3-f270.png: 1 file pulled, 0 skipped. 4.2 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p4-f0.png: 1 file pulled, 0 skipped. 3.8 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p4-f12.png: 1 file pulled, 0 skipped. 4.0 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p4-f24.png: 1 file pulled, 0 skipped. 8.9 MB/s (18329 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p4-f270.png: 1 file pulled, 0 skipped. 8.2 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p5-f0.png: 1 file pulled, 0 skipped. 10.8 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p5-f12.png: 1 file pulled, 0 skipped. 16.5 MB/s (39961 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p5-f24.png: 1 file pulled, 0 skipped. 21.7 MB/s (86138 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p6-f12.png: 1 file pulled, 0 skipped. 22.3 MB/s (165830 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p6-f48.png: 1 file pulled, 0 skipped. 4.2 MB/s (6833 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p0-f48.png: 1 file pulled, 0 skipped. 4.0 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p0-f120.png: 1 file pulled, 0 skipped. 4.8 MB/s (6948 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p0-f270.png: 1 file pulled, 0 skipped. 3.4 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p1-f12.png: 1 file pulled, 0 skipped. 4.7 MB/s (6948 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p1-f24.png: 1 file pulled, 0 skipped. 9.5 MB/s (21653 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p1-f48.png: 1 file pulled, 0 skipped. 23.9 MB/s (186292 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p1-f120.png: 1 file pulled, 0 skipped. 24.3 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p2-f12.png: 1 file pulled, 0 skipped. 26.5 MB/s (143612 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p2-f24.png: 1 file pulled, 0 skipped. 25.4 MB/s (132931 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p2-f48.png: 1 file pulled, 0 skipped. 10.4 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p2-f120.png: 1 file pulled, 0 skipped. 8.6 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p2-f270.png: 1 file pulled, 0 skipped. 7.7 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p3-f0.png: 1 file pulled, 0 skipped. 8.3 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p4-f12.png: 1 file pulled, 0 skipped. 4.9 MB/s (6948 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p4-f120.png: 1 file pulled, 0 skipped. 12.7 MB/s (16618 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p4-f270.png: 1 file pulled, 0 skipped. 12.6 MB/s (16618 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p5-f0.png: 1 file pulled, 0 skipped. 13.3 MB/s (16618 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p5-f12.png: 1 file pulled, 0 skipped. 18.2 MB/s (35429 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p5-f48.png: 1 file pulled, 0 skipped. 18.6 MB/s (174002 bytes in 0.009s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p6-f0.png: 1 file pulled, 0 skipped. 30.0 MB/s (137470 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p6-f12.png: 1 file pulled, 0 skipped. 29.6 MB/s (155830 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p6-f48.png: 1 file pulled, 0 skipped. 7.5 MB/s (6966 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p6-f120.png: 1 file pulled, 0 skipped. 8.0 MB/s (6948 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p0-f24.png: 1 file pulled, 0 skipped. 9.3 MB/s (8621 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p0-f48.png: 1 file pulled, 0 skipped. 7.0 MB/s (8621 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p0-f120.png: 1 file pulled, 0 skipped. 5.6 MB/s (8621 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p0-f270.png: 1 file pulled, 0 skipped. 4.9 MB/s (8621 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p1-f0.png: 1 file pulled, 0 skipped. 5.1 MB/s (8621 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p1-f12.png: 1 file pulled, 0 skipped. 5.7 MB/s (8621 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p1-f24.png: 1 file pulled, 0 skipped. 5.4 MB/s (7762 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p1-f48.png: 1 file pulled, 0 skipped. 27.2 MB/s (177803 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p1-f120.png: 1 file pulled, 0 skipped. 26.7 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p2-f0.png: 1 file pulled, 0 skipped. 27.4 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p2-f12.png: 1 file pulled, 0 skipped. 27.6 MB/s (180609 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p2-f120.png: 1 file pulled, 0 skipped. 7.8 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p2-f270.png: 1 file pulled, 0 skipped. 8.5 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p3-f0.png: 1 file pulled, 0 skipped. 6.6 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p3-f24.png: 1 file pulled, 0 skipped. 5.3 MB/s (14511 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p3-f48.png: 1 file pulled, 0 skipped. 2.2 MB/s (8646 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p3-f120.png: 1 file pulled, 0 skipped. 5.0 MB/s (8621 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p3-f270.png: 1 file pulled, 0 skipped. 5.1 MB/s (8621 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p4-f0.png: 1 file pulled, 0 skipped. 4.9 MB/s (8621 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p4-f12.png: 1 file pulled, 0 skipped. 7.9 MB/s (8621 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p4-f24.png: 1 file pulled, 0 skipped. 6.8 MB/s (9844 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p5-f12.png: 1 file pulled, 0 skipped. 20.2 MB/s (39961 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p5-f24.png: 1 file pulled, 0 skipped. 22.3 MB/s (86138 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p5-f48.png: 1 file pulled, 0 skipped. 31.1 MB/s (221011 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p6-f0.png: 1 file pulled, 0 skipped. 8.8 MB/s (166268 bytes in 0.018s)
+/data/local/tmp/hyperextreme-photo-test/slot-lock.png: 1 file pulled, 0 skipped. 2.0 MB/s (2198 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p3-f12.png: 1 file pulled, 0 skipped. 27.6 MB/s (99114 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p3-f120.png: 1 file pulled, 0 skipped. 13.8 MB/s (18331 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p3-f270.png: 1 file pulled, 0 skipped. 10.5 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p4-f12.png: 1 file pulled, 0 skipped. 11.2 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p4-f48.png: 1 file pulled, 0 skipped. 10.9 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p4-f120.png: 1 file pulled, 0 skipped. 10.0 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p5-f24.png: 1 file pulled, 0 skipped. 21.9 MB/s (80892 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/602-port-p6-f48.png: 1 file pulled, 0 skipped. 7.8 MB/s (18331 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p0-f24.png: 1 file pulled, 0 skipped. 10.8 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p0-f270.png: 1 file pulled, 0 skipped. 7.6 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p1-f0.png: 1 file pulled, 0 skipped. 11.4 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p1-f24.png: 1 file pulled, 0 skipped. 10.7 MB/s (23132 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p2-f0.png: 1 file pulled, 0 skipped. 9.6 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p2-f48.png: 1 file pulled, 0 skipped. 8.0 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p2-f270.png: 1 file pulled, 0 skipped. 8.9 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p3-f12.png: 1 file pulled, 0 skipped. 20.6 MB/s (81314 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p3-f24.png: 1 file pulled, 0 skipped. 8.6 MB/s (20540 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p3-f48.png: 1 file pulled, 0 skipped. 10.1 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p3-f120.png: 1 file pulled, 0 skipped. 14.3 MB/s (18674 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p4-f0.png: 1 file pulled, 0 skipped. 8.2 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p4-f12.png: 1 file pulled, 0 skipped. 7.2 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p4-f24.png: 1 file pulled, 0 skipped. 9.6 MB/s (21722 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p4-f48.png: 1 file pulled, 0 skipped. 8.6 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p4-f120.png: 1 file pulled, 0 skipped. 8.0 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p4-f270.png: 1 file pulled, 0 skipped. 11.6 MB/s (16618 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p5-f0.png: 1 file pulled, 0 skipped. 12.4 MB/s (23041 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p5-f12.png: 1 file pulled, 0 skipped. 11.1 MB/s (23041 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p5-f270.png: 1 file pulled, 0 skipped. 22.1 MB/s (137470 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p6-f12.png: 1 file pulled, 0 skipped. 16.8 MB/s (51191 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/602-land-p6-f270.png: 1 file pulled, 0 skipped. 8.8 MB/s (18674 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/crop-false-bottom.png: 1 file pulled, 0 skipped. 7.6 MB/s (7075 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/crop-true-top.png: 1 file pulled, 0 skipped. 6.2 MB/s (6455 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/frame-crop-false.png: 1 file pulled, 0 skipped. 10.2 MB/s (19238 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/frame-crop-true.png: 1 file pulled, 0 skipped. 11.6 MB/s (18493 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p0-f12.png: 1 file pulled, 0 skipped. 3.2 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p0-f120.png: 1 file pulled, 0 skipped. 3.6 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p1-f0.png: 1 file pulled, 0 skipped. 4.1 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p1-f12.png: 1 file pulled, 0 skipped. 3.7 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p1-f120.png: 1 file pulled, 0 skipped. 5.4 MB/s (166268 bytes in 0.030s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p1-f270.png: 1 file pulled, 0 skipped. 18.9 MB/s (166268 bytes in 0.008s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p2-f12.png: 1 file pulled, 0 skipped. 24.7 MB/s (180609 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p2-f24.png: 1 file pulled, 0 skipped. 22.8 MB/s (170007 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p2-f48.png: 1 file pulled, 0 skipped. 6.8 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p2-f270.png: 1 file pulled, 0 skipped. 6.3 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p3-f0.png: 1 file pulled, 0 skipped. 7.1 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p3-f120.png: 1 file pulled, 0 skipped. 4.1 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p4-f48.png: 1 file pulled, 0 skipped. 6.1 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p4-f120.png: 1 file pulled, 0 skipped. 5.1 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p5-f48.png: 1 file pulled, 0 skipped. 24.8 MB/s (221011 bytes in 0.008s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p5-f120.png: 1 file pulled, 0 skipped. 22.7 MB/s (166268 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p5-f270.png: 1 file pulled, 0 skipped. 27.5 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p6-f0.png: 1 file pulled, 0 skipped. 26.1 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p6-f24.png: 1 file pulled, 0 skipped. 7.7 MB/s (23548 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p6-f120.png: 1 file pulled, 0 skipped. 4.1 MB/s (6811 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-port-p6-f270.png: 1 file pulled, 0 skipped. 6.2 MB/s (6811 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p0-f0.png: 1 file pulled, 0 skipped. 4.5 MB/s (6948 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p0-f12.png: 1 file pulled, 0 skipped. 3.8 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p0-f24.png: 1 file pulled, 0 skipped. 4.1 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p1-f0.png: 1 file pulled, 0 skipped. 3.5 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p1-f270.png: 1 file pulled, 0 skipped. 21.5 MB/s (137470 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p2-f0.png: 1 file pulled, 0 skipped. 26.1 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p3-f12.png: 1 file pulled, 0 skipped. 22.9 MB/s (129256 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p3-f24.png: 1 file pulled, 0 skipped. 11.2 MB/s (23408 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p3-f48.png: 1 file pulled, 0 skipped. 2.8 MB/s (6966 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p3-f120.png: 1 file pulled, 0 skipped. 3.3 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p3-f270.png: 1 file pulled, 0 skipped. 3.9 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p4-f0.png: 1 file pulled, 0 skipped. 3.9 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p4-f24.png: 1 file pulled, 0 skipped. 9.1 MB/s (20499 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p4-f48.png: 1 file pulled, 0 skipped. 9.2 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p5-f24.png: 1 file pulled, 0 skipped. 17.2 MB/s (66245 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p5-f120.png: 1 file pulled, 0 skipped. 6.0 MB/s (137470 bytes in 0.022s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p5-f270.png: 1 file pulled, 0 skipped. 7.3 MB/s (137470 bytes in 0.018s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p6-f24.png: 1 file pulled, 0 skipped. 10.7 MB/s (23408 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/603-land-p6-f270.png: 1 file pulled, 0 skipped. 4.2 MB/s (6948 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p0-f0.png: 1 file pulled, 0 skipped. 5.6 MB/s (8621 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p0-f12.png: 1 file pulled, 0 skipped. 4.7 MB/s (8621 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p1-f270.png: 1 file pulled, 0 skipped. 23.1 MB/s (166268 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p2-f24.png: 1 file pulled, 0 skipped. 25.2 MB/s (170007 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p2-f48.png: 1 file pulled, 0 skipped. 5.9 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p3-f12.png: 1 file pulled, 0 skipped. 19.3 MB/s (73273 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p4-f48.png: 1 file pulled, 0 skipped. 9.4 MB/s (24807 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p4-f120.png: 1 file pulled, 0 skipped. 4.3 MB/s (12184 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p4-f270.png: 1 file pulled, 0 skipped. 5.7 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p5-f0.png: 1 file pulled, 0 skipped. 9.3 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p5-f120.png: 1 file pulled, 0 skipped. 27.7 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p5-f270.png: 1 file pulled, 0 skipped. 24.8 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p6-f48.png: 1 file pulled, 0 skipped. 5.6 MB/s (8646 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p6-f270.png: 1 file pulled, 0 skipped. 5.7 MB/s (8621 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p0-f24.png: 1 file pulled, 0 skipped. 5.0 MB/s (8667 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p1-f0.png: 1 file pulled, 0 skipped. 6.7 MB/s (8667 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p1-f24.png: 1 file pulled, 0 skipped. 7.0 MB/s (8188 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p1-f120.png: 1 file pulled, 0 skipped. 26.9 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p1-f270.png: 1 file pulled, 0 skipped. 26.1 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p2-f0.png: 1 file pulled, 0 skipped. 24.5 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p2-f120.png: 1 file pulled, 0 skipped. 8.5 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p3-f270.png: 1 file pulled, 0 skipped. 4.5 MB/s (8667 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p4-f0.png: 1 file pulled, 0 skipped. 4.6 MB/s (8667 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p4-f12.png: 1 file pulled, 0 skipped. 9.1 MB/s (8667 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p4-f48.png: 1 file pulled, 0 skipped. 17.6 MB/s (23277 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p4-f270.png: 1 file pulled, 0 skipped. 6.9 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p5-f24.png: 1 file pulled, 0 skipped. 20.1 MB/s (66245 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p5-f120.png: 1 file pulled, 0 skipped. 26.2 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p5-f270.png: 1 file pulled, 0 skipped. 31.3 MB/s (137470 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p6-f0.png: 1 file pulled, 0 skipped. 25.9 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p6-f24.png: 1 file pulled, 0 skipped. 9.8 MB/s (19815 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p6-f48.png: 1 file pulled, 0 skipped. 6.1 MB/s (8690 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/slot-home.png: 1 file pulled, 0 skipped. 2.5 MB/s (2198 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p6-f12.png: 1 file pulled, 0 skipped. 4.0 MB/s (67893 bytes in 0.016s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p6-f24.png: 1 file pulled, 0 skipped. 6.9 MB/s (14511 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-port-p6-f120.png: 1 file pulled, 0 skipped. 5.1 MB/s (8621 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p0-f0.png: 1 file pulled, 0 skipped. 4.5 MB/s (8667 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p0-f48.png: 1 file pulled, 0 skipped. 4.4 MB/s (8667 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p2-f270.png: 1 file pulled, 0 skipped. 7.4 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p3-f24.png: 1 file pulled, 0 skipped. 11.9 MB/s (19815 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p3-f48.png: 1 file pulled, 0 skipped. 4.6 MB/s (8690 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p4-f120.png: 1 file pulled, 0 skipped. 8.3 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p5-f0.png: 1 file pulled, 0 skipped. 7.2 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p5-f12.png: 1 file pulled, 0 skipped. 13.7 MB/s (35429 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p5-f48.png: 1 file pulled, 0 skipped. 22.2 MB/s (174002 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p6-f12.png: 1 file pulled, 0 skipped. 25.9 MB/s (147890 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p0-f120.png: 1 file pulled, 0 skipped. 8.2 MB/s (22274 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p1-f0.png: 1 file pulled, 0 skipped. 11.1 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p2-f12.png: 1 file pulled, 0 skipped. 29.1 MB/s (180609 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p2-f48.png: 1 file pulled, 0 skipped. 5.9 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p3-f12.png: 1 file pulled, 0 skipped. 18.8 MB/s (66467 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p4-f12.png: 1 file pulled, 0 skipped. 9.1 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p4-f120.png: 1 file pulled, 0 skipped. 5.3 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p6-f24.png: 1 file pulled, 0 skipped. 17.4 MB/s (88042 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p6-f48.png: 1 file pulled, 0 skipped. 11.1 MB/s (22175 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p6-f120.png: 1 file pulled, 0 skipped. 10.1 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p6-f270.png: 1 file pulled, 0 skipped. 8.5 MB/s (22274 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p1-f0.png: 1 file pulled, 0 skipped. 12.0 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p1-f48.png: 1 file pulled, 0 skipped. 24.1 MB/s (140452 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p1-f120.png: 1 file pulled, 0 skipped. 20.4 MB/s (137470 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p3-f48.png: 1 file pulled, 0 skipped. 7.9 MB/s (22892 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p4-f0.png: 1 file pulled, 0 skipped. 8.7 MB/s (22955 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p4-f12.png: 1 file pulled, 0 skipped. 9.5 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p4-f24.png: 1 file pulled, 0 skipped. 14.7 MB/s (53606 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p4-f48.png: 1 file pulled, 0 skipped. 14.1 MB/s (37068 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p4-f120.png: 1 file pulled, 0 skipped. 8.6 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p5-f12.png: 1 file pulled, 0 skipped. 14.3 MB/s (35429 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p0-f24.png: 1 file pulled, 0 skipped. 10.6 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p0-f270.png: 1 file pulled, 0 skipped. 6.8 MB/s (20276 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p1-f48.png: 1 file pulled, 0 skipped. 12.3 MB/s (34404 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p1-f120.png: 1 file pulled, 0 skipped. 8.0 MB/s (166268 bytes in 0.020s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p1-f270.png: 1 file pulled, 0 skipped. 24.2 MB/s (166268 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p2-f120.png: 1 file pulled, 0 skipped. 6.9 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p5-f12.png: 1 file pulled, 0 skipped. 16.2 MB/s (39961 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p5-f270.png: 1 file pulled, 0 skipped. 22.3 MB/s (166268 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p6-f120.png: 1 file pulled, 0 skipped. 5.9 MB/s (20276 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p0-f0.png: 1 file pulled, 0 skipped. 10.7 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p1-f48.png: 1 file pulled, 0 skipped. 13.7 MB/s (36515 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p2-f0.png: 1 file pulled, 0 skipped. 6.1 MB/s (137470 bytes in 0.021s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p2-f270.png: 1 file pulled, 0 skipped. 7.9 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p5-f12.png: 1 file pulled, 0 skipped. 10.2 MB/s (35429 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p5-f48.png: 1 file pulled, 0 skipped. 5.8 MB/s (174002 bytes in 0.029s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p6-f48.png: 1 file pulled, 0 skipped. 15.3 MB/s (26901 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p6-f270.png: 1 file pulled, 0 skipped. 16.5 MB/s (20581 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/tile-flat-circle-reference.png: 1 file pulled, 0 skipped. 1.5 MB/s (5556 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p6-f120.png: 1 file pulled, 0 skipped. 7.7 MB/s (8667 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p0-f24.png: 1 file pulled, 0 skipped. 16.0 MB/s (22274 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p0-f270.png: 1 file pulled, 0 skipped. 4.0 MB/s (22274 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p1-f12.png: 1 file pulled, 0 skipped. 3.5 MB/s (22274 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p1-f24.png: 1 file pulled, 0 skipped. 23.7 MB/s (47451 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p1-f48.png: 1 file pulled, 0 skipped. 26.1 MB/s (168218 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p2-f120.png: 1 file pulled, 0 skipped. 10.8 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p2-f270.png: 1 file pulled, 0 skipped. 12.0 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p5-f0.png: 1 file pulled, 0 skipped. 7.7 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p5-f48.png: 1 file pulled, 0 skipped. 28.3 MB/s (221011 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p6-f12.png: 1 file pulled, 0 skipped. 18.3 MB/s (55690 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p0-f0.png: 1 file pulled, 0 skipped. 11.1 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p0-f48.png: 1 file pulled, 0 skipped. 11.8 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p0-f120.png: 1 file pulled, 0 skipped. 15.8 MB/s (22955 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p1-f12.png: 1 file pulled, 0 skipped. 12.5 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p1-f24.png: 1 file pulled, 0 skipped. 18.7 MB/s (49170 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p2-f48.png: 1 file pulled, 0 skipped. 9.7 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p2-f120.png: 1 file pulled, 0 skipped. 8.7 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p2-f270.png: 1 file pulled, 0 skipped. 9.3 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p3-f12.png: 1 file pulled, 0 skipped. 22.5 MB/s (91483 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p5-f0.png: 1 file pulled, 0 skipped. 9.4 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p6-f48.png: 1 file pulled, 0 skipped. 11.2 MB/s (22892 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p6-f270.png: 1 file pulled, 0 skipped. 11.0 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p0-f12.png: 1 file pulled, 0 skipped. 11.7 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p2-f12.png: 1 file pulled, 0 skipped. 32.4 MB/s (180609 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p2-f270.png: 1 file pulled, 0 skipped. 8.7 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p3-f270.png: 1 file pulled, 0 skipped. 12.2 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p4-f12.png: 1 file pulled, 0 skipped. 14.8 MB/s (20276 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p4-f48.png: 1 file pulled, 0 skipped. 19.9 MB/s (38639 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p4-f120.png: 1 file pulled, 0 skipped. 8.7 MB/s (12184 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p4-f270.png: 1 file pulled, 0 skipped. 7.4 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p6-f0.png: 1 file pulled, 0 skipped. 31.3 MB/s (166268 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p6-f24.png: 1 file pulled, 0 skipped. 16.2 MB/s (32870 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p6-f48.png: 1 file pulled, 0 skipped. 16.3 MB/s (26382 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p6-f270.png: 1 file pulled, 0 skipped. 11.7 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p0-f12.png: 1 file pulled, 0 skipped. 11.9 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p1-f12.png: 1 file pulled, 0 skipped. 14.3 MB/s (20581 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p1-f24.png: 1 file pulled, 0 skipped. 13.0 MB/s (26551 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p2-f12.png: 1 file pulled, 0 skipped. 26.2 MB/s (143612 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p3-f0.png: 1 file pulled, 0 skipped. 8.8 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p4-f0.png: 1 file pulled, 0 skipped. 9.2 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p4-f12.png: 1 file pulled, 0 skipped. 14.1 MB/s (20581 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p4-f48.png: 1 file pulled, 0 skipped. 21.2 MB/s (39129 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p5-f24.png: 1 file pulled, 0 skipped. 23.5 MB/s (66245 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p6-f12.png: 1 file pulled, 0 skipped. 29.0 MB/s (128912 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p0-f12.png: 1 file pulled, 0 skipped. 4.5 MB/s (8667 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p0-f120.png: 1 file pulled, 0 skipped. 6.4 MB/s (8667 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p0-f270.png: 1 file pulled, 0 skipped. 6.4 MB/s (8667 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p1-f12.png: 1 file pulled, 0 skipped. 6.2 MB/s (8667 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p1-f48.png: 1 file pulled, 0 skipped. 22.5 MB/s (144753 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p2-f12.png: 1 file pulled, 0 skipped. 22.4 MB/s (143612 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p2-f24.png: 1 file pulled, 0 skipped. 25.7 MB/s (132931 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p2-f48.png: 1 file pulled, 0 skipped. 7.8 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p3-f0.png: 1 file pulled, 0 skipped. 7.0 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p3-f12.png: 1 file pulled, 0 skipped. 24.3 MB/s (130120 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p3-f120.png: 1 file pulled, 0 skipped. 4.2 MB/s (8667 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p4-f24.png: 1 file pulled, 0 skipped. 4.6 MB/s (9183 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p0-f0.png: 1 file pulled, 0 skipped. 9.7 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p0-f48.png: 1 file pulled, 0 skipped. 9.6 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p1-f270.png: 1 file pulled, 0 skipped. 27.0 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p2-f0.png: 1 file pulled, 0 skipped. 28.0 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p3-f0.png: 1 file pulled, 0 skipped. 6.1 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p4-f24.png: 1 file pulled, 0 skipped. 16.4 MB/s (53237 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p4-f48.png: 1 file pulled, 0 skipped. 15.3 MB/s (40999 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p5-f12.png: 1 file pulled, 0 skipped. 15.3 MB/s (39961 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p5-f270.png: 1 file pulled, 0 skipped. 23.6 MB/s (166268 bytes in 0.007s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p6-f0.png: 1 file pulled, 0 skipped. 19.1 MB/s (166268 bytes in 0.008s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p1-f270.png: 1 file pulled, 0 skipped. 24.5 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p2-f0.png: 1 file pulled, 0 skipped. 14.1 MB/s (137470 bytes in 0.009s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p2-f12.png: 1 file pulled, 0 skipped. 25.8 MB/s (143612 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p3-f0.png: 1 file pulled, 0 skipped. 7.6 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p3-f24.png: 1 file pulled, 0 skipped. 22.9 MB/s (94465 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p5-f24.png: 1 file pulled, 0 skipped. 21.3 MB/s (66245 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p6-f24.png: 1 file pulled, 0 skipped. 23.1 MB/s (94465 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p0-f0.png: 1 file pulled, 0 skipped. 10.3 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p2-f24.png: 1 file pulled, 0 skipped. 16.5 MB/s (170007 bytes in 0.010s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p3-f0.png: 1 file pulled, 0 skipped. 6.1 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p3-f12.png: 1 file pulled, 0 skipped. 20.2 MB/s (114097 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p3-f24.png: 1 file pulled, 0 skipped. 13.9 MB/s (32870 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p3-f120.png: 1 file pulled, 0 skipped. 9.0 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p4-f0.png: 1 file pulled, 0 skipped. 11.1 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p0-f48.png: 1 file pulled, 0 skipped. 10.2 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p0-f120.png: 1 file pulled, 0 skipped. 7.6 MB/s (20581 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p1-f120.png: 1 file pulled, 0 skipped. 23.9 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p2-f24.png: 1 file pulled, 0 skipped. 19.8 MB/s (132931 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p2-f120.png: 1 file pulled, 0 skipped. 9.4 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p3-f120.png: 1 file pulled, 0 skipped. 10.6 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p4-f24.png: 1 file pulled, 0 skipped. 12.9 MB/s (27073 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p4-f120.png: 1 file pulled, 0 skipped. 6.2 MB/s (16618 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p6-f24.png: 1 file pulled, 0 skipped. 17.3 MB/s (33921 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p6-f120.png: 1 file pulled, 0 skipped. 7.3 MB/s (20581 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/full-aod-false.png: 1 file pulled, 0 skipped. 7.4 MB/s (10512 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/ground-glass-true.png: 1 file pulled, 0 skipped. 29.0 MB/s (320448 bytes in 0.011s)
+/data/local/tmp/hyperextreme-photo-test/tile-604.png: 1 file pulled, 0 skipped. 0.8 MB/s (3562 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/tile-606.png: 1 file pulled, 0 skipped. 5.1 MB/s (11763 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-source.png: 1 file pulled, 0 skipped. 5.1 MB/s (13617 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-602.png: 1 file pulled, 0 skipped. 4.2 MB/s (9082 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-603.png: 1 file pulled, 0 skipped. 1.3 MB/s (2589 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-605.png: 1 file pulled, 0 skipped. 5.6 MB/s (13771 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-606.png: 1 file pulled, 0 skipped. 4.4 MB/s (11114 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/604-land-p6-f270.png: 1 file pulled, 0 skipped. 6.8 MB/s (8667 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p0-f12.png: 1 file pulled, 0 skipped. 9.5 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p1-f120.png: 1 file pulled, 0 skipped. 25.6 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p2-f24.png: 1 file pulled, 0 skipped. 26.0 MB/s (170007 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p3-f24.png: 1 file pulled, 0 skipped. 22.5 MB/s (88042 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p3-f48.png: 1 file pulled, 0 skipped. 10.5 MB/s (22175 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p3-f120.png: 1 file pulled, 0 skipped. 9.7 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p3-f270.png: 1 file pulled, 0 skipped. 13.5 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p4-f0.png: 1 file pulled, 0 skipped. 10.4 MB/s (22274 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p4-f270.png: 1 file pulled, 0 skipped. 6.6 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p5-f24.png: 1 file pulled, 0 skipped. 23.9 MB/s (86138 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/605-port-p5-f120.png: 1 file pulled, 0 skipped. 26.5 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p0-f12.png: 1 file pulled, 0 skipped. 10.3 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p0-f24.png: 1 file pulled, 0 skipped. 10.4 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p0-f270.png: 1 file pulled, 0 skipped. 9.9 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p2-f24.png: 1 file pulled, 0 skipped. 24.1 MB/s (132931 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p3-f120.png: 1 file pulled, 0 skipped. 14.4 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p3-f270.png: 1 file pulled, 0 skipped. 17.2 MB/s (22955 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p4-f270.png: 1 file pulled, 0 skipped. 8.6 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p5-f48.png: 1 file pulled, 0 skipped. 28.4 MB/s (174002 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p5-f120.png: 1 file pulled, 0 skipped. 7.9 MB/s (137470 bytes in 0.017s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p5-f270.png: 1 file pulled, 0 skipped. 20.6 MB/s (137470 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p6-f0.png: 1 file pulled, 0 skipped. 25.0 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p6-f12.png: 1 file pulled, 0 skipped. 22.5 MB/s (96022 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/605-land-p6-f120.png: 1 file pulled, 0 skipped. 11.7 MB/s (22955 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p0-f48.png: 1 file pulled, 0 skipped. 12.0 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p0-f120.png: 1 file pulled, 0 skipped. 11.0 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p1-f0.png: 1 file pulled, 0 skipped. 9.4 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p1-f12.png: 1 file pulled, 0 skipped. 10.7 MB/s (20276 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p1-f24.png: 1 file pulled, 0 skipped. 11.8 MB/s (26010 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p2-f0.png: 1 file pulled, 0 skipped. 25.6 MB/s (166268 bytes in 0.006s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p2-f48.png: 1 file pulled, 0 skipped. 6.3 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p3-f48.png: 1 file pulled, 0 skipped. 9.8 MB/s (26382 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p4-f24.png: 1 file pulled, 0 skipped. 10.2 MB/s (27255 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p5-f0.png: 1 file pulled, 0 skipped. 6.0 MB/s (12184 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p5-f24.png: 1 file pulled, 0 skipped. 20.5 MB/s (86138 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p5-f48.png: 1 file pulled, 0 skipped. 27.8 MB/s (221011 bytes in 0.008s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p5-f120.png: 1 file pulled, 0 skipped. 31.6 MB/s (166268 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-port-p6-f12.png: 1 file pulled, 0 skipped. 22.5 MB/s (101404 bytes in 0.004s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p0-f24.png: 1 file pulled, 0 skipped. 8.4 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p0-f270.png: 1 file pulled, 0 skipped. 9.0 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p1-f0.png: 1 file pulled, 0 skipped. 11.8 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p1-f270.png: 1 file pulled, 0 skipped. 24.4 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p2-f48.png: 1 file pulled, 0 skipped. 10.9 MB/s (16618 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p3-f12.png: 1 file pulled, 0 skipped. 23.0 MB/s (130012 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p3-f24.png: 1 file pulled, 0 skipped. 13.7 MB/s (33921 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p3-f48.png: 1 file pulled, 0 skipped. 11.0 MB/s (26901 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p3-f270.png: 1 file pulled, 0 skipped. 9.8 MB/s (20581 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p4-f270.png: 1 file pulled, 0 skipped. 9.6 MB/s (16618 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p5-f0.png: 1 file pulled, 0 skipped. 4.6 MB/s (16618 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p5-f120.png: 1 file pulled, 0 skipped. 24.6 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p5-f270.png: 1 file pulled, 0 skipped. 29.1 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/606-land-p6-f0.png: 1 file pulled, 0 skipped. 26.0 MB/s (137470 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/slot-frame.png: 1 file pulled, 0 skipped. 1.4 MB/s (2198 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/ground-glass-false.png: 1 file pulled, 0 skipped. 20.1 MB/s (361010 bytes in 0.017s)
+/data/local/tmp/hyperextreme-photo-test/full-aod-true.png: 1 file pulled, 0 skipped. 9.6 MB/s (13245 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/tile-601.png: 1 file pulled, 0 skipped. 2.7 MB/s (14600 bytes in 0.005s)
+/data/local/tmp/hyperextreme-photo-test/tile-602.png: 1 file pulled, 0 skipped. 5.2 MB/s (16849 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/tile-603.png: 1 file pulled, 0 skipped. 1.4 MB/s (2557 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-605.png: 1 file pulled, 0 skipped. 6.4 MB/s (14336 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-601.png: 1 file pulled, 0 skipped. 6.9 MB/s (16303 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-604.png: 1 file pulled, 0 skipped. 1.9 MB/s (3682 bytes in 0.002s)

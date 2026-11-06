@@ -1,0 +1,144 @@
+{
+  "version": "0.5-alive.7-ui.3",
+  "version_code": 18,
+  "candidate": true,
+  "openalive_full_merge_complete": false,
+  "apk": {
+    "bytes": 201938682,
+    "sha256": "8dbd960639751fe76f19de2772a056acd1e014727516a195e8889e6784b3b33d",
+    "v2_signature_verified": true,
+    "zipalign_16kb_verified": true,
+    "signer_certificate_sha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d"
+  },
+  "gradle": {
+    "build": "passed",
+    "unit_tests": {
+      "tests": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lint": {
+      "counts": {
+        "Error": 3,
+        "Warning": 256,
+        "Hint": 17
+      },
+      "passed": false,
+      "errors": [
+        {
+          "id": "MissingPermission",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/data/DesktopWallpaperInjector.kt",
+          "line": 104,
+          "unchanged_from_ui2": true
+        },
+        {
+          "id": "UnspecifiedRegisterReceiverFlag",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/hook/ParallaxBg.kt",
+          "line": 1070,
+          "unchanged_from_ui2": true
+        },
+        {
+          "id": "UnspecifiedRegisterReceiverFlag",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/hook/ScreenFlash.kt",
+          "line": 51,
+          "unchanged_from_ui2": true
+        }
+      ]
+    }
+  },
+  "offline": {
+    "passed": true,
+    "structural_asset_checks": 1273,
+    "state_assertions": 18,
+    "photo_power_assertions": 454,
+    "permission_crop_assertions": 56,
+    "motion_session_assertions": 23,
+    "stereo_motion_assertions": 6,
+    "java_sources_compiled": 80,
+    "compile_sdk": "34",
+    "helper_dex": "039",
+    "resources_compiled": true,
+    "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."
+  },
+  "ui": {
+    "photo_panel_rows": [
+      "follow lock switch (home only)",
+      "select photo setting row"
+    ],
+    "photo_panel_notes": false,
+    "photo_panel_large_button": false,
+    "compact_width_dp": 320,
+    "shared_pill_headers": true,
+    "scene_transition": "160ms fade out / generation first frame gate / 280ms fade in",
+    "simultaneous_renderers": false,
+    "cancellation_cleanup_tested": true,
+    "zero_animation_scale_tested": true
+  },
+  "device": {
+    "android_api": 37,
+    "candidate_installed": false,
+    "system_wallpaper_modified": false,
+    "physical_screen_power_modified": false,
+    "installed_app_data_modified": false,
+    "lsposed_modified": false,
+    "test_storage": "/data/local/tmp/hyperextreme-vivo-preview-switch-test",
+    "same_surface_preview_sequence": [
+      601,
+      1,
+      101,
+      201,
+      301,
+      401,
+      501,
+      701,
+      702,
+      703,
+      606,
+      601
+    ],
+    "preserved_modes": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      2,
+      1,
+      0,
+      2,
+      0,
+      2
+    ],
+    "correct_renderer_type": true,
+    "correct_vivo_family": true,
+    "photo_crop_retained": true,
+    "new_generation_first_frame_checked": true,
+    "egl_released": true
+  },
+  "limits": [
+    "No candidate installation or system AOD acceptance",
+    "Compose screenshots are Robolectric; device probe uses isolated app_process and synthetic photos",
+    "Physical UI SurfaceFlinger transition, real power sequence and standby consumption remain untested",
+    "Original notification effects and clock editor remain outside this repair",
+    "Official runtime/artwork rights unchanged"
+  ],
+  "evidence_sha256": {
+    "dynamic-picker-compact.png": "2ddcadaee54ec3d9de1c930a34d79008b72c9725b2b5843f683645ab447aa213",
+    "dynamic-picker.png": "20e59dbbfcc46b22e795cc6d78453cda9d21727efaa46b7f838b31798836b9d6",
+    "photo-crop-editor.png": "4aa78f50b588caaae371e31ca06c0c1dbfc5813f1cffd23e70cc45f76019573f",
+    "photo-source-home-compact.png": "d14f89bb054c897204050b49e4a150db6ec152d9aecf05600ca67cd686aed15b",
+    "photo-source-home.png": "ce218b81d64549662044885a8e5a8f31829d73af6b687a8070925b13afebe3a3",
+    "photo-source-lock-compact.png": "f4777875b55e42b96d4ca9c19fd6412171f05300cbf8f90a0c9d90076eed514a",
+    "photo-source-lock.png": "4b49cd40d06bb1e3ee1d5bb35fef0be7dc90e42482541f7664e31e682013807e",
+    "picker-transition-middle.png": "9e3c98b06f6ed853083d0ca69bdd0c2040190da5a059d67bd4ca94cb68bfebfa",
+    "shared-editor-pill-headers.png": "9e5be1c9427076bd527f9bdae9c8ba5a23f385482929d66f800f2c9cf56ef778",
+    "ui3-final.log": "de5139d3ecd82ee870d02479517bc02a9fd9c6725d868b0591a4d23e72378090",
+    "ui3-lint.log": "6e5a2ded15eef70bcad8eb6737f56474576442aefc52dc13442ce94c598aaeba",
+    "ui3-offline.log": "cf66e525c1b4133ac3dcb4499691e4ec6639f8d96eceaeccd829c06e7e9a91a6",
+    "ui3-preview-device.log": "a3ab50fbe9b5a1db933493ae2649d85ca319fcf123978c0a9937bec0473a58fa",
+    "ui3-signature.log": "b8d9e6ec3ca6df3dbd6366e91afd727fc6c368bc8141cd4adc73722ee2d55a1c",
+    "ui3-zipalign.log": "74bbad968e8de06adb52f959dcbb8801035e7a14eff06501da267279940e5647"
+  }
+}

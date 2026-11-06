@@ -16,13 +16,18 @@ final class MotionSession {
     private int references;
     private long sequence = -1, lastFrame = -1;
     private boolean initialized;
+    private final boolean liveTimeline;
 
-    MotionSession(WallpaperMotion motion) { this.motion = motion; }
+    MotionSession(WallpaperMotion motion) { this(motion, false); }
+    MotionSession(WallpaperMotion motion, boolean liveTimeline) { this.motion = motion; this.liveTimeline = liveTimeline; }
 
     static synchronized MotionSession acquire(String key, Factory factory) throws IOException {
+        return acquire(key, factory, false);
+    }
+    static synchronized MotionSession acquire(String key, Factory factory, boolean liveTimeline) throws IOException {
         MotionSession session = SHARED.get(key);
         if (session == null) {
-            session = new MotionSession(factory.create());
+            session = new MotionSession(factory.create(), liveTimeline);
             SHARED.put(key, session);
         }
         session.references++;
@@ -37,7 +42,9 @@ final class MotionSession {
     synchronized void visible(Object owner, boolean value) {
         boolean wasActive = !visible.isEmpty();
         if (value) visible.add(owner); else visible.remove(owner);
-        if (wasActive && visible.isEmpty()) {
+        // A real display's power transition keeps its event-time epoch while hidden.
+        // No GPU work runs there; the next event/frame evaluates the elapsed transition.
+        if (wasActive && visible.isEmpty() && !liveTimeline) {
             motion.pause();
             lastFrame = -1;
         }

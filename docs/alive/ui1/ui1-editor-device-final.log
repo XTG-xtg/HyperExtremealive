@@ -1,0 +1,218 @@
+����: [options] Դֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ŀ��ֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ҫ�����й��ѹ�ʱѡ��ľ���, ��ʹ�� -Xlint:-options��
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+3 ������
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-photo-device\dex\classes.dex: 1 file pushed, 0 skipped. 62.2 MB/s (350488 bytes in 0.005s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\generated\aliveJni\arm64-v8a\libhyperextreme_photo.so: 1 file pushed, 0 skipped. 113.0 MB/s (495808 bytes in 0.004s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\outputs\apk\debug\app-debug.apk: 1 file pushed, 0 skipped. 46.0 MB/s (201758034 bytes in 4.185s)
+presentation 0 TONE source=0.0 gain=0.25 expected=0 actual=0
+
+TONE source=0.05 gain=0.25 expected=3 actual=3
+
+TONE source=0.2 gain=0.25 expected=13 actual=13
+
+TONE source=0.6 gain=0.25 expected=38 actual=38
+
+TONE source=1.0 gain=0.25 expected=64 actual=64
+
+TONE source=0.0 gain=0.5 expected=0 actual=0
+
+TONE source=0.05 gain=0.5 expected=6 actual=7
+
+TONE source=0.2 gain=0.5 expected=26 actual=26
+
+TONE source=0.6 gain=0.5 expected=77 actual=77
+
+TONE source=1.0 gain=0.5 expected=128 actual=128
+
+TONE source=0.0 gain=1.0 expected=0 actual=0
+
+TONE source=0.05 gain=1.0 expected=13 actual=13
+
+TONE source=0.2 gain=1.0 expected=51 actual=51
+
+TONE source=0.6 gain=1.0 expected=153 actual=153
+
+TONE source=1.0 gain=1.0 expected=255 actual=255
+
+TONE source=0.0 gain=1.3 expected=0 actual=0
+
+TONE source=0.05 gain=1.3 expected=16 actual=17
+
+TONE source=0.2 gain=1.3 expected=64 actual=64
+
+TONE source=0.6 gain=1.3 expected=178 actual=178
+
+TONE source=1.0 gain=1.3 expected=255 actual=255
+
+TONE source=0.0 gain=2.0 expected=0 actual=0
+
+TONE source=0.05 gain=2.0 expected=25 actual=25
+
+TONE source=0.2 gain=2.0 expected=92 actual=92
+
+TONE source=0.6 gain=2.0 expected=214 actual=214
+
+TONE source=1.0 gain=2.0 expected=255 actual=255
+
+TONE source=0.0 gain=3.0 expected=0 actual=0
+
+TONE source=0.05 gain=3.0 expected=36 actual=37
+
+TONE source=0.2 gain=3.0 expected=124 actual=124
+
+TONE source=0.6 gain=3.0 expected=239 actual=239
+
+TONE source=1.0 gain=3.0 expected=255 actual=255
+
+PRESENTATION_OK
+
+
+photo-thumbnails 0 PHOTO_TILE 601 size=146x147 crc=399205008
+
+PHOTO_TILE 602 size=130x124 crc=453593128
+
+PHOTO_TILE 603 size=150x39 crc=2648805389
+
+PHOTO_TILE 604 size=79x170 crc=3059598279
+
+PHOTO_TILE 605 size=216x134 crc=4280537976
+
+PHOTO_TILE 606 size=203x145 crc=1512684443
+
+PHOTO_THUMBNAILS_PASS six_distinct_real_aod_shapes
+
+PHOTO_LENS_NOT_FLAT_PASS mean_rgb_difference=68.28761546892125 immutable_source=true crop_key=true
+
+
+brightness-1 0 BRIGHTNESS_SAMPLE variant=1 step=0 gain=0.25 sum=542178 frames=1
+
+BRIGHTNESS_SAMPLE variant=1 step=1 gain=1.0 sum=2271823 frames=2
+
+BRIGHTNESS_SAMPLE variant=1 step=2 gain=3.0 sum=4645710 frames=3
+
+BRIGHTNESS_SAMPLE variant=1 step=3 gain=0.25 sum=543709 frames=4
+
+BRIGHTNESS_SAMPLE variant=1 step=4 gain=0.25 sum=76196698 frames=159
+
+BRIGHTNESS_SAMPLE variant=1 step=5 gain=3.0 sum=76303679 frames=160
+
+BRIGHTNESS_WORKER_PASS variant=1 luminance=[542178, 2271823, 4645710, 543709, 76196698, 76303679] lock_unchanged=true
+
+
+brightness-601 0 BRIGHTNESS_SAMPLE variant=601 step=0 gain=0.25 sum=779857 frames=1
+
+BRIGHTNESS_SAMPLE variant=601 step=1 gain=1.0 sum=3096734 frames=2
+
+BRIGHTNESS_SAMPLE variant=601 step=2 gain=3.0 sum=5692223 frames=3
+
+BRIGHTNESS_SAMPLE variant=601 step=3 gain=0.25 sum=779857 frames=4
+
+BRIGHTNESS_SAMPLE variant=601 step=4 gain=0.25 sum=62778678 frames=74
+
+BRIGHTNESS_SAMPLE variant=601 step=5 gain=3.0 sum=62778678 frames=75
+
+BRIGHTNESS_WORKER_PASS variant=601 luminance=[779857, 3096734, 5692223, 779857, 62778678, 62778678] lock_unchanged=true
+
+
+brightness-602 0 BRIGHTNESS_SAMPLE variant=602 step=0 gain=0.25 sum=1022662 frames=2
+
+BRIGHTNESS_SAMPLE variant=602 step=1 gain=1.0 sum=4070286 frames=3
+
+BRIGHTNESS_SAMPLE variant=602 step=2 gain=3.0 sum=6509238 frames=4
+
+BRIGHTNESS_SAMPLE variant=602 step=3 gain=0.25 sum=1022662 frames=5
+
+DELAYED_MASK_TEST variant=602
+
+BRIGHTNESS_SAMPLE variant=602 step=4 gain=0.25 sum=62778678 frames=27
+
+BRIGHTNESS_SAMPLE variant=602 step=5 gain=3.0 sum=62778678 frames=28
+
+BRIGHTNESS_WORKER_PASS variant=602 luminance=[1022662, 4070286, 6509238, 1022662, 62778678, 62778678] lock_unchanged=true
+
+
+brightness-603 0 BRIGHTNESS_SAMPLE variant=603 step=0 gain=0.25 sum=40732 frames=2
+
+BRIGHTNESS_SAMPLE variant=603 step=1 gain=1.0 sum=160757 frames=3
+
+BRIGHTNESS_SAMPLE variant=603 step=2 gain=3.0 sum=345029 frames=4
+
+BRIGHTNESS_SAMPLE variant=603 step=3 gain=0.25 sum=40732 frames=5
+
+DELAYED_MASK_TEST variant=603
+
+BRIGHTNESS_SAMPLE variant=603 step=4 gain=0.25 sum=62778678 frames=31
+
+BRIGHTNESS_SAMPLE variant=603 step=5 gain=3.0 sum=62778678 frames=32
+
+BRIGHTNESS_WORKER_PASS variant=603 luminance=[40732, 160757, 345029, 40732, 62778678, 62778678] lock_unchanged=true
+
+
+brightness-604 0 BRIGHTNESS_SAMPLE variant=604 step=0 gain=0.25 sum=189406 frames=2
+
+BRIGHTNESS_SAMPLE variant=604 step=1 gain=1.0 sum=749868 frames=3
+
+BRIGHTNESS_SAMPLE variant=604 step=2 gain=3.0 sum=1543408 frames=4
+
+BRIGHTNESS_SAMPLE variant=604 step=3 gain=0.25 sum=189406 frames=5
+
+DELAYED_MASK_TEST variant=604
+
+BRIGHTNESS_SAMPLE variant=604 step=4 gain=0.25 sum=62778678 frames=29
+
+BRIGHTNESS_SAMPLE variant=604 step=5 gain=3.0 sum=62778678 frames=30
+
+BRIGHTNESS_WORKER_PASS variant=604 luminance=[189406, 749868, 1543408, 189406, 62778678, 62778678] lock_unchanged=true
+
+
+brightness-605 0 BRIGHTNESS_SAMPLE variant=605 step=0 gain=0.25 sum=431367 frames=2
+
+BRIGHTNESS_SAMPLE variant=605 step=1 gain=1.0 sum=1699348 frames=3
+
+BRIGHTNESS_SAMPLE variant=605 step=2 gain=3.0 sum=4174071 frames=4
+
+BRIGHTNESS_SAMPLE variant=605 step=3 gain=0.25 sum=431367 frames=5
+
+DELAYED_MASK_TEST variant=605
+
+BRIGHTNESS_SAMPLE variant=605 step=4 gain=0.25 sum=62778678 frames=25
+
+BRIGHTNESS_SAMPLE variant=605 step=5 gain=3.0 sum=62778678 frames=26
+
+BRIGHTNESS_WORKER_PASS variant=605 luminance=[431367, 1699348, 4174071, 431367, 62778678, 62778678] lock_unchanged=true
+
+
+brightness-606 0 BRIGHTNESS_SAMPLE variant=606 step=0 gain=0.25 sum=54439 frames=1
+
+BRIGHTNESS_SAMPLE variant=606 step=1 gain=1.0 sum=207671 frames=2
+
+BRIGHTNESS_SAMPLE variant=606 step=2 gain=3.0 sum=581378 frames=3
+
+BRIGHTNESS_SAMPLE variant=606 step=3 gain=0.25 sum=54439 frames=4
+
+DELAYED_MASK_TEST variant=606
+
+BRIGHTNESS_SAMPLE variant=606 step=4 gain=0.25 sum=62778678 frames=24
+
+BRIGHTNESS_SAMPLE variant=606 step=5 gain=3.0 sum=62778678 frames=25
+
+BRIGHTNESS_WORKER_PASS variant=606 luminance=[54439, 207671, 581378, 54439, 62778678, 62778678] lock_unchanged=true
+
+
+/data/local/tmp/hyperextreme-photo-test/tile-flat-circle-reference.png: 1 file pulled, 0 skipped. 2.8 MB/s (5556 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-604.png: 1 file pulled, 0 skipped. 3.4 MB/s (3562 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/tile-606.png: 1 file pulled, 0 skipped. 3.7 MB/s (11763 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-source.png: 1 file pulled, 0 skipped. 8.8 MB/s (13617 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-602.png: 1 file pulled, 0 skipped. 8.2 MB/s (9082 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-603.png: 1 file pulled, 0 skipped. 2.8 MB/s (2589 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-605.png: 1 file pulled, 0 skipped. 8.6 MB/s (13771 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-606.png: 1 file pulled, 0 skipped. 3.8 MB/s (11114 bytes in 0.003s)
+/data/local/tmp/hyperextreme-photo-test/tile-601.png: 1 file pulled, 0 skipped. 14.6 MB/s (14600 bytes in 0.001s)
+/data/local/tmp/hyperextreme-photo-test/tile-602.png: 1 file pulled, 0 skipped. 9.2 MB/s (16849 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-603.png: 1 file pulled, 0 skipped. 1.6 MB/s (2557 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-605.png: 1 file pulled, 0 skipped. 8.6 MB/s (14336 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-601.png: 1 file pulled, 0 skipped. 9.2 MB/s (16303 bytes in 0.002s)
+/data/local/tmp/hyperextreme-photo-test/tile-pattern-604.png: 1 file pulled, 0 skipped. 2.4 MB/s (3682 bytes in 0.001s)

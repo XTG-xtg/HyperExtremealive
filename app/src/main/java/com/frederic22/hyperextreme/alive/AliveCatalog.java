@@ -47,6 +47,13 @@ final class AliveCatalog {
         for (int i = 0; i < 3; i++) scenes.add(new Scene(501 + i, 4, names[i], "stereo/preview_v" + (4 + i) + ".png"));
         scenes.add(new Scene(601, 5, "圆景", ""));
         scenes.add(new Scene(602, 5, "留光", ""));
+        scenes.add(new Scene(603, 5, "星月", ""));
+        scenes.add(new Scene(604, 5, "轻启·照片", ""));
+        scenes.add(new Scene(605, 5, "山脉", ""));
+        scenes.add(new Scene(606, 5, "银河", ""));
+        scenes.add(new Scene(701, 6, "液态", "vivo/preview/liquid.jpg"));
+        scenes.add(new Scene(702, 6, "趣味光栅", "vivo/preview/raster.jpg"));
+        scenes.add(new Scene(703, 6, "闪卡", "vivo/preview/flash.jpg"));
         return scenes;
     }
 

@@ -1,0 +1,699 @@
+{
+  "source": "Vivo LiveWallpaperBox 7.0.1.02, downloaded liquid/flash/raster resources",
+  "apk": {
+    "file": "engine.apk",
+    "sha256": "0dc2bce2c161457c2770af38111dfd74b3971bbd470447a51363a168ac1170e4",
+    "modified": false
+  },
+  "native": [
+    {
+      "file": "libpag.so",
+      "source": "native/box/libpag.so",
+      "sha256": "bf7a2dcfe1e2fee19f1a8bfd09e03f7618e99def190eb63d0f279558c75dcade"
+    },
+    {
+      "file": "libffavc.so",
+      "source": "native/box/libffavc.so",
+      "sha256": "7847468280b405e69f05cc37bbc2a0b2aa0dd1a07bac4a55243f6d4cb1df28fb"
+    }
+  ],
+  "textures": {
+    "file": "textures.zip",
+    "sha256": "a357cb5fe870582b49a1407055c4cfd4ad9dfcd905d8561f5affa70f5c2bc2c2",
+    "files": [
+      {
+        "asset": "flash_card/res/d1_child_rainbow.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d1_child_rainbow.png",
+        "sha256": "c3ec9a6669bf35aa1e820c877674f1c8e2a09c5375356e84fa2e8b4d316c097b",
+        "bytes": 2680
+      },
+      {
+        "asset": "flash_card/res/d1_parent_rainbow.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d1_parent_rainbow.png",
+        "sha256": "bef12617362158fc6c9822a9aa768d66b2babc3f86b8d4fca25bc81815863674",
+        "bytes": 3229
+      },
+      {
+        "asset": "flash_card/res/d1_raster14.data",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d1_raster14.data",
+        "sha256": "849c59d058156deeb8d08aab334b0c198da13e08d34d2aa6797364deb20157ab",
+        "bytes": 132368
+      },
+      {
+        "asset": "flash_card/res/d1_raster15.data",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d1_raster15.data",
+        "sha256": "452700026c5841ddf004ac43da38530fe94f9529ed5a7dca421552e211038da9",
+        "bytes": 204064
+      },
+      {
+        "asset": "flash_card/res/d1_raster20.data",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d1_raster20.data",
+        "sha256": "cdaebbbb29ead9f6e264bcea0a0750bada6ce9fa22acb39fc4ef4c1c048b6b39",
+        "bytes": 472784
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_00.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_00.png",
+        "sha256": "30a22a02a3062f47af1fa5c7db9c408483af578e9df9ff4b70d03690bd5bff30",
+        "bytes": 1971
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_01.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_01.png",
+        "sha256": "ef7f9f8880136551ed3d064b5423b7bafaa68a788df24187b8882a6e69dac34e",
+        "bytes": 4828
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_02.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_02.png",
+        "sha256": "4e4d59ee828edc25a8db9751049e15ecf6cfea9eaeccf5571bf3919cdc5a7667",
+        "bytes": 4780
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_03.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_03.png",
+        "sha256": "6f7807c91b8028394b56beedf1159383535178d6d9cb706484801fcf7f9df26a",
+        "bytes": 10718
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_circle.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_circle.png",
+        "sha256": "3fbc80bc93867d1ada0efc14d196dec8040bd5488a51b2195767d21f9f2af0da",
+        "bytes": 24692
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_fire.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_fire.png",
+        "sha256": "cbfbfdfa7b5b2aa3b2c96dd50d842c811321949d049659fe753d5ac5d59f67ce",
+        "bytes": 3539
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_flower.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_flower.png",
+        "sha256": "79bb94532efc6f536f294b5747e2cb118289450d98301470eed0c9c2ee1d68a8",
+        "bytes": 5210
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_heart.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_heart.png",
+        "sha256": "504d9b718d2b85bbb1245f7db6dd4bb817bc9d65da439e56f2953bdd79bcbf6b",
+        "bytes": 2979
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_hexagon.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_hexagon.png",
+        "sha256": "8bdb9067e703dd6967b439ab84d8429e9f21a730d757b6556122fcdaa7f9a41c",
+        "bytes": 23719
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_leaf.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_leaf.png",
+        "sha256": "54e658fb2d96a99fff4f3210a03fcd03c998fa70d181f6247237d5a6e49e54c0",
+        "bytes": 4168
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_light.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_light.png",
+        "sha256": "0e589fef1227c1a0027fe644387edca3cc11ac6d717000456a42c77600ec35c7",
+        "bytes": 3005
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_luck.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_luck.png",
+        "sha256": "378b95285f7096cfea60f5ade5780b8377cca2604a6f79ab8d2b8f0d3c7ff4b5",
+        "bytes": 4164
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_music.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_music.png",
+        "sha256": "7048924ddb490b7c1545eab95cd9bd3aacd6d05305ba5be5b017686731727df0",
+        "bytes": 2594
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_paper-cut.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_paper-cut.png",
+        "sha256": "cc27270633de2b67a3b2671030d62dbf01e3ecb280b65a79600435c06e3b5f5d",
+        "bytes": 4955
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_snow.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_snow.png",
+        "sha256": "4c4f87afc500649fd66f2b7914030e2ab7caf308df26cc23529cb4460a6c4bd3",
+        "bytes": 5578
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_star.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_star.png",
+        "sha256": "908ee6a5f70f612678a9dc609476c51325a42876f631f4d9bcde20bd0b0f478d",
+        "bytes": 3071
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_thunder.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_thunder.png",
+        "sha256": "a2e156d01bb8cca2b89bc8cb76c540e8640a73ed4e4f3fb171c9aa33e62f23f4",
+        "bytes": 2663
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_water.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_water.png",
+        "sha256": "600a9458eb3f1a71ebdbf81a112808ba9cb8702edf8acbb7a48845cb2ee06e00",
+        "bytes": 2795
+      },
+      {
+        "asset": "flash_card/res/d5_pattern_wings.png",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/wallpaper_res/d5_pattern_wings.png",
+        "sha256": "856ea9a20269390b6c6d02f974baf7a17a5e8b6e54bf9a9e253ed1686489fafe",
+        "bytes": 6978
+      },
+      {
+        "asset": "raster/d1_15x15.png",
+        "source": "engine-resources/apk_res/200098137/livewallpaper/video_livewallpaper/content/anim_res/d1_15x15.png",
+        "sha256": "c15f5b930e6d1233e92bc9b29c1c73006baea1834f7035b2cd4c26a56a7d8e24",
+        "bytes": 341
+      },
+      {
+        "asset": "raster/d2_15x15.png",
+        "source": "engine-resources/apk_res/200098137/livewallpaper/video_livewallpaper/content/anim_res/d2_15x15.png",
+        "sha256": "105acbef3b6bb1af4eadbee48fbe6b3168ac124dc7bf1ae61e51effe4c9c5121",
+        "bytes": 136
+      },
+      {
+        "asset": "raster/d3_256x256.png",
+        "source": "engine-resources/apk_res/200098137/livewallpaper/video_livewallpaper/content/anim_res/d3_256x256.png",
+        "sha256": "e67a8b09d46ab4179ed07be7789eebefd02a3b927d59bb958579151e09a3c640",
+        "bytes": 133063
+      },
+      {
+        "asset": "raster/d4_15x15.png",
+        "source": "engine-resources/apk_res/200098137/livewallpaper/video_livewallpaper/content/anim_res/d4_15x15.png",
+        "sha256": "c15f5b930e6d1233e92bc9b29c1c73006baea1834f7035b2cd4c26a56a7d8e24",
+        "bytes": 341
+      },
+      {
+        "asset": "vivo/ui/raster/icon_1.pag",
+        "source": "engine-resources/apk_res/200098137/livewallpaper/video_livewallpaper/content/anim_icon/icon_1.pag",
+        "sha256": "9a6e5cdffd0b6f3f1890e01e046d97e1aa7937ba29061c0c24dfe317ca862e89",
+        "bytes": 86973
+      },
+      {
+        "asset": "vivo/ui/raster/icon_2.pag",
+        "source": "engine-resources/apk_res/200098137/livewallpaper/video_livewallpaper/content/anim_icon/icon_2.pag",
+        "sha256": "138223bc1c67a1de1ee7d7bc74d7b9bba9c154062b4e194898de03c55de4bf35",
+        "bytes": 200669
+      },
+      {
+        "asset": "vivo/ui/raster/icon_3.pag",
+        "source": "engine-resources/apk_res/200098137/livewallpaper/video_livewallpaper/content/anim_icon/icon_3.pag",
+        "sha256": "7af29f05feace5cc10edcab8d4fe1a5191f19a02207dabc553dcb1c99e8a1957",
+        "bytes": 106742
+      },
+      {
+        "asset": "vivo/ui/raster/icon_4.pag",
+        "source": "engine-resources/apk_res/200098137/livewallpaper/video_livewallpaper/content/anim_icon/icon_4.pag",
+        "sha256": "8884ca1dd57fa88695a4bfd4deae781468cc2b2bff0efeaa033dcb2bb91900be",
+        "bytes": 123727
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_type/1.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_type/1.webp",
+        "sha256": "9c40093c246ebaf7362de825a80b1775afe7b7cdcc08ffa805c673425a5f4d93",
+        "bytes": 7762
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_type/2.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_type/2.webp",
+        "sha256": "18d11e6b1eecb73d0050a21ea7022b741a0e9079137cda4f3049891bdc321da9",
+        "bytes": 8410
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_type/3.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_type/3.webp",
+        "sha256": "4dd6c7e2e9377c77ac2974e71516f10bd7189811d5a1e18a908e46dcb846c78f",
+        "bytes": 8856
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_type/4.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_type/4.webp",
+        "sha256": "4b07eaef7ae256b9bb5e8fb92504ede02c147d434adabe3e5ad3b3a34393076d",
+        "bytes": 9572
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/dark_background.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/dark_background.webp",
+        "sha256": "6555f5bdd2cb4c44bb29652fe0e58246d5c8c577a080439cc26fee0b3372ada4",
+        "bytes": 326
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/dark_custom_paint.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/dark_custom_paint.webp",
+        "sha256": "4c69843b9f147cf8b49320d74389031684fcfac3f001fa09d47e1472579cfcee",
+        "bytes": 756
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/dark_full_pic.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/dark_full_pic.webp",
+        "sha256": "c935deb356248465c9ba426b676624169daf266de0f036fc8675450bf0af232a",
+        "bytes": 348
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/dark_hightlight.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/dark_hightlight.webp",
+        "sha256": "d1d3d6b7eb2dac22af332a48a8a55a5b95c2438c56b9581ca51b93f0b4c2e2ea",
+        "bytes": 770
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/dark_main_body.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/dark_main_body.webp",
+        "sha256": "dc9ab452a769c69bd75b565889d6f613f77aeffab822b00b7ef6c7f280d8475b",
+        "bytes": 342
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/edit_btn.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/edit_btn.webp",
+        "sha256": "b6c4b2b2ae31c8e82e44d11a88bfb50eaf383291658d8df52ba42b6c30a9f61f",
+        "bytes": 206
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/light_background.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/light_background.webp",
+        "sha256": "bced0c79478a8e0ee4ec203de94820a8d59da46f65d9d3ebbd46dc209156d5d6",
+        "bytes": 316
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/light_custom_paint.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/light_custom_paint.webp",
+        "sha256": "11f638ca7364790d88a7b9e0f7a965972197e4446c4fa48cd50823ebea7d49fe",
+        "bytes": 752
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/light_full_pic.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/light_full_pic.webp",
+        "sha256": "0f7cbdfe985bcff8ca9d99a19b83b044402217f632e944e152aa7a11ea6fb35b",
+        "bytes": 332
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/light_hightlight.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/light_hightlight.webp",
+        "sha256": "9e7998ede68f981679db6318987d51a3acb291d3b3e22903dc5b564a978cfcbd",
+        "bytes": 766
+      },
+      {
+        "asset": "vivo/ui/liquid/effect_area/light_main_body.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/effect_area/light_main_body.webp",
+        "sha256": "10360468e5333f49aa5dbd07f9f094446646947b32712fd898f9d6bfa23a5ff2",
+        "bytes": 334
+      },
+      {
+        "asset": "vivo/ui/liquid/doodle_res/icon_brush.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/doodle_res/icon_brush.webp",
+        "sha256": "f7a147211469bc3d8d96d6ead9f79da587c0c0f864432636a7513a0903c5b1c4",
+        "bytes": 328
+      },
+      {
+        "asset": "vivo/ui/liquid/doodle_res/icon_eraser.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/doodle_res/icon_eraser.webp",
+        "sha256": "d692666756f8f15046394d5127babda52ff1de007a6fdd6086ea5f833bab5084",
+        "bytes": 266
+      },
+      {
+        "asset": "vivo/ui/liquid/doodle_res/icon_pen_l.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/doodle_res/icon_pen_l.webp",
+        "sha256": "4cf050c834ad32de5e601316a214e9a7c32f9b5323c5592312d86035c8cb8729",
+        "bytes": 342
+      },
+      {
+        "asset": "vivo/ui/liquid/doodle_res/icon_pen_s.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/doodle_res/icon_pen_s.webp",
+        "sha256": "45f930e9524880861651bcf4407968639a77f4252baa5ba3a911679a51e16cad",
+        "bytes": 296
+      },
+      {
+        "asset": "vivo/ui/liquid/doodle_res/icon_smear_clear.webp",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/doodle_res/icon_smear_clear.webp",
+        "sha256": "f9a07133fbc1d72ffad9172210bb728cd5a307976638c6ab3e0b9c9af2d24d41",
+        "bytes": 234
+      },
+      {
+        "asset": "vivo/ui/liquid/panelConfig.json",
+        "source": "engine-resources/apk_res/200115352/livewallpaper/video_livewallpaper/content/panelConfig.json",
+        "sha256": "52afb54d6698e22564f0c5d780b097f42eedb998552d4f78862f92350634d333",
+        "bytes": 893
+      },
+      {
+        "asset": "vivo/ui/flash/effect_type/1.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_type/1.webp",
+        "sha256": "ac81bd026d9be37118255e4323c44afa9e785c776a2075b534c9212346c0dcb6",
+        "bytes": 852
+      },
+      {
+        "asset": "vivo/ui/flash/effect_type/2.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_type/2.webp",
+        "sha256": "a7b4b0676d3887ce71c2e7aeea05610ef71b0d574ec91fa954569d4698fe0daa",
+        "bytes": 6792
+      },
+      {
+        "asset": "vivo/ui/flash/effect_type/3.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_type/3.webp",
+        "sha256": "eac3c5078e176ba47924c934475803e015fbe1fab6be86edb970d673145ff862",
+        "bytes": 1510
+      },
+      {
+        "asset": "vivo/ui/flash/effect_type/4.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_type/4.webp",
+        "sha256": "cee62d8e20e6cfe95dc9f276758f1b2c15cd093ad0f596abae6cd1b04384e23a",
+        "bytes": 1828
+      },
+      {
+        "asset": "vivo/ui/flash/effect_type/5.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_type/5.webp",
+        "sha256": "70709e7a28472c8fd0d9e688e5fc771a847fa8ad83017ddbb2250e1ebfb951f4",
+        "bytes": 3028
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/dark_background.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/dark_background.webp",
+        "sha256": "6555f5bdd2cb4c44bb29652fe0e58246d5c8c577a080439cc26fee0b3372ada4",
+        "bytes": 326
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/dark_custom_paint.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/dark_custom_paint.webp",
+        "sha256": "4c69843b9f147cf8b49320d74389031684fcfac3f001fa09d47e1472579cfcee",
+        "bytes": 756
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/dark_full_pic.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/dark_full_pic.webp",
+        "sha256": "c935deb356248465c9ba426b676624169daf266de0f036fc8675450bf0af232a",
+        "bytes": 348
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/dark_hightlight.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/dark_hightlight.webp",
+        "sha256": "d1d3d6b7eb2dac22af332a48a8a55a5b95c2438c56b9581ca51b93f0b4c2e2ea",
+        "bytes": 770
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/dark_main_body.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/dark_main_body.webp",
+        "sha256": "dc9ab452a769c69bd75b565889d6f613f77aeffab822b00b7ef6c7f280d8475b",
+        "bytes": 342
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/edit_btn.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/edit_btn.webp",
+        "sha256": "b6c4b2b2ae31c8e82e44d11a88bfb50eaf383291658d8df52ba42b6c30a9f61f",
+        "bytes": 206
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/light_background.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/light_background.webp",
+        "sha256": "bced0c79478a8e0ee4ec203de94820a8d59da46f65d9d3ebbd46dc209156d5d6",
+        "bytes": 316
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/light_custom_paint.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/light_custom_paint.webp",
+        "sha256": "11f638ca7364790d88a7b9e0f7a965972197e4446c4fa48cd50823ebea7d49fe",
+        "bytes": 752
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/light_full_pic.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/light_full_pic.webp",
+        "sha256": "0f7cbdfe985bcff8ca9d99a19b83b044402217f632e944e152aa7a11ea6fb35b",
+        "bytes": 332
+      },
+      {
+        "asset": "vivo/ui/flash/effect_area/light_main_body.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/effect_area/light_main_body.webp",
+        "sha256": "10360468e5333f49aa5dbd07f9f094446646947b32712fd898f9d6bfa23a5ff2",
+        "bytes": 334
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_circle.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_circle.webp",
+        "sha256": "b6f66972a5150ae93208f611b6f633835ba04980a244b7707ab68572ef9a7538",
+        "bytes": 398
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_fire.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_fire.webp",
+        "sha256": "b37bef85fff4cb8e893466e992ab1df3c28c09d35490213f492a10e3c1dbd910",
+        "bytes": 544
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_flower.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_flower.webp",
+        "sha256": "cf786f2cfdf4d6d45dcd09c04c27b9a69fa6247a7d11daae41216339d5727b26",
+        "bytes": 932
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_heart.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_heart.webp",
+        "sha256": "f7d9b322211ec18b632d852e9f8d8f3d325e47247e5c61fd6b03d8db8b2f93fb",
+        "bytes": 474
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_hexagon.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_hexagon.webp",
+        "sha256": "f8b194c773661a5d5cec435c9780990e3db52dc59e5dafc2b44904b2941b5fc4",
+        "bytes": 356
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_leaf.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_leaf.webp",
+        "sha256": "50e6c38423dee321a3600a10aac3d23ffe32877aa0d7ba153f8a1fe45511cec2",
+        "bytes": 628
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_light.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_light.webp",
+        "sha256": "670acbcf30deb84c3eb4f18dea0c9085c5fe116463640998914786e28326e8b2",
+        "bytes": 502
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_luck.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_luck.webp",
+        "sha256": "e7f38ac305e1f17506aeb4261e2eb1e5f0bd94739a6c5a69e38b81b9798a773d",
+        "bytes": 648
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_music.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_music.webp",
+        "sha256": "22e240390e4d25bd68725b46482ce41f601cad76525e96d57ef034d907c43547",
+        "bytes": 386
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_paper-cut.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_paper-cut.webp",
+        "sha256": "29c02c68f73a4049633432d2a4a790093b2de4a31a69440fda9348d8e7910714",
+        "bytes": 820
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_snow.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_snow.webp",
+        "sha256": "d3526342ef5955f92f3b40b92a314e802284b19fae1894e806bdfb3a65d8cf7b",
+        "bytes": 958
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_star.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_star.webp",
+        "sha256": "513df50e0629cc8871d1d32d71dcbeed35c883ce62008a6710527ce489f0405e",
+        "bytes": 516
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_thunder.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_thunder.webp",
+        "sha256": "04658b478b5573fe1fe1f5a2f467d2331f4eb644d33b9daf89a847987e899b52",
+        "bytes": 392
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_water.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_water.webp",
+        "sha256": "75d57b4130676aa817e11dbe88e8c543a9dfc7434052b1dd46b6cb8bfdd39a92",
+        "bytes": 438
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/dark/d5_pattern_wings.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/dark/d5_pattern_wings.webp",
+        "sha256": "59cbef2c152aef8e79d97025016ed46d5fad55bdd99532284c8d00d1d6a7fab0",
+        "bytes": 2262
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_circle.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_circle.webp",
+        "sha256": "04ec582c7157dc146abbd76bb837b675cc9a45db661bf421298e0746eefb36b7",
+        "bytes": 542
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_fire.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_fire.webp",
+        "sha256": "5e6489412b40da6e025622229f9a79b3a9cd13ba0f27e5915c8f15a98ff01a97",
+        "bytes": 768
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_flower.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_flower.webp",
+        "sha256": "d149bb84d3a1235adf9719efb20677c8539e488b8fe606b7a6395ba453f3de72",
+        "bytes": 1294
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_heart.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_heart.webp",
+        "sha256": "193f6053c8c741fca59a817d26b41aad17b19a296f1961702557ac5bb46670c1",
+        "bytes": 668
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_hexagon.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_hexagon.webp",
+        "sha256": "30c0527d2b260b693c6a8e15f8a6f74f1b36d05aa61d0ba602004f90086ef502",
+        "bytes": 440
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_leaf.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_leaf.webp",
+        "sha256": "7007bbaa39ea763a03479eab41ec50e09607469d5721798abf3de73fdc598117",
+        "bytes": 920
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_light.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_light.webp",
+        "sha256": "b1c7cf320f2dfb639aca234d1e0461b6245aa98e268008764cb3f197c80340a1",
+        "bytes": 652
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_luck.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_luck.webp",
+        "sha256": "82d22a3c81787a331cd81c93f8909ce90905fd612ebb1b1c267a8984525171e8",
+        "bytes": 920
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_music.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_music.webp",
+        "sha256": "7f46fce593a389410c915916922d98fea4df987c1bb853263d76233b30e39b60",
+        "bytes": 336
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_paper-cut.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_paper-cut.webp",
+        "sha256": "f33edecb622cde65225f3f52d4b3f01092ed7972a7c48be0eef9b27a1d9303d4",
+        "bytes": 1152
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_snow.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_snow.webp",
+        "sha256": "becfcd6a7bcb653ed8253a75eed2030c19a093ad4e0cd4eab005ffc35781e8b0",
+        "bytes": 892
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_star.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_star.webp",
+        "sha256": "02650c1feb80db82debe2a79ceafe34d39b58d9893f9b5efac8f080a19308a52",
+        "bytes": 720
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_thunder.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_thunder.webp",
+        "sha256": "14f9b27668091f312f3b90b73b30a9acf96af00efeb206657e412d40b30c6c9d",
+        "bytes": 440
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_water.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_water.webp",
+        "sha256": "a2f2c0c71a2d974d41409e50067d60e6964c069a4190fedf9ab67651701dd802",
+        "bytes": 540
+      },
+      {
+        "asset": "vivo/ui/flash/pattern_style/light/d5_pattern_wings.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/pattern_style/light/d5_pattern_wings.webp",
+        "sha256": "28fee1a730b852ea82edd0b2e0a63cbe805dd25e0a99e01d9fbfc2e3cff49a85",
+        "bytes": 912
+      },
+      {
+        "asset": "vivo/ui/flash/doodle_res/icon_brush.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/doodle_res/icon_brush.webp",
+        "sha256": "f7a147211469bc3d8d96d6ead9f79da587c0c0f864432636a7513a0903c5b1c4",
+        "bytes": 328
+      },
+      {
+        "asset": "vivo/ui/flash/doodle_res/icon_eraser.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/doodle_res/icon_eraser.webp",
+        "sha256": "d692666756f8f15046394d5127babda52ff1de007a6fdd6086ea5f833bab5084",
+        "bytes": 266
+      },
+      {
+        "asset": "vivo/ui/flash/doodle_res/icon_pen_l.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/doodle_res/icon_pen_l.webp",
+        "sha256": "4cf050c834ad32de5e601316a214e9a7c32f9b5323c5592312d86035c8cb8729",
+        "bytes": 342
+      },
+      {
+        "asset": "vivo/ui/flash/doodle_res/icon_pen_s.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/doodle_res/icon_pen_s.webp",
+        "sha256": "45f930e9524880861651bcf4407968639a77f4252baa5ba3a911679a51e16cad",
+        "bytes": 296
+      },
+      {
+        "asset": "vivo/ui/flash/doodle_res/icon_smear_clear.webp",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/doodle_res/icon_smear_clear.webp",
+        "sha256": "f9a07133fbc1d72ffad9172210bb728cd5a307976638c6ab3e0b9c9af2d24d41",
+        "bytes": 234
+      },
+      {
+        "asset": "vivo/ui/flash/panelConfig.json",
+        "source": "engine-resources/apk_res/200115356/livewallpaper/video_livewallpaper/content/panelConfig.json",
+        "sha256": "3168266c03cbe9222131570c6fce90c6d166bdd5ec0467a86dbc7171441a7850",
+        "bytes": 4660
+      },
+      {
+        "asset": "vivo/default/liquid.jpg",
+        "source": "effects/105/liquidspace1/content/live_res/9001/1/origin_lock",
+        "sha256": "40552365589791393667dc80f5a93391ff1504ca8de05a9d20106f51c94685cd",
+        "bytes": 2002573
+      },
+      {
+        "asset": "vivo/default/liquid-mask.png",
+        "source": "effects/105/liquidspace1/content/live_res/9001/1/wallpaper_mask_lock.png",
+        "sha256": "b0ef7585531798d1fd3d32671ea062d290eab974482c7d8b78aea3eca2173ce6",
+        "bytes": 9572
+      },
+      {
+        "asset": "vivo/default/flash.jpg",
+        "source": "effects/105/flashcard1/content/live_res/10001/1/origin_lock",
+        "sha256": "49c64b3780aeec8ad543635e57eb8600b5ff5a25f0e85546dfe58f3facb60ed3",
+        "bytes": 2923055
+      },
+      {
+        "asset": "vivo/default/flash-mask.png",
+        "source": "effects/105/flashcard1/content/live_res/10001/1/wallpaper_mask_lock.png",
+        "sha256": "cb3f6ab2423facd7b58e3cc1a8f4c83f63bf325eb2dc9e4bd45174ff35775384",
+        "bytes": 12176
+      },
+      {
+        "asset": "vivo/default/flash-doodle.png",
+        "source": "effects/105/flashcard1/content/live_res/10001/1/wallpaper_doodle_mask.png",
+        "sha256": "5a4dcedd07d84c56b2f402b3079b0b3f397bc2c112a80541f45326d525caa6d7",
+        "bytes": 115324
+      },
+      {
+        "asset": "vivo/default/raster-0.jpg",
+        "source": "effects/105/图集光栅-山脉/content/res/origin_lock",
+        "sha256": "a9048efa9a127d6a6e507ff633770090dc2b704222fba224eda0e07382c9743b",
+        "bytes": 1715835
+      },
+      {
+        "asset": "vivo/default/raster-1.jpg",
+        "source": "effects/105/图集光栅-山脉/content/res/origin_lock_1",
+        "sha256": "a373b1bc180fb65b0bcb32e1797ff1b73aa06afe7888ccf2c0538a540e586fe2",
+        "bytes": 1746545
+      },
+      {
+        "asset": "vivo/default/raster-2.jpg",
+        "source": "effects/105/图集光栅-山脉/content/res/origin_lock_2",
+        "sha256": "e01cf1754141dc887e4199a17634db90b699cbdacda194eabdc69493d5b1aef1",
+        "bytes": 574567
+      }
+    ]
+  },
+  "adaptation": "Original APK remains byte-identical. Downloaded texture bytes remain unchanged; asset paths replace the vendor-specific download cache paths."
+}

@@ -1,0 +1,12 @@
+����: [options] Դֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ŀ��ֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ҫ�����й��ѹ�ʱѡ��ľ���, ��ʹ�� -Xlint:-options��
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+3 ������
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-photo-device\dex\classes.dex: 1 file pushed, 0 skipped. 112.5 MB/s (350488 bytes in 0.003s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\generated\aliveJni\arm64-v8a\libhyperextreme_photo.so: 1 file pushed, 0 skipped. 115.0 MB/s (495808 bytes in 0.004s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\outputs\apk\debug\app-debug.apk: 1 file pushed, 0 skipped. 46.0 MB/s (201758034 bytes in 4.187s)
+interrupted-sleep 0 PHOTO_INTERRUPTION_PASS events=14 checks=59408 finalLensScale=0.22 finalMask=0.0
+
+

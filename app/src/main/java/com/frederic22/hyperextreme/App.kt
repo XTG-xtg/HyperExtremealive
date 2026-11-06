@@ -53,6 +53,8 @@ class App : Application() {
         // android:process 时恒为包名），**不反映当前进程**，用它判断会永远放行。
         val procName = Application.getProcessName()
         if (procName != null && procName != packageName) return
+        runCatching { com.frederic22.hyperextreme.alive.AliveSettings.recoverPendingApply(this) }
+            .onFailure { android.util.Log.e("HyperExtreme", "Alive apply recovery failed; recovery journal retained", it) }
         runCatching {
             val prefs = MaskPrefs(this)
             // 桌面层级最终状态的系统属性同步（属性用 debug. 前缀、不持久化，重启后靠这里补回）。

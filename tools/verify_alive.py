@@ -75,6 +75,9 @@ entries = (ROOT / 'app/src/main/resources/META-INF/xposed/java_init.list').read_
 check(entries == ['com.frederic22.hyperextreme.hook.HookEntry'], 'One libxposed entry')
 scope = (ROOT / 'app/src/main/resources/META-INF/xposed/scope.list').read_text().splitlines()
 check('system' in scope and 'android' not in scope, 'LSPosed system-server scope uses system')
+installer = (ROOT / 'tools/install_and_scope.sh').read_text(encoding='utf-8')
+check('--install' in installer and 'modules_config.db' not in installer and 'pkill' not in installer,
+      'Installer requires explicit execution and never edits LSPosed databases or kills processes')
 helper = (ROOT / 'alive-root/src/com/frederic22/hyperextreme/alive/root/WallpaperTool.java').read_text()
 check(helper.index('if(!preflight(user)){') < helper.index('set(manager,"HomeWallpaperService"'),
       'Preflight runs before either setting transaction')
@@ -86,27 +89,34 @@ check('postDelayed(tick' not in worker and 'postFrameCallback(vsync)' in worker,
 check('MotionSession.acquire' in worker and 'if(preview)' in worker,
       'Real slots share CPU motion; preview is isolated')
 registry = (code / 'EngineRegistry.java').read_text(encoding='utf-8')
-check('variant==601||variant==602' in registry and 'power.isInteractive()' in registry
-      and 'PHOTO_POWER.resolve' in registry, 'Photo-only real power-state gate')
+check('Config.variant' not in registry and 'power.isInteractive()' in registry
+      and 'POWER_GATE.resolve' in registry, 'All live scenes use the real power-state gate')
 service = (code / 'AliveWallpaperService.java').read_text(encoding='utf-8')
-check('photo()&&!power.isInteractive()' in service and 'display-awake' in service,
-      'Photo visibility is not treated as an interactive wake')
+check('photo()' not in service and '!power.isInteractive()' in service
+      and 'display-awake' in service and 'display-asleep' in service,
+      'All live scene visibility and display callbacks respect interactive state')
 check('if(renderer.frameReady())' in worker, 'Do not swap an incomplete photo mask sample')
-check('photo.frameReady()&&photo.motion().active()' in worker and 'photo.animating()?0:25' in worker,
-      'Photo transitions remain vsync-driven; settled photos stop and idle lens is paced')
+check('photo.frameReady()&&(photo.needsRedraw()||photo.animating()||progress<1||options.continuousAod&&photo.motion().active())' in worker and 'photo.needsRedraw()||photo.animating()||progress<1?0:25' in worker,
+      'Photo transitions and late-mask catch-up remain vsync-driven; settled photos stop and idle lens is paced')
 check('if(framePosted&&scheduledDelay>0)stopFrames()' in worker, 'Wake and edit events preempt idle pacing')
 mask_source = (code / 'MaskFrames.java').read_text(encoding='utf-8')
 check('glTexSubImage2D' in mask_source and 'wanted()' in mask_source and 'capacity=' in mask_source,
       'Bounded mask read-ahead and reusable texture storage')
 photo = (code / 'PhotoRenderer.java').read_text(encoding='utf-8-sig')
+check('catchUp=delayedSample' in photo and 'boolean delayedSample=sample.pending' in photo,
+      'A late mask cannot leave a completed transition displaying an old intermediate frame')
+check('rotationSpeed=continuous||animating()?speed:0' in photo,
+      'Static lens settings repaints do not accumulate idle rotation')
 check('NativeScene.render' in photo and 'new FrameMotion' in photo and 'new TextureMotion' in photo,
       'Photo renderer uses the complete frame graph and independent tracks')
 check('PhotoGeometry.crop' not in photo and 'String fragment=' not in photo,
       'Remove the placeholder disk/full-image blend')
 check('sample.captureTextures' in photo and 'sample.capture(frameMotion' in photo,
       'Mask, texture and geometry share one pending presentation sample')
-check('PhotoOptions.load(c,true).save(c,false)' in (code / 'AliveSettings.java').read_text(encoding='utf-8'),
-      'Applying copies a draft photo settings snapshot')
+check('PhotoMedia.freezeLegacy(c,photo,true).save(c,false)' in (code / 'AliveSettings.java').read_text(encoding='utf-8'),
+      'Applying publishes immutable photo references and a complete settings snapshot')
+check('loadAsset(3,"shader/photo/lock/groundGlass/gray.png",false)' in photo and 'bind(2,4)' in photo,
+      'Ground glass binds its gray and repeating mask inputs')
 check('NativeScene' in (ROOT / 'app/proguard-rules.pro').read_text(encoding='utf-8'), 'JNI names kept in release')
 check((ROOT / 'alive-photo/Cargo.lock').exists(), 'Pinned native dependencies are part of the source')
 for file in code.rglob('*'):
@@ -116,7 +126,7 @@ for file in code.rglob('*'):
         check('io.github.frederic.hyperalive' not in content, 'No Lab namespace in ' + file.name)
 preview_source = (code / 'AlivePreviewActivity.kt').read_text(encoding='utf-8')
 check('EngineRegistry.register' not in preview_source and 'Config.changed' not in preview_source, 'Preview isolation')
-check('AliveSettings.apply(app, variant, dark, clock)' in preview_source and 'WindowDialog' in preview_source,
+check('AliveSettings.apply(app, variant, dark, clock, renderOptions)' in preview_source and 'WindowDialog' in preview_source,
       'Editor applies only after explicit confirmation')
 gallery_source = (code / 'AlivePage.kt').read_text(encoding='utf-8')
 check('LazyVerticalGrid' in gallery_source and 'LruCache' in gallery_source and 'AliveSettings.apply' not in gallery_source,
@@ -131,6 +141,21 @@ for entry in provenance['files']:
     if entry['destination'].startswith('app/src/main/assets/') and 'sha256' in entry:
         file = ROOT / entry['destination']
         check(hashlib.sha256(file.read_bytes()).hexdigest() == entry['sha256'], file.name)
+for name in ['IMPORTED-PHOTO-STYLES.json', 'IMPORTED-VIVO.json']:
+    imported=json.loads((ROOT/'docs/alive'/name).read_text(encoding='utf-8'))
+    for entry in imported['files']:
+        if 'sha256' in entry:
+            file=ROOT/entry.get('destination',entry.get('path'))
+            check(hashlib.sha256(file.read_bytes()).hexdigest()==entry['sha256'], 'Imported asset '+file.name)
+for name in ['engine.apk','textures.zip','libpag.so','libffavc.so']:
+    file=assets/'vivo/runtime'/name
+    check(hashlib.sha256(file.read_bytes()).hexdigest()==file.with_name(name+'.sha256').read_text().strip(), 'Pinned Vivo runtime '+name)
+    if name.endswith('.so'):
+        data=file.read_bytes();offset=struct.unpack_from('<Q',data,32)[0];size,count=struct.unpack_from('<HH',data,54)
+        check(data[:5]==b'\x7fELF\x02' and struct.unpack_from('<H',data,18)[0]==183, 'Vivo ARM64 ELF')
+        for i in range(count):
+            header=struct.unpack_from('<IIQQQQQQ',data,offset+i*size)
+            if header[0]==1: check(header[7]>=16384,'Vivo 16KB page alignment')
 for file in assets.rglob('*.json'):
     json.loads(file.read_text(encoding='utf-8'))
     checks += 1
@@ -147,6 +172,13 @@ for name, stride, index_size in [('sphere.bin', 12, 2), ('phoenix.bin', 32, 4)]:
     check(len(data) == 8 + vertices * stride + indices * index_size, name)
 for file in (assets / 'masks/leave_light').glob('*.rgbz'):
     check(len(zlib.decompress(file.read_bytes())) == 720 * 720 * 3, file.name)
+for folder, size in [('moon',720),('door',720),('mountain',1080),('galaxy',1080)]:
+    for file in (assets/'masks'/folder).glob('*.rgbz'):
+        side=720 if file.stem=='end' else size
+        check(len(zlib.decompress(file.read_bytes()))==side*side*3, str(file.relative_to(assets)))
+imports=json.loads((ROOT/'docs/alive/IMPORTED-PHOTO-STYLES.json').read_text())
+for entry in imports['files']:
+    check(hashlib.sha256((ROOT/entry['path']).read_bytes()).hexdigest()==entry['sha256'],entry['path'])
 
 build(sdk, Path(args.java_home), args.compile_sdk, args.build_tools, scratch / 'helper-assets')
 with tempfile.TemporaryDirectory(dir=scratch) as temp:

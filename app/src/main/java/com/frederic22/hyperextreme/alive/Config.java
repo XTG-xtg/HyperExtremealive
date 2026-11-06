@@ -16,6 +16,7 @@ final class Config {
         b.putInt("clock_color", p.getInt("clock_color", 0xffeeeeee));
         b.putFloat("clock_scale", Math.max(.5f, Math.min(2f, p.getFloat("clock_scale", 1f))));
         b.putLong("revision", p.getLong("revision", 0));
+        AliveRenderOptions.load(c).write(b);
         return b;
     }
     static void changed(Context c) {

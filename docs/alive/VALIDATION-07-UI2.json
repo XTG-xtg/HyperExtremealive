@@ -1,0 +1,103 @@
+{
+  "version": "0.5-alive.7-ui.2",
+  "version_code": 17,
+  "candidate": true,
+  "openalive_full_merge_complete": false,
+  "apk": {
+    "bytes": 200850568,
+    "sha256": "c7fb6ca49628b3e75635a14f7b8a13d204a2181b3a98c7d08707392e2486860a",
+    "v2_signature_verified": true,
+    "zipalign_16kb_verified": true,
+    "signer_certificate_sha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d"
+  },
+  "gradle": {
+    "build": "passed",
+    "unit_tests": {
+      "tests": 61,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lint": {
+      "counts": {
+        "Error": 3,
+        "Warning": 256,
+        "Hint": 17
+      },
+      "passed": false,
+      "all_error_files_unchanged_from_ui1": true
+    }
+  },
+  "offline": {
+    "passed": true,
+    "structural_asset_checks": 1269,
+    "state_assertions": 18,
+    "photo_power_assertions": 454,
+    "permission_crop_assertions": 56,
+    "motion_session_assertions": 23,
+    "stereo_motion_assertions": 6,
+    "java_sources_compiled": 80,
+    "compile_sdk": "34",
+    "helper_dex": "039",
+    "resources_compiled": true,
+    "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."
+  },
+  "device": {
+    "android_api": 37,
+    "candidate_installed": false,
+    "system_wallpaper_modified": false,
+    "physical_screen_power_modified": false,
+    "installed_app_data_modified": false,
+    "lsposed_modified": false,
+    "test_storage": "/data/local/tmp/hyperextreme-vivo-preview-switch-test",
+    "same_surface_preview_sequence": [
+      601,
+      1,
+      101,
+      201,
+      301,
+      401,
+      501,
+      701,
+      702,
+      703,
+      606,
+      601
+    ],
+    "preserved_modes": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      2,
+      1,
+      0,
+      2,
+      0,
+      2
+    ],
+    "correct_renderer_type": true,
+    "correct_vivo_family": true,
+    "photo_crop_retained": true,
+    "egl_released": true
+  },
+  "limits": [
+    "No candidate installation or system AOD acceptance",
+    "Compose screenshots are Robolectric; device test uses isolated app_process with synthetic photo",
+    "Full physical device UI input and standby power not tested",
+    "Original notification effects and clock editor remain outside this repair",
+    "Official runtime/artwork rights unchanged"
+  ],
+  "evidence_sha256": {
+    "dynamic-picker-compact.png": "0f0dd88e346b8f902faca1fbedd4d3ab219b39765feeb2de6bdf7dca0b4399f7",
+    "dynamic-picker.png": "ce3ace3525793792f82cfacb1cb8a4885f77f604c838694e8c8085608df2f359",
+    "ui2-first.log": "2264b0336e3bff35efc82c00201f2031b7481825c5b664d742fdb8e4ca5c79a2",
+    "ui2-lint.log": "23b6d06d1fc04b5acddd3d2e392eb2f77aa88306b75820ce85e731d30be6e05f",
+    "ui2-offline.log": "dc2eec0893cd5f2afc33808370db695cd4b7fa219c307e5086d9bd859c1438c5",
+    "ui2-preview-device.log": "81586f42669ea8e3e632a799641d5b1e3cea89b5367d9dd3b0a3ec2dc571c8a1",
+    "ui2-signature.log": "b8d9e6ec3ca6df3dbd6366e91afd727fc6c368bc8141cd4adc73722ee2d55a1c",
+    "ui2-zipalign.log": "8042b367a5dd3b4a623e873de5b38ad68db270b9ff651afe316adce0bd178cfe"
+  }
+}

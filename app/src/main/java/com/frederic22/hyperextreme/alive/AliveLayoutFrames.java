@@ -20,6 +20,8 @@ final class AliveLayoutFrames implements AutoCloseable {
     private EGLContext eglContext = EGL14.EGL_NO_CONTEXT;
     private EGLSurface surface = EGL14.EGL_NO_SURFACE;
     private WallpaperRenderer renderer;
+    private AodPresentation presentation;
+    private final AliveRenderOptions options;
     private final Bitmap[] images = new Bitmap[3];
     private int mode;
     private long started;
@@ -30,6 +32,7 @@ final class AliveLayoutFrames implements AutoCloseable {
     AliveLayoutFrames(Context context, int variant, boolean dark, int width, int height, Callback callback) {
         this.context = context.getApplicationContext(); this.variant = variant; this.dark = dark;
         this.width = width; this.height = height; this.callback = callback;
+        options=AliveRenderOptions.load(context);
         thread.start(); handler = new Handler(thread.getLooper()); handler.post(this::start);
     }
 
@@ -44,6 +47,7 @@ final class AliveLayoutFrames implements AutoCloseable {
                 new int[]{EGL14.EGL_WIDTH, width, EGL14.EGL_HEIGHT, height, EGL14.EGL_NONE}, 0);
             if (eglContext == EGL14.EGL_NO_CONTEXT || surface == EGL14.EGL_NO_SURFACE ||
                 !EGL14.eglMakeCurrent(display, surface, surface, eglContext)) throw new IllegalStateException("Layout EGL setup failed");
+            presentation=new AodPresentation(context.getAssets(),width,height);
             next();
         } catch (Throwable error) { finish(error.toString()); }
     }
@@ -56,9 +60,15 @@ final class AliveLayoutFrames implements AutoCloseable {
             if (mode == 3) { finish(""); return; }
             started = SystemClock.uptimeMillis();
             Runnable invalidate = () -> { if (!finished && !cancelled) { handler.removeCallbacks(draw); handler.post(draw); } };
-            renderer = variant >= 601
+            renderer = variant >= 601 && variant <= 606
                 ? new PhotoRenderer(context, width, height, mode, variant, false, invalidate)
-                : WallpaperRenderer.create(context.getAssets(), variant, dark, width, height, mode, false, invalidate);
+                : variant>=701&&variant<=703?new VivoRenderer(context,VivoOptions.load(context,variant,false),width,height,mode,true,dark,invalidate)
+                : WallpaperRenderer.create(context.getAssets(), variant, dark, width, height, mode, options.keepLock, invalidate);
+            ClockSnapshot clock=EngineRegistry.clock(true);
+            if(options.followClock&&clock!=null&&clock.bounds.fits(width,height)){
+                if(renderer instanceof PhotoRenderer)((PhotoRenderer)renderer).anchor(clock.bounds.x(),clock.bounds.y(),true);
+                else renderer.motion().follow(clock.bounds.x(),clock.bounds.y());
+            }
             renderer.continuous(false);
             renderer.motion().change(mode, false);
             renderer.motion().advance(1_000_000_000L, 1f);
@@ -75,6 +85,7 @@ final class AliveLayoutFrames implements AutoCloseable {
                 if (SystemClock.uptimeMillis() - started > 4000) throw new IllegalStateException("Layout frame timed out");
                 handler.removeCallbacks(draw); handler.postDelayed(draw, 16); return;
             }
+            if(mode==0)presentation.render(options.brightness);
             ByteBuffer rgba = ByteBuffer.allocateDirect(width * height * 4);
             GLES30.glReadPixels(0, 0, width, height, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, rgba);
             if (GLES30.glGetError() != GLES30.GL_NO_ERROR) throw new IllegalStateException("Layout readback failed");
@@ -95,6 +106,7 @@ final class AliveLayoutFrames implements AutoCloseable {
         finished = true; handler.removeCallbacksAndMessages(null);
         try { if (renderer != null) renderer.close(); } catch (RuntimeException ignored) { }
         renderer = null;
+        if(presentation!=null){presentation.close();presentation=null;}
         if (display != EGL14.EGL_NO_DISPLAY) {
             EGL14.eglMakeCurrent(display, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
             if (surface != EGL14.EGL_NO_SURFACE) EGL14.eglDestroySurface(display, surface);

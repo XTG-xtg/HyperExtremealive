@@ -1,0 +1,64 @@
+{
+  "version": "0.5-alive.7",
+  "version_code": 15,
+  "candidate": true,
+  "openalive_full_merge_complete": false,
+  "apk": {
+    "bytes": 203130574,
+    "sha256": "e7d19ebbbdaa4d15400cc9f8b91d4d2373227d7aff085455095855f3954e606d",
+    "v2_signature_verified": true,
+    "zipalign_16kb_verified": true,
+    "signer_certificate_sha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d"
+  },
+  "gradle": {
+    "debug_build": "passed",
+    "unit_tests": 55,
+    "failures": 0,
+    "lint": {
+      "errors": 3,
+      "warnings": 256,
+      "all_errors_preexisting": true,
+      "passed": false
+    }
+  },
+  "offline": {
+    "structure_asset_checks": 1261,
+    "power_gate_assertions": 454,
+    "java_sources_api34": 79
+  },
+  "device": {
+    "android_api": 37,
+    "page_size": 4096,
+    "installed_version": "0.5-alive.6-ui.3",
+    "candidate_installed": false,
+    "system_wallpaper_modified": false,
+    "physical_screen_power_modified": false,
+    "lsposed_modified": false,
+    "test_storage": "/data/local/tmp/hyperextreme-*",
+    "vivo_styles_interaction": 13,
+    "vivo_real_window_families": 3,
+    "raster_video_styles": 4,
+    "photo_variants": 6,
+    "mask_inference": "candidate Kotlin/ONNX full image and box passed"
+  },
+  "limits": [
+    "No real system-process hook execution after candidate install",
+    "No physical power-key or fingerprint acceptance",
+    "No real standby battery/temperature measurement",
+    "Video fixtures cover SDR H.264 only",
+    "Original clock editor and notification effects not yet integrated",
+    "Official artwork/runtime rights remain with original owners"
+  ],
+  "evidence_sha256": {
+    "delivery-07.log": "e6a302e234766b4b541f81808fc280f01be4131833937a1632c79415c24ab3ed",
+    "verify-delivery-07.log": "9ba3d2bd9e84d53f57f8f4446fe129bd72a2b10a952b51b7faea780b892145fc",
+    "lint-candidate-final.log": "a4175e5dbad4d05fbed8457198fd497d1efea840c96b9d9743e85d6b3dcbcd54",
+    "signing-delivery-07.log": "b8d9e6ec3ca6df3dbd6366e91afd727fc6c368bc8141cd4adc73722ee2d55a1c",
+    "device-power-delivery.log": "2df56f70b3f1f68f90bd1a88ad369d946dfb1b82b375d675ff7b6fad974a6776",
+    "device-vivo-worker-delivery.log": "1d114dbe52a923d7f4d63b03385640d72050c70173d2d2321a626dad56e6bdc0",
+    "device-vivo-video-loop.log": "07770d5b3158ed5aaf246cd2b14bb6e0fe66e8ee5147f0c67714191e4198b8cb",
+    "device-vivo-interactions-all.log": "b576dd9d7f16fa3abb4e3dacd1b14c5fc3cbc42bbafa2748736583b599982854",
+    "device-vivo-mask.log": "ec19a26e9de7e89b0cd10eed0d6b374bfdd4f62142f6114ec86cdaa951bcb4fc",
+    "device-photo-expanded-full.log": "686e59ccdd526be88fbbf04c0efb860adf018a613a5284200c84a70c2bbc65bc"
+  }
+}

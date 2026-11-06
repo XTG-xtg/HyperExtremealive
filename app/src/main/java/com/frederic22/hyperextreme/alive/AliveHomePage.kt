@@ -1,7 +1,6 @@
 package com.frederic22.hyperextreme.alive
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,7 +22,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -62,7 +60,6 @@ import top.yukonga.miuix.kmp.theme.LocalDismissState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.theme.ThemeController
 import top.yukonga.miuix.kmp.window.WindowDialog
-import java.io.File
 import kotlin.math.roundToInt
 
 class AliveLibraryActivity : ComponentActivity() {
@@ -86,10 +83,12 @@ internal data class AliveHomeModel(
     val previewError: String = "",
     val statusError: String = "",
     val aspect: Float = 2.2f,
-    val photo: ImageBitmap? = null,
+    val variant: Int = 1,
+    val photoShapes: List<ImageBitmap> = emptyList(),
+    val photoShapesError: String = "",
 )
 
-private object LayoutCache : LruCache<String, List<ImageBitmap>>(8 * 1024 * 1024) {
+internal object LayoutCache : LruCache<String, List<ImageBitmap>>(8 * 1024 * 1024) {
     override fun sizeOf(key: String, value: List<ImageBitmap>) = value.sumOf { it.width * it.height * 4 }
 }
 
@@ -121,28 +120,37 @@ internal fun AliveDetail(onBack: () -> Unit) {
         val name = withContext(Dispatchers.IO) {
             runCatching { AliveCatalog.load(app).firstOrNull { it.id == variant }?.name }.getOrNull() ?: "Alive"
         }
-        val photo = withContext(Dispatchers.IO) {
-            runCatching {
-                val draft = AliveSettings.draft(app)
-                val active = File(app.filesDir, "alive/photo.png")
-                val source = if (draft.isFile) draft else active
-                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                if (source.isFile) {
-                    BitmapFactory.decodeFile(source.path, options)
-                    options.inSampleSize = 1
-                    while (maxOf(options.outWidth, options.outHeight) / options.inSampleSize > 600) options.inSampleSize *= 2
-                    options.inJustDecodeBounds = false
-                    BitmapFactory.decodeFile(source.path, options)?.asImageBitmap()
-                } else app.assets.open("stereo/preview_v6.png").use { BitmapFactory.decodeStream(it)?.asImageBitmap() }
-            }.getOrNull()
-        }
         model = model.copy(name = name, running = status.getOrDefault(model.running), busy = false,
             frameworkConnected = ActivationState.frameworkConnected,
-            statusError = status.exceptionOrNull()?.message.orEmpty(), aspect = aspect, photo = photo)
+            statusError = status.exceptionOrNull()?.message.orEmpty(), aspect = aspect, variant = variant)
     }
-    val activePhoto = File(app.filesDir, "alive/photo.png")
+    val activePhoto = PhotoMedia.resolve(app, PhotoOptions.load(app, false), false, 0)
     val layoutKey = "$variant:${Config.dark(app)}:${Config.prefs(app).getLong("revision", 0)}:" +
         "${activePhoto.lastModified()}:${activePhoto.length()}:$aspect"
+    val tileOptions = remember(revision) { PhotoOptions.load(app, true) }
+    val tileKey = PhotoStyleThumbnails.key(app, tileOptions)
+    DisposableEffect(tileKey, diagnostics, revision) {
+        var disposed = false
+        var job: PhotoStyleThumbnails? = null
+        if(!diagnostics) {
+            val cached = LayoutCache.get(tileKey)
+            if(cached != null) model = model.copy(photoShapes=cached,photoShapesError="")
+            else {
+                model=model.copy(photoShapes=emptyList(),photoShapesError="")
+                job=PhotoStyleThumbnails(app,tileOptions) { bitmaps,error ->
+                    Handler(Looper.getMainLooper()).post {
+                        if(disposed) bitmaps.forEach { it.recycle() }
+                        else {
+                            val shapes=bitmaps.map { it.asImageBitmap() }
+                            if(shapes.isNotEmpty()) LayoutCache.put(tileKey,shapes)
+                            model=model.copy(photoShapes=shapes,photoShapesError=error)
+                        }
+                    }
+                }
+            }
+        }
+        onDispose { disposed=true;job?.close() }
+    }
     DisposableEffect(layoutKey, diagnostics) {
         var disposed = false
         var worker: AliveLayoutFrames? = null
@@ -165,7 +173,7 @@ internal fun AliveDetail(onBack: () -> Unit) {
         onDispose { disposed = true; worker?.close() }
     }
     fun edit(id: Int, mode: Int = 0) {
-        val name = when (id) { 601 -> "圆景"; 602 -> "留光"; else -> model.name }
+        val name = when (id) { 601 -> "圆景"; 602 -> "留光"; 603 -> "星月"; 604 -> "轻启·照片"; 605 -> "山脉"; 606 -> "银河"; else -> model.name }
         context.startActivity(Intent(context, AlivePreviewActivity::class.java)
             .putExtra("variant", id).putExtra("name", name).putExtra("mode", mode))
     }
@@ -253,11 +261,11 @@ internal fun AliveHomeContent(
                     Text(model.name, color = colors.secondary, fontSize = 12.sp)
                 }
                 BoxWithConstraints(Modifier.fillMaxWidth()) {
-                    val previewHeight = ((maxWidth - 20.dp) / 3 * model.aspect).coerceIn(160.dp, 232.dp)
+                    val previewHeight = (maxWidth - 20.dp) / 3 * model.aspect
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         listOf("息屏", "锁屏", "桌面").forEachIndexed { mode, name ->
                             LayoutPreview(name, model.frames.getOrNull(mode), previewHeight,
-                                model.previewError.isNotEmpty(), !model.busy) { onMode(mode) }
+                                model.previewError.isNotEmpty(), !model.busy, model.variant) { onMode(mode) }
                         }
                     }
                 }
@@ -282,9 +290,18 @@ internal fun AliveHomeContent(
                 Text("照片壁纸", fontSize = 13.sp, color = colors.group,
                     modifier = Modifier.padding(start = 14.dp, top = 24.dp, bottom = 8.dp))
                 Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    PhotoStyleTile("圆景", "照片化作息屏圆球", model.photo, false, !model.busy, Modifier.weight(1f).fillMaxHeight()) { onPhoto(601) }
-                    PhotoStyleTile("留光", "从息屏相框展开", model.photo, true, !model.busy, Modifier.weight(1f).fillMaxHeight()) { onPhoto(602) }
+                    PhotoStyleTile("圆景", "照片化作息屏圆球", model.photoShapes.getOrNull(0), !model.busy, Modifier.weight(1f).fillMaxHeight()) { onPhoto(601) }
+                    PhotoStyleTile("留光", "从息屏相框展开", model.photoShapes.getOrNull(1), !model.busy, Modifier.weight(1f).fillMaxHeight()) { onPhoto(602) }
                 }
+                listOf(listOf(603 to "星月", 604 to "轻启·照片"), listOf(605 to "山脉", 606 to "银河")).forEach { pair ->
+                    Spacer(Modifier.height(12.dp))
+                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        pair.forEach { (id, title) ->
+                            PhotoStyleTile(title, "照片三态动态效果", model.photoShapes.getOrNull(id-601), !model.busy, Modifier.weight(1f).fillMaxHeight()) { onPhoto(id) }
+                        }
+                    }
+                }
+                if(model.photoShapesError.isNotEmpty()) TextButton("照片缩略图生成失败，点击重试",onClick=onRetry)
             }
         }
     }
@@ -300,16 +317,16 @@ private fun AliveStatusDot(label: String, active: Boolean?) {
 
 @Composable
 private fun RowScope.LayoutPreview(name: String, frame: ImageBitmap?, height: androidx.compose.ui.unit.Dp,
-    failed: Boolean, enabled: Boolean, onClick: () -> Unit) {
+    failed: Boolean, enabled: Boolean, variant: Int, onClick: () -> Unit) {
     val colors = aliveUiColors()
     Column(Modifier.weight(1f).clip(RoundedCornerShape(14.dp))
         .clickable(role = Role.Button, enabled = enabled, onClick = onClick), horizontalAlignment = Alignment.CenterHorizontally) {
-        // Every state keeps its entire portrait canvas, including AOD offsets and the photo frame.
+        // Card and render canvas share the device aspect; crop also fills rounding differences.
         Box(Modifier.fillMaxWidth().height(height).clip(RoundedCornerShape(14.dp))
             .background(if (frame != null) Color.Black else colors.card).testTag("alive-layout-$name"),
             contentAlignment = Alignment.Center) {
             if (frame != null) Image(frame, contentDescription = "$name 壁纸预览", modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit)
+                contentScale = ContentScale.Crop)
             else Text(if (failed) "预览不可用" else "准备预览", color = colors.secondary, fontSize = 12.sp,
                 textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 8.dp))
         }
@@ -318,26 +335,12 @@ private fun RowScope.LayoutPreview(name: String, frame: ImageBitmap?, height: an
 }
 
 @Composable
-private fun PhotoStyleTile(title: String, subtitle: String, photo: ImageBitmap?, frame: Boolean,
+private fun PhotoStyleTile(title: String, subtitle: String, shape: ImageBitmap?,
     enabled: Boolean, modifier: Modifier, onClick: () -> Unit) {
     Box(modifier = modifier.clip(RoundedCornerShape(14.dp)).background(aliveUiColors().card)
         .clickable(role = Role.Button, enabled = enabled, onClick = onClick)) {
         Column(Modifier.fillMaxHeight().padding(14.dp)) {
-            Box(Modifier.fillMaxWidth().height(76.dp), contentAlignment = Alignment.Center) {
-                if (frame) {
-                    Box(Modifier.size(58.dp, 64.dp).rotate(-10f).background(Color(0xffb9c7c8), RoundedCornerShape(5.dp)))
-                    Box(Modifier.offset(4.dp, 0.dp).size(58.dp, 64.dp).rotate(7f)
-                        .background(Color(0xfff1f0eb), RoundedCornerShape(5.dp)).padding(5.dp)) {
-                        if (photo != null) Image(photo, null, Modifier.fillMaxSize().clip(RoundedCornerShape(2.dp)), contentScale = ContentScale.Crop)
-                    }
-                } else {
-                    Box(Modifier.size(68.dp).clip(CircleShape), contentAlignment = Alignment.Center) {
-                        if (photo != null) Image(photo, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-                        Box(Modifier.fillMaxSize().background(Brush.radialGradient(listOf(Color.White.copy(alpha = .25f), Color.Transparent, Color.Black.copy(alpha = .25f)))))
-                        Box(Modifier.fillMaxSize().border(1.dp, Color.White.copy(alpha = .25f), CircleShape))
-                    }
-                }
-            }
+            PhotoShapePreview(title,shape,Modifier.fillMaxWidth().height(96.dp))
             Spacer(Modifier.height(10.dp))
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(title, style = MiuixTheme.textStyles.headline1, modifier = Modifier.weight(1f))

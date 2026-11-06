@@ -1,0 +1,742 @@
+{
+  "source": "OpenAlive-main.zip",
+  "license": "OpenAlive MIT code; third-party Flyme assets excluded from MIT",
+  "files": [
+    {
+      "path": "app/src/main/assets/masks/moon/000.rgbz",
+      "sha256": "0d0df0c36c62949a99c260f2523b65b9b6aec145be89fd770ac7713b7feb4a91"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/001.rgbz",
+      "sha256": "49a6a6ed58e976881540653da81d1889cc57fc12fcdffa61e519a7ede362c962"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/002.rgbz",
+      "sha256": "2e4b9b6670a744d9a5270486acc7b5475e37210a937e19e17d4d52ca7bfb6938"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/003.rgbz",
+      "sha256": "8af5f316633ecadf553e9e3b9c4d061fdc1fda17a1894d0cc0b33686f9e0ff9c"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/004.rgbz",
+      "sha256": "35c7690c5ab41162da61c5b719f6fbd13a1e12eeafa8f6f7a666da20121f5c4f"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/005.rgbz",
+      "sha256": "0d37da0b8b5843e451bde5d7e99675fe2e7e3f95720c7a91fccc3d712f0baf0c"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/006.rgbz",
+      "sha256": "b0e1178a239009f581adbf73e955cee79f38ed08a149ac7c45ec5c558f27137a"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/007.rgbz",
+      "sha256": "97538564cae28587d986a55bb0a9b6cca544f01956d97b89b930500c73b51f69"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/008.rgbz",
+      "sha256": "7bea3d110622a153a89e0eeba4ccf9a658a51b563695cf30bb77741f85690fc7"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/009.rgbz",
+      "sha256": "4c707c10d3ca07f163faaed136699a297615077501f19cdac0ca56da57be9bb3"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/010.rgbz",
+      "sha256": "a84a17673ff3c66b4e1a35569fa341e842bec2d30f5a06aeabc9102e14757c0d"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/011.rgbz",
+      "sha256": "21974062f573f64e1cd13d9c0b2a3d4c4020de957762557e61b1413c88fb49d7"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/012.rgbz",
+      "sha256": "a6b1af0a141d7605b734c04a7b9867a502cf0a15897346384aa05ffdd64017ef"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/013.rgbz",
+      "sha256": "ff71a8e750f4c6abb724a80db17b91f3ade7f6bdc80919ed675fd4ba9eac7d33"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/014.rgbz",
+      "sha256": "d72e4fc705ace8591f5f31e186cde43b36177c6c50630e97e08b8bd1955ff60a"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/015.rgbz",
+      "sha256": "94b56fa8396378a884a5c189491ec216e828ce731f13cb096adc6de6a79d2e15"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/016.rgbz",
+      "sha256": "a656ca61fe5f174c682b68eae8de20721c3d69b3f8eda224d15a3a42141f5876"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/017.rgbz",
+      "sha256": "52237c5fdb768e79a00419ae9670e6ebfc5fbfa0899ff55200445a310e9f987a"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/018.rgbz",
+      "sha256": "1763dd3f4b2901935cedb3a0259c7804150e5b526ea3aacad67c35d291717048"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/019.rgbz",
+      "sha256": "e37e8835c05afd8a99156d7478339aaca3300269c3a0ce279f843dff1c562ca7"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/020.rgbz",
+      "sha256": "d1077ed224a9c7d82756d15fe543f47ac47a36cb27e620ddd5a3c247a78f5592"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/021.rgbz",
+      "sha256": "c60a957b46815cf1281c29d2fd1028e8c583bdc4982a3e53c59fdd3008c2fcf9"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/022.rgbz",
+      "sha256": "165ce8e23f1f76ff64334cf7037722221135a4c57df9c0df5b477ebda8bdb009"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/023.rgbz",
+      "sha256": "708a496224a315801daf32498c59003d1d7474adcfe350c331e14e8b3f2330e9"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/024.rgbz",
+      "sha256": "67df0e7564786d9a7e128e6d0f0cf84af3c06993974a70c5c966a15d9ff73d62"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/025.rgbz",
+      "sha256": "868abe04f4fe74b5187cd1dca7d3e2552a9fd388fc86dabf33981dbc1092e4dc"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/026.rgbz",
+      "sha256": "12f9441c8dfd2beb383047ae9d3deed393eec167a1a42d9106cc5d4666995e3c"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/027.rgbz",
+      "sha256": "82b2db5e42cb3561185fe85ab79dd657c5b8f984f1a44ce77a82fde8487bcf88"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/028.rgbz",
+      "sha256": "3f6ff5075e78cbc7cffac4546dfb7a267b990a18e4e3cf3e713df8d3ca5332ae"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/029.rgbz",
+      "sha256": "925c9617b58c372aaa2af76f8ef653b27dc42769db9275a9b25d2b6d77e7a541"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/030.rgbz",
+      "sha256": "f4a56c72fe7a57a37592ca6e1db25ddb77512974812fc8fc04583e4f3ebc5e53"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/031.rgbz",
+      "sha256": "e222db4b41e5b3e55282208b011d1c21088a3da728e76b3c6302f0545129661b"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/end.rgbz",
+      "sha256": "024082a6253e6093a3b93143df248b060c36bb2f37a0f15a07398aaae27f4d96"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/manifest.json",
+      "sha256": "bded7f800a6865a05868fa130ddc58ca8a171c6a15d424d79652c7ad87e061e6"
+    },
+    {
+      "path": "app/src/main/assets/masks/moon/start.rgbz",
+      "sha256": "8a36259c72b328204393851e1293dfa583951a319d987a7f3bbb199ae81c4858"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/000.rgbz",
+      "sha256": "da4b14ccd9c6b6ec107eeb9c5898d8cd931bf61fe73f27f8116e09d50f137d75"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/001.rgbz",
+      "sha256": "b39879f82dc4c27bad97a7632a6611a2608d385ced8078d9e984d56bec1e18e1"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/002.rgbz",
+      "sha256": "46d971b74362e955933df1d16b596d9f770b4448d6aed957558a64a8684895bd"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/003.rgbz",
+      "sha256": "bb6809aab3f73b5eff52e56fe3fe643556adb31cd1318e39514a79567f6832da"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/004.rgbz",
+      "sha256": "7b85df19917cb5b468076f1efca35cde806d1d7fa392cdf0a500676a69bf00a7"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/005.rgbz",
+      "sha256": "099f6849124f984526d450d88e3c65120f4342989fd9745b488e4a21b59362cb"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/006.rgbz",
+      "sha256": "352439fde75db26fd95ea05bffcdea96de5ab6cb03d46e9eb4c249c6f681f576"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/007.rgbz",
+      "sha256": "ddfae37301e90795ba649e4f4ca5fb738e5a6168fdd70a6d2d6bbe85047ddb7f"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/008.rgbz",
+      "sha256": "ab1c3b8d15dd438a4c29a78add05a06c7336cf5a8358ac13b43edbcb0b690479"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/009.rgbz",
+      "sha256": "daf1d3c8d31737dab9ef32ce04888f001bacbf8ea7a484c8041655ff4b06875f"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/010.rgbz",
+      "sha256": "b01e6b5bece212d64d5607f7834abe405545c369dfde6c24c6332f3038c67d5e"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/011.rgbz",
+      "sha256": "27a9bfae5b0840a968a14919ef637c257dab2f77d9790fc9df3021132aed3cca"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/012.rgbz",
+      "sha256": "7723b48b2a3f1ea7924453d4fbee795175d3f5503dd0081ed7a19705d9b0934f"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/013.rgbz",
+      "sha256": "040fd6378b8781d8968490f6ae68ae57d50d57085c3fa919f1f1960c2ac3a7dc"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/014.rgbz",
+      "sha256": "6b68eac2df8b6fb39b3cdb89221d47eff69ae675c625e45aae50d0608bf54b4a"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/015.rgbz",
+      "sha256": "f14d8797e6490445021728d2cfe852c3ce93eda4d09c44720e58d91a7992d73d"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/016.rgbz",
+      "sha256": "e4156ac9845ddc89f64fe4b934d28ef8d375426a724e14d906f6179bedfce7cb"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/017.rgbz",
+      "sha256": "dc5f530602ac54554a88fc9224d1fa6282c87dcb1b4d3f3b391a1348857c1af1"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/018.rgbz",
+      "sha256": "b46c371ed884fec58b6e1a8b4edace5af0ddea667b77b77cc7b61c90306d865f"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/019.rgbz",
+      "sha256": "37bfe06927a3fa6f8c1b9ff482452b64e1d95cc31315f602dd28ace3cda75ceb"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/020.rgbz",
+      "sha256": "66fca2178dfe8950565f1394ae9d9599967a87c048920233b737b08aa743966e"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/021.rgbz",
+      "sha256": "ba5f35bd4170a47fa541bffb43ea85f3960b6c97936db726fba778df70a3897b"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/022.rgbz",
+      "sha256": "f6b2d6c9ba09448a0f5c72f4589cbbd24f9ba9354c4137866c7c80a2ef991913"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/023.rgbz",
+      "sha256": "44452b446c608fcf0ac38fe07bf45d2e55ac54011daedb769d635c1bc9f0e618"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/024.rgbz",
+      "sha256": "e8b3584bfece6810329c0c412b8c4de33372fa1f0538301247ad0e2eb321ffca"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/025.rgbz",
+      "sha256": "85218147535d90965693c35a0f23d57e0a48ead9ce602e52b49aa4aa8a358d45"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/026.rgbz",
+      "sha256": "127e5fb7d4733e62df799436915c083d8617f38edadd73bc6a5753c2bcc6eb5c"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/027.rgbz",
+      "sha256": "ea1aced6e132353b7020107ff0700c99404c8bbe1edc1185a28884bde663913e"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/028.rgbz",
+      "sha256": "4b71ce2381a27e1c01e0d2af4aa331c76ca5ebfbedb3eaa262ca8e10d537ae9b"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/029.rgbz",
+      "sha256": "05fad561bea46cdd31db6b83815d9d1c1f3f2095daf2d777941c982b0e7af7d1"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/030.rgbz",
+      "sha256": "023a49a99f4624e8e506dc9144c7b8a838cc676b221bc013baf711ef56a6d318"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/031.rgbz",
+      "sha256": "c0dea985443ff4682e93f067825b94245f3a38556faf409b33e30afc2647ceb9"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/032.rgbz",
+      "sha256": "6675ff3672cf1b0162ff464edcae8604630d05e0ada7cb67c6887362f22c5565"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/033.rgbz",
+      "sha256": "23413e51ac4728f8b61a443f6a517d9c0d48b901111f1affee5b1ca3885dda3b"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/034.rgbz",
+      "sha256": "b26bf8e7ddf30a1586ae59afe3b989880606fc84c41c9521aae36da53c1505f0"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/035.rgbz",
+      "sha256": "40e88cfb63d4c0406ef536d345e16782983a3ed5ad0371b0153c32133993193a"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/036.rgbz",
+      "sha256": "c4ecc00c2a46d221945986ca4cc109aa6a01569ede1246153215bd1be938e549"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/037.rgbz",
+      "sha256": "1ab52e651e6a6f4d0941c626c82383b87c883d14d8fffd1b834246ba7f8163ff"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/038.rgbz",
+      "sha256": "832b2b7cd7affe4ad97e72bb46fbb653c622b69018dc49c00e27f405369a0326"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/039.rgbz",
+      "sha256": "134f8b0a70d047be1a44669db18113e284fc2e9804fdbcaef2d3a4abacc28266"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/040.rgbz",
+      "sha256": "97899a49ffd5ecf25b435f34c6c039a0fbf4f94040491d100804420ae17d14ea"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/end.rgbz",
+      "sha256": "d3bef4e8f00cf2c11244784d97d1e1281288a354086b01a4dc4e64f2256278ea"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/manifest.json",
+      "sha256": "03f8244ea4bec7502294dfd7dcf1238983e080e7a38e7594809a0a07e752e1c7"
+    },
+    {
+      "path": "app/src/main/assets/masks/door/start.rgbz",
+      "sha256": "3f9449180d7e69146a5378841b27ebb53896e3da36eb4e9cb5dc171e7fe999a2"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/000.rgbz",
+      "sha256": "fefe4048dff1810c281a1d4640dc6de7e4177075bf707ed5e339b7c6a4ee50c7"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/001.rgbz",
+      "sha256": "19106227899bd006b4f5bb6979ea1c9c9480c6431d2dbd2d9c81e51d5bc92789"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/002.rgbz",
+      "sha256": "23de4100320800aa2b29e3cec5a964f7725b092c1a01c45ad9f23ad72a827755"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/003.rgbz",
+      "sha256": "af2bef22d7cd4b1ed2f9edc4e9207d70fdd8952f9cf0fd8be6ed04669adb34d4"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/004.rgbz",
+      "sha256": "c70d8fcf7cdde00a3cc8f71807fe1a04f644562fcbd3136beb7fa5e97212e011"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/005.rgbz",
+      "sha256": "7d39ddc77fe44493ea26352a682be5e7ad3a43c3a56a7ccb2bf0ac149a64bcd6"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/006.rgbz",
+      "sha256": "94e98188d1202e0331b0429e4c7886da92345dd90e3ec30163a8454966092e38"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/007.rgbz",
+      "sha256": "b1aaf301b58fd57853b315918c662582b0be1dafb15dbc92a654911b81a105bd"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/008.rgbz",
+      "sha256": "2a6054cb43ae3fd959d5a8f1ff73c2a635cb3d7bf02a89f7a985f41c1ffa09b3"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/009.rgbz",
+      "sha256": "205fd3d9ba112de7ffa3ad48ee7683c0bb796c329fe2d4c497a9c73587ad0845"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/010.rgbz",
+      "sha256": "10883f7905ba055e80e6dc1799b606a86c74d986440b0b07e1ba8b79be8d5fbd"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/011.rgbz",
+      "sha256": "57a71805971f3f1716da590564ce9064b63f8e444046e0d7d50c6a2354c23d51"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/012.rgbz",
+      "sha256": "bf759c11ddd3a18e6f904e7c36750fb67f752f14b74588dba1a66e7af5227f73"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/013.rgbz",
+      "sha256": "3bc141a3da6d0cd00dcf661b5097acae60aa333bf7e8913b21615121baf06be6"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/014.rgbz",
+      "sha256": "76ab52dfcef37aa3f260a2753adf6052c91a6dd3213dc31654bcd49317e98f25"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/015.rgbz",
+      "sha256": "51e34e63ad633bcd03c2e766074d581e4d1b59358d5fa11469ba9189a14853a9"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/016.rgbz",
+      "sha256": "e0ae15ccd518e5b499839029d9d2e30a9ce549c480e061dd19c05bf553aea10e"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/017.rgbz",
+      "sha256": "bbd5916009a362ddc7cd312976648871fe7943fbd856ac7a8af6b42811160e56"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/018.rgbz",
+      "sha256": "b4df3e6e13ce044cc00a6deb9c5bf135562e6403e4e82810079fdb885a7c051f"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/019.rgbz",
+      "sha256": "0f184fbe93d86f79fd62f39c4f4170c14103b4ac19006ff61cd1a7829f37f613"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/020.rgbz",
+      "sha256": "a72bcf9bf5f4c6248c1bd15b3b8112782d9760599f15405e442ca7bb06723ec3"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/021.rgbz",
+      "sha256": "f43c234a89a622688d21a16bd6badc1f4b41cddb5a6da221327f7b980227c837"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/022.rgbz",
+      "sha256": "c2dec9aed12846efc68723aa439b225f27ead2e017148704626ae0ced3faa948"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/023.rgbz",
+      "sha256": "862847fa5f36294e9e7d6bdffd730679ddcf12cc5aba4af6c1302b66d96daa11"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/024.rgbz",
+      "sha256": "78ecb8fa4e2638cf11f3b48b8012c2f5482db20b8d332447083f99353b1a24cd"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/025.rgbz",
+      "sha256": "45942cd1c9c0c44a8d72b8006fdf921f388de3326702797bb67b7ee95a8f61c5"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/026.rgbz",
+      "sha256": "01d239ee6726629d7712c1095f4e787de7255c1544586b747a0c0ec39efcbb48"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/027.rgbz",
+      "sha256": "d7cd5cdb0da9aad2f23369e8dff9ef997bc0f61aec58575ae0719acd9e5c799e"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/028.rgbz",
+      "sha256": "af06cde4fe2bd1e68d5a7421d31c49e8cc26e1db548ee8643ea796b0339f0d5d"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/029.rgbz",
+      "sha256": "8b16bc82cdf0dca22d489b5109f10f13e00ec271ea67a4f4758626c90d9f85b3"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/030.rgbz",
+      "sha256": "a4e3c2ac9113b06a550c70ba3acfb6ba7294d9e820cd91ff814328a5258edff5"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/031.rgbz",
+      "sha256": "01d175e9f86781a92e2c2ed4d9caa248a561d42b3535ea6cd781b329ee3a89ff"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/032.rgbz",
+      "sha256": "86b9c010bec0dc2cb9eef0553f561b422063c2357e73175129e833e6be7f70d7"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/033.rgbz",
+      "sha256": "10e92b490fe774127f9530556d8c7a6b873f161ec1ab6785e32fc1b0b326a43b"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/034.rgbz",
+      "sha256": "8f839ef7516fafc43417d89b138b79451c991de13015e641f74b405b8301df3b"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/035.rgbz",
+      "sha256": "e0f8b35e8385ebb923931a6970b9b414e3203c2cc6c600bcb6d5f1a8231549d7"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/036.rgbz",
+      "sha256": "e9883c5081fe8523e2fd2a50afcf42179cffd4ee457fc0604fb9d9b01f6fec19"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/037.rgbz",
+      "sha256": "6f1ab5073cf47ae240ac0d36903f895d7079f42ee2e49221836438bf2eff329e"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/038.rgbz",
+      "sha256": "3ef45013e723a307b4be945d85f9607be1c81f07e3de257948b4624958e39279"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/039.rgbz",
+      "sha256": "3ef45013e723a307b4be945d85f9607be1c81f07e3de257948b4624958e39279"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/040.rgbz",
+      "sha256": "3ef45013e723a307b4be945d85f9607be1c81f07e3de257948b4624958e39279"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/041.rgbz",
+      "sha256": "3ef45013e723a307b4be945d85f9607be1c81f07e3de257948b4624958e39279"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/042.rgbz",
+      "sha256": "3ef45013e723a307b4be945d85f9607be1c81f07e3de257948b4624958e39279"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/end.rgbz",
+      "sha256": "453e44050eab913f99f4f264c4d8b4c58f10404280cae96498a50781bc00cb1d"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/manifest.json",
+      "sha256": "5295a15592c08b1c05b99a19a7e119accd16d7b3c43f05e291fa2117ba95d791"
+    },
+    {
+      "path": "app/src/main/assets/masks/mountain/start.rgbz",
+      "sha256": "3c6a345723e879fbfabb18c7814f8263e71edd15f5fae59134093205390cae12"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/000.rgbz",
+      "sha256": "ca7030106869c32282e4697208cdff81a660c8965887135c084a27323384bdb9"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/001.rgbz",
+      "sha256": "80441b73ce523f973a7ea3be559409a732fd26a5fa185ae50e0fe21c2f77e117"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/002.rgbz",
+      "sha256": "b91027a0b4e666bed1b6ee0c5525b36d5d448e2e40f15acfff67765973a4650f"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/003.rgbz",
+      "sha256": "365fc108947c7daa96ebc6de81da09fb4c1a413f923ff9337d603caf1643abce"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/004.rgbz",
+      "sha256": "6ccbdf9c7d0c92585691b98e7ac6e3ac4423719d7cb78cf77b08ff01655ac371"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/005.rgbz",
+      "sha256": "377a093986b9e69b9f26606afe29ad509e037fae9df4ee84cbd1c63d8cd49fcc"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/006.rgbz",
+      "sha256": "6f838031f5b069440abc6bd9ec1abe1dce9574969735e6f4f0a04b829f5a553b"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/007.rgbz",
+      "sha256": "baed03d56005f6267b17fda5d5297cd47a9b318d4bc498c63bc4b6630958ef5a"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/008.rgbz",
+      "sha256": "a087cecaa7326c529a0b96079a9cd6c9c0e84b280db6a8be1259553a7842e8ec"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/009.rgbz",
+      "sha256": "7e9b14eb4fdabae6cb5303421f91c4b665cddfea67649e5412219fc54a4be093"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/010.rgbz",
+      "sha256": "f61110844a468c29ccd97c90002b2059b14bd977aa237a58620d0a618c6d8891"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/011.rgbz",
+      "sha256": "a1380894ebe483f87f457802386728e47f36955a631d4856fd995139dc4cc6e4"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/012.rgbz",
+      "sha256": "aba822fa4ee364e940aa4b3f2e1d82241c661b0f7e725b4c1207f3ebf26bcb8c"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/013.rgbz",
+      "sha256": "66a094dd3a95aa5dbee2fb6cf1d1d33877fa9135b1aa25860b1368cd77a4b087"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/014.rgbz",
+      "sha256": "c4f3b1ba64994f9070171acd19b621dbdbd9405117797cfa0b8db1f1569e0010"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/015.rgbz",
+      "sha256": "98e7893f15c374a7517065eea29cd2c59853b7dee278b6046e42e54fbc996556"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/016.rgbz",
+      "sha256": "049d2ae936dd6f939db8cefa43bd7c7c403c492d00588b5f54db96e646a0cee1"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/017.rgbz",
+      "sha256": "9500907cef7c69b0670c6bda5f9858e4c0bf648f369b1469a777ce2ae7c0ab3d"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/018.rgbz",
+      "sha256": "a3820d565c1664bd73b77b039e4879fd80211e4a682aa8bd5e0f06b9b80705f2"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/019.rgbz",
+      "sha256": "10c65aafe70231e75f6bf2af48f32891ae3eee52977d127a6bc0b9350265d81a"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/020.rgbz",
+      "sha256": "b8507b8a51fb64b2916901e516fe1d41729a7ffa123ae6da5734709cbf563246"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/021.rgbz",
+      "sha256": "40f730c26cb3333b9b82e0f17d3e0c6c6b211ca35d85d2e579e6328ec79ea610"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/022.rgbz",
+      "sha256": "3ba30fee5cb238bdf1f8a8cc8372332a9f2b3030d8b87875d6b2243d7b7a15fd"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/023.rgbz",
+      "sha256": "a41485fa5102e9e84868eb2de3020c8186732ee73d1a6062342d9047c7f264fa"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/024.rgbz",
+      "sha256": "24453833cf3bcda25b1ed149c1f4fa7673ff265c793441a696583cb4b03d02f4"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/025.rgbz",
+      "sha256": "58966aa1e37ffe50c3fa51d3815338a9acdf57cced90ef624bfdb0a0189c4125"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/026.rgbz",
+      "sha256": "81ced6a68ae513aec2494a761889983234853003b21f950d44a20f78a8649a63"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/027.rgbz",
+      "sha256": "0266d3b0d6ccb6f29ebd5951bbc248ae6f17ae5364ca389e4fdf5f18caae9569"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/028.rgbz",
+      "sha256": "a97195ec92c0344860e833245a465852f11c1887c0f74ec9caf555cdcc6ccc8c"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/029.rgbz",
+      "sha256": "f527d8753b957e7e9806df8ea1083e8097ab75fa0041ca6c97ecf0596f7f51d1"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/030.rgbz",
+      "sha256": "1b2c0b0ca97f4003027f5a0366183d484a40a79a0262678398504b11127c4ede"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/031.rgbz",
+      "sha256": "459e339d95a6aece11a9c5dbc9fafceb410313f49b83183a6f5e7620ab6e3abb"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/032.rgbz",
+      "sha256": "ea01886c7d3eb296524b749362cb7678af10603b29d3c22b023d5622f2fda578"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/033.rgbz",
+      "sha256": "a3512308f8993efd67ed2a5d64527bbced41e02e5bba47b17863318540a94111"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/034.rgbz",
+      "sha256": "1dbed3c08861b8bd136aeb1ceb07961367c8134e68882023c07e161d2012b7db"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/035.rgbz",
+      "sha256": "3d83fad61c3e4b1ff5b73e71848e998bc42f709acb64e3156eb840f2dbeebed9"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/036.rgbz",
+      "sha256": "038689e6b87002b7deea518c037343addd26e2008ed1d641ce8e0958014c0e38"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/037.rgbz",
+      "sha256": "046fb7179f3dbcf56bf093eaff6213f384d4730aaef1e5514ad40800869ea5a4"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/038.rgbz",
+      "sha256": "95180859bf3f7d7f4902a093a5fdbfdb0967cc7041db371cd91012d781c9dde4"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/039.rgbz",
+      "sha256": "a42861372ebfe44eeeaa2ee1905e10cc0eed06e924339c0c9143f23456566e6b"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/040.rgbz",
+      "sha256": "5af87b3fb787e8c5b43d1857539ccc8386540fa13939a9fa81b9837a44020764"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/041.rgbz",
+      "sha256": "5bab062f852d8424259c5ccdf0b54a1fedb0fbc68c88b2c770f006f575ba7847"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/042.rgbz",
+      "sha256": "49fd219fcc3d08606464626f8f283592938a2bc7c057d167b1ef00cc7c9155e0"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/043.rgbz",
+      "sha256": "33f054a7eb6b62cc2d3bb6b9079dcfaf2fa4c840e878d4f22ee047cd51136395"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/044.rgbz",
+      "sha256": "3f9936cc93aeef3818185aa2867bca6ee296af32d09790793da04e228ecd6987"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/045.rgbz",
+      "sha256": "b11cd384f036d455958218ba68707acae69ba3a0c082d71a2c33d49bc3400268"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/046.rgbz",
+      "sha256": "caeeb2584d92774956e4654cdaa2fd45023c25b21c457452968ac310994c5bd1"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/047.rgbz",
+      "sha256": "fe4cecf19731839272b745abfbc061995a25ff4e32aae29223f2f9ca9a1b6534"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/048.rgbz",
+      "sha256": "d62f9388140acb686ea2be848dd4f7e6221b8763df4c8c90560bd9749dc972f0"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/049.rgbz",
+      "sha256": "a2f037a7d7a463cfc097dd7aaac8fc993d436c0b1c40067d9f984c329be2e68f"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/050.rgbz",
+      "sha256": "2c22a19e581160817c0cfb98f411ad7e2a84ae10b318e8cceb37e844517b10ee"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/051.rgbz",
+      "sha256": "14259556940c31ab10d82a97289e108a7faebe9c298c73b635cda1dac3461891"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/052.rgbz",
+      "sha256": "5a479dd33dffe68e0dc5c2077fcede14af9b842c4597b0125231a622672dd37b"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/053.rgbz",
+      "sha256": "5a479dd33dffe68e0dc5c2077fcede14af9b842c4597b0125231a622672dd37b"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/054.rgbz",
+      "sha256": "5a479dd33dffe68e0dc5c2077fcede14af9b842c4597b0125231a622672dd37b"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/055.rgbz",
+      "sha256": "5a479dd33dffe68e0dc5c2077fcede14af9b842c4597b0125231a622672dd37b"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/end.rgbz",
+      "sha256": "34512d3c40455e8d6b60fb7f79d62f8bdd18eff43462c0e93ff9b95969673bef"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/manifest.json",
+      "sha256": "c4b167f31413103cd9a90134aa98cf58d952f5b0c899bb2bbcdfd20b043c88ce"
+    },
+    {
+      "path": "app/src/main/assets/masks/galaxy/start.rgbz",
+      "sha256": "a2c3caae7d735899ead2c39ad27d9056897af76f74b907425599e13ff99e6c36"
+    }
+  ]
+}

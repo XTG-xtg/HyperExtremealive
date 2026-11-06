@@ -31,7 +31,7 @@ struct Scene {
     home_program:Program, home_effect_program:Program, blend:Program, down:Program, gaussian:Program, up:Program,
     targets:Vec<Target>, images:[Image;6], color:[f32;3], frame:Option<[f32;36]>, effects:Option<[f32;20]>, frame_crop:[f32;4],
     w:i32, h:i32, aod:i32, lock:i32, home:i32,
-    photo_crop:[f32;3],
+    photo_crop:[f32;3],home_crop:[f32;3],
 }
 
 impl Scene {
@@ -74,15 +74,15 @@ impl Scene {
             quad:Quad::new(),copy:Program::new(COPY_V,COPY_F)?,lock_program:program(lock_path)?,
             aod_program,home_program:program(home_path)?,home_effect_program:program(home_effect_path)?,blend:program(blend_path)?,
             down:program("blur/down_sample")?,gaussian:program("blur/gaussian")?,up:program("blur/up_sample")?,
-            targets,images:[Image::default();6],color:[0.15,0.27,0.32],frame:None,effects:None,frame_crop:[0.5,0.5,1.,0.],w,h,aod,lock,home,photo_crop:[0.5,0.5,1.],
+            targets,images:[Image::default();6],color:[0.15,0.27,0.32],frame:None,effects:None,frame_crop:[0.5,0.5,1.,0.],w,h,aod,lock,home,photo_crop:[0.5,0.5,1.],home_crop:[0.5,0.5,1.],
         })
     }
-    fn copy(&mut self,input:u32,target:usize,aspect:f32,flip:bool) {
+    fn copy(&mut self,input:u32,target:usize,aspect:f32,flip:bool,selection:[f32;3]) {
         self.targets[target].bind();self.copy.bind();self.copy.texture("photo",0,input);
         let screen=self.w as f32/self.h as f32;
         let mut crop=if aspect>screen{[screen/aspect,1.]}else{[1.,aspect/screen]};
-        crop[0]/=self.photo_crop[2];crop[1]/=self.photo_crop[2];
-        self.copy.v2("center",self.photo_crop[0].clamp(crop[0]/2.,1.-crop[0]/2.),self.photo_crop[1].clamp(crop[1]/2.,1.-crop[1]/2.));
+        crop[0]/=selection[2];crop[1]/=selection[2];
+        self.copy.v2("center",selection[0].clamp(crop[0]/2.,1.-crop[0]/2.),selection[1].clamp(crop[1]/2.,1.-crop[1]/2.));
         self.copy.v2("crop",crop[0],crop[1]);self.copy.f("flip",if flip{1.}else{0.});self.quad.draw();
     }
     fn blurred(&mut self,input:u32,radius:f32,limit:f32)->u32 {
@@ -133,8 +133,13 @@ impl Scene {
                 // mask's photo width is 320/720 of the square mesh. Keep image
                 // aspect while its lower edge is covered by the paper border.
                 let [cx,cy,size,angle]=self.frame_crop;
-                let pixels=image.width.min(image.height) as f32*size*720./320.;
                 let (s,c)=angle.to_radians().sin_cos();
+                let footprint=s.abs()+c.abs();
+                let selected=image.width.min(image.height) as f32*size.min(1./footprint);
+                let half=selected*footprint/2.;
+                let cx=cx.clamp(half/image.width as f32,1.-half/image.width as f32);
+                let cy=cy.clamp(half/image.height as f32,1.-half/image.height as f32);
+                let pixels=selected*720./320.;
                 let x=pixels/image.width as f32;let y=pixels/image.height as f32;
                 p.m3("u_frame_crop",&[c*x,-s*y,0.,s*x,c*y,0.,cx,cy,1.]);
                 p.m3("u_rear_transform",&frame_rear::matrix(f[34]));
@@ -187,12 +192,12 @@ impl Scene {
         let aod_visible=ratio[0]>0.;
         let lock_visible=ratio[1]>0.||(aod_visible&&self.aod>=0);
         let home_visible=ratio[2]>0.;
-        if lock_visible||home_visible {self.copy(photo,0,aspect,true);}
+        if lock_visible||home_visible {self.copy(photo,0,aspect,true,self.photo_crop);}
         if lock_visible{self.lock_pass(frame);}
         if !(1..=5).contains(&self.aod)&&aod_visible{self.aod_pass(frame,decor);}
         if home_visible||(1..=5).contains(&self.aod)&&aod_visible{
-            let home=if (1..=5).contains(&self.aod)&&self.images[5].id!=0{Image::default()}else{self.images[4]};
-            if home.id!=0{self.copy(home.id,0,home.width as f32/home.height as f32,true);}
+            let home=self.images[4];
+            if home.id!=0{self.copy(home.id,0,home.width as f32/home.height as f32,true,self.home_crop);}
             self.home_pass(frame);
         }
         if (1..=5).contains(&self.aod)&&aod_visible{self.aod_pass(frame,decor);}
@@ -217,6 +222,12 @@ pub unsafe extern "system" fn Java_com_frederic22_hyperextreme_alive_NativeScene
 pub unsafe extern "system" fn Java_com_frederic22_hyperextreme_alive_NativeScene_photoCrop(_: *mut c_void,_:*mut c_void,handle:i64,x:f32,y:f32,zoom:f32) {
     if handle!=0&&[x,y,zoom].iter().all(|v|v.is_finite())&&(0.0..=1.0).contains(&x)&&(0.0..=1.0).contains(&y)&&(1.0..=4.0).contains(&zoom){
         (*(handle as *mut Scene)).photo_crop=[x,y,zoom];
+    }
+}
+#[no_mangle]
+pub unsafe extern "system" fn Java_com_frederic22_hyperextreme_alive_NativeScene_homeCrop(_: *mut c_void,_:*mut c_void,handle:i64,x:f32,y:f32,zoom:f32) {
+    if handle!=0&&[x,y,zoom].iter().all(|v|v.is_finite())&&(0.0..=1.0).contains(&x)&&(0.0..=1.0).contains(&y)&&(1.0..=4.0).contains(&zoom){
+        (*(handle as *mut Scene)).home_crop=[x,y,zoom];
     }
 }
 #[no_mangle]

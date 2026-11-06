@@ -26,6 +26,7 @@ def main():
     main_code = repo / 'app/src/main/java/com/frederic22/hyperextreme'
     sources = sorted((main_code / 'alive').rglob('*.java')) + sorted((main_code / 'data').glob('*.java'))
     sources += [repo / 'tests/alive/device/LayoutPreviewProbe.java', repo / 'tests/alive/device/ImageImportProbe.java']
+    sources += [repo/'tests/alive/device/ProbeContext.java',repo/'tests/alive/device/PresentationProbe.java']
     options = ['-encoding', 'UTF-8', '-source', '8', '-target', '8', '-bootclasspath',
                str(android) + os.pathsep + str(tools / 'core-lambda-stubs.jar'),
                '-cp', str(api), '-d', str(classes), *map(str, sources)]
@@ -43,17 +44,19 @@ def main():
     subprocess.run(adb + ['shell', 'mkdir -p ' + remote], check=True)
     for file in [dex / 'classes.dex', repo / 'app/build/generated/aliveJni/arm64-v8a/libhyperextreme_photo.so']:
         subprocess.run(adb + ['push', str(file), remote + '/' + file.name], check=True)
-    for name, main_class, parameters in [('image-import', 'ImageImportProbe', '')] + [
-        (f'layout-{variant}', 'LayoutPreviewProbe', str(variant)) for variant in (1, 301, 601, 602)
+    subprocess.run(adb+['push',str(repo/'app/build/outputs/apk/debug/app-debug.apk'),remote+'/candidate.apk'],check=True)
+    variants=(1,101,201,301,401,501,601,602,603,604,605,606)
+    for name, main_class, parameters in [('image-import', 'ImageImportProbe', ''),('presentation','PresentationProbe','')] + [
+        (f'layout-{variant}', 'LayoutPreviewProbe', str(variant)) for variant in variants
     ]:
-        command = (f"su -M -c 'CLASSPATH={remote}/classes.dex app_process -Djava.library.path={remote} "
+        command = (f"su -M -c 'CLASSPATH={remote}/classes.dex app_process -Dalive.test.apk={remote}/candidate.apk -Djava.library.path={remote} "
                    f"/system/bin com.frederic22.hyperextreme.alive.{main_class} {parameters}'")
         result = subprocess.run(adb + ['shell', command], capture_output=True, timeout=90)
         (out / (name + '.log')).write_bytes(result.stdout + result.stderr)
         print(name, result.returncode, (result.stdout + result.stderr).decode('utf8', errors='replace'), flush=True)
         result.check_returncode()
     # Only pull generated test pictures, not any application or user files.
-    for variant in (1, 301, 601, 602):
+    for variant in variants:
         for mode in range(3):
             name = f'layout-{variant}-{mode}.png'
             subprocess.run(adb + ['pull', f'{remote}/{name}', str(out / name)], check=True)

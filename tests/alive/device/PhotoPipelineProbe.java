@@ -37,7 +37,7 @@ public final class PhotoPipelineProbe {
     void start()throws Exception {
         Class<?> at=Class.forName("android.app.ActivityThread");
         Context system=(Context)at.getMethod("getSystemContext").invoke(at.getMethod("systemMain").invoke(null));
-        Context app=system.createPackageContext(Protocol.PACKAGE,Context.CONTEXT_IGNORE_SECURITY);
+        Context app=ProbeContext.wrap(system.createPackageContext(Protocol.PACKAGE,Context.CONTEXT_IGNORE_SECURITY));
         assets=app.getAssets();
         EGLDisplay display=EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
         check(EGL14.eglInitialize(display,new int[2],0,new int[2],0),"EGL initialize");
@@ -138,7 +138,7 @@ public final class PhotoPipelineProbe {
                 save("frame-crop-"+landscape+".png",after);
                 renderer.configure(new PhotoOptions(2,.5f,.5f,1,.5f,.5f,1,0));renderer.render();
             }
-            if(variant==602){int mask=(Integer)field(field(renderer,"masks"),"uploaded");if(mask>=0&&mask<61)intermediate.add(mask);}
+            if(variant>=602){int mask=(Integer)field(field(renderer,"masks"),"uploaded");if(mask>=0&&mask<PhotoStyle.get(variant-601).frames)intermediate.add(mask);}
             if(frame==0||frame==12||frame==24||frame==48||frame==120||frame==270) {
                 byte[] data=read();save(variant+"-"+(landscape?"land":"port")+"-p"+phase+"-f"+frame+".png",data);
                 if(phase==1&&frame==270)locked=data;
@@ -171,7 +171,16 @@ public final class PhotoPipelineProbe {
         }
         check(upper>100000,"home upper red/orientation");
         check(lower>100000,"home lower blue/orientation");
-        if(variant==602)check(intermediate.size()>=20,"intermediate masks starved: "+intermediate);
+        if(variant>=602)check(intermediate.size()>=Math.min(20,PhotoStyle.get(variant-601).frames/2),"intermediate masks starved: "+intermediate);
+        if(variant==601){
+            for(int lockStyle=0;lockStyle<4;lockStyle++)for(int homeStyle=0;homeStyle<4;homeStyle++){
+                renderer.configure(new PhotoOptions(lockStyle,.5f,.5f,1,.5f,.5f,1,0,0,0,homeStyle));
+                renderer.motion().change(1,false);renderer.render();
+                check(renderer.frameReady()&&GLES30.glGetError()==GLES30.GL_NO_ERROR,"lock texture "+lockStyle);
+                renderer.motion().change(2,false);renderer.render();
+                check(renderer.frameReady()&&GLES30.glGetError()==GLES30.GL_NO_ERROR,"home texture "+homeStyle);
+            }
+        }
         renderer.close();renderer=null;
         cropRegression();
         System.out.println("PHOTO_PASS variant="+variant+" landscape="+landscape+" checks="+checks+" frames="+presented+" waits="+waits+" intermediate="+intermediate.size()+" lockHomeMAE="+(difference/(double)home.length));
@@ -198,6 +207,23 @@ public final class PhotoPipelineProbe {
             crop.configure(new PhotoOptions(1,.5f,.5f,1,.5f,.5f,1,0));
             crop.motion().change(1,false);crop.render();
             check(crop.frameReady()&&GLES30.glGetError()==0,"striped lock shader");
+            crop.configure(PhotoOptions.defaults());crop.render();byte[] original=read();
+            crop.configure(PhotoOptions.defaults().edit(0,3));crop.render();byte[] ground=read();
+            long groundDifference=0;
+            for(int i=0;i<original.length;i++)groundDifference+=Math.abs((original[i]&255)-(ground[i]&255));
+            check(groundDifference>10000,"ground glass must refract pixels, not silently sample unbound textures");
+            int[] textures=(int[])field(crop,"textures");
+            check(textures[3]!=0&&textures[4]!=0,"ground auxiliary textures uploaded");
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D,textures[4]);int[] wrap=new int[1];
+            GLES30.glGetTexParameteriv(GLES30.GL_TEXTURE_2D,GLES30.GL_TEXTURE_WRAP_S,wrap,0);
+            check(wrap[0]==GLES30.GL_REPEAT,"ground noise uses repeat wrapping");
+            save("ground-glass-"+landscape+".png",ground);
+            crop.configure(PhotoOptions.defaults().edit(15,2));crop.motion().change(0,false);crop.render();byte[] off=read();
+            for(int i=0;i<off.length;i+=4)check(off[i]==0&&off[i+1]==0&&off[i+2]==0,"no-photo AOD stays black");
+            crop.configure(PhotoOptions.defaults().edit(15,1));crop.render();byte[] full=read();
+            long light=0;for(int i=0;i<full.length;i+=4)light+=(full[i]&255)+(full[i+1]&255)+(full[i+2]&255);
+            check(light>10000,"full photo AOD draws the gray-masked photo");
+            save("full-aod-"+landscape+".png",full);
             PhotoOptions invalid=new PhotoOptions(-1,Float.NaN,Float.POSITIVE_INFINITY,0,-4,7,0,80);
             check(invalid.lockStyle==0&&invalid.x==.5f&&invalid.y==.5f&&invalid.zoom==1&&invalid.frameSize==.25f&&invalid.frameAngle==45,"crop validation");
             check(GLES30.glGetError()==0,"crop GL state");

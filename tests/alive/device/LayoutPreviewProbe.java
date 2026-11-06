@@ -20,7 +20,7 @@ public final class LayoutPreviewProbe {
         int variant = Integer.parseInt(args[0]);
         Class<?> at = Class.forName("android.app.ActivityThread");
         Context system = (Context) at.getMethod("getSystemContext").invoke(at.getMethod("systemMain").invoke(null));
-        Context installed = system.createPackageContext(Protocol.PACKAGE, Context.CONTEXT_IGNORE_SECURITY);
+        Context installed = ProbeContext.wrap(system.createPackageContext(Protocol.PACKAGE, Context.CONTEXT_IGNORE_SECURITY));
         SharedPreferences prefs = (SharedPreferences) Proxy.newProxyInstance(SharedPreferences.class.getClassLoader(),
             new Class<?>[]{SharedPreferences.class}, (proxy, method, values) -> {
                 if (method.getName().equals("getAll")) return Collections.emptyMap();

@@ -17,7 +17,10 @@ import java.nio.ByteBuffer;
 /** OpenAlive photo frame graph hosted in the same EGL lifecycle as the other scenes. */
 final class PhotoRenderer implements WallpaperRenderer {
     private long handle;
-    private final int[] textures=new int[3];
+    private final int[] textures=new int[8],textureWidth=new int[8],textureHeight=new int[8];
+    private final AssetManager assets;
+    private final int variant;
+    private final Runnable invalidate;
     private SceneMotion scene;
     private TextureMotion textureMotion;
     private FrameMotion frameMotion;
@@ -26,56 +29,74 @@ final class PhotoRenderer implements WallpaperRenderer {
     private final PhotoMotion motion=new PhotoMotion();
     private float aspect;
     private boolean submitted;
+    private boolean catchUp;
+    private boolean continuous=true;
     private int mode;
-    private int width,height,aod,photoWidth,photoHeight,lockStyle=2;
+    private int width,height,aod=-999,photoWidth,photoHeight,lockStyle=-1,homeStyle=-1;
+    private PhotoOptions options=PhotoOptions.defaults();
+    private float anchorX,anchorY=.165f;
+    private boolean systemAnchor;
 
     PhotoRenderer(Context context,int width,int height,int initial,int variant,boolean preview,Runnable invalidate) throws IOException {
-        this(context.getAssets(), photo(context,preview),width,height,initial,variant,invalidate);
-        try{configure(PhotoOptions.load(context,preview));}catch(RuntimeException|LinkageError failure){close();throw failure;}
+        this(context,PhotoOptions.load(context,preview),width,height,initial,variant,preview,invalidate);
+    }
+    PhotoRenderer(Context c,PhotoOptions options,int w,int h,int initial,int variant,boolean preview,Runnable invalidate)throws IOException {
+        this(c.getAssets(),PhotoMedia.resolve(c,options,preview,0),PhotoMedia.resolve(c,options,preview,1),
+            PhotoMedia.resolve(c,options,preview,2),w,h,initial,variant,options,invalidate);
     }
 
     // Device tests use a synthetic image through this constructor, never a user's photo.
     PhotoRenderer(AssetManager assets,File photo,int width,int height,int initial,int variant,Runnable invalidate) throws IOException {
-        if(variant!=601&&variant!=602)throw new IllegalArgumentException("Photo variant "+variant);
-        mode=initial;
-        aod=variant==601?0:1;this.width=width;this.height=height;
+        this(assets,photo,photo,photo,width,height,initial,variant,new PhotoOptions(2,.5f,.5f,1,.5f,.5f,1,0),invalidate);
+    }
+    PhotoRenderer(AssetManager assets,File photo,File home,File frame,int width,int height,int initial,int variant,PhotoOptions options,Runnable invalidate)throws IOException {
+        if(variant<601||variant>606)throw new IllegalArgumentException("Photo variant "+variant);
+        this.assets=assets;this.variant=variant;this.invalidate=invalidate;mode=initial;
+        this.width=width;this.height=height;
         try {
-            Bitmap bitmap=BitmapFactory.decodeFile(photo.getAbsolutePath());
-            if(bitmap==null)throw new IOException("Photo is missing or cannot be decoded");
-            photoWidth=bitmap.getWidth();photoHeight=bitmap.getHeight();
+            loadImage(0,photo);photoWidth=textureWidth[0];photoHeight=textureHeight[0];
             aspect=(float)photoWidth/photoHeight;
-            try { textures[0]=upload(bitmap); } finally { bitmap.recycle(); }
-            try(InputStream in=assets.open("shader/photo/aod/lensPhoto/lens_decorator.png")) {
-                bitmap=BitmapFactory.decodeStream(in);
-                if(bitmap==null)throw new IOException("Invalid lens decorator");
-                try { textures[1]=upload(bitmap); } finally { bitmap.recycle(); }
-            }
-            // Curved-glass lock texture and original home texture are separate composition passes.
-            handle=NativeScene.create(width,height,initial,aod,2,6);
-            if(handle==0)throw new IOException("Photo frame graph creation failed");
-            NativeScene.tint(handle,0xff264552);
-            scene=new SceneMotion(width,height,initial,aod==1?-1:0,2,6,false);
-            textureMotion=new TextureMotion(width,height,initial,2,6);
-            if(aod==1) {
-                PhotoStyle style=PhotoStyle.get(1);
-                frameMotion=new FrameMotion(width,height,initial,true,style);
-                // Both paper apertures sample the photo, including the independent rear paper transform.
-                NativeScene.texture(handle,5,textures[0],photoWidth,photoHeight);
-                NativeScene.frameCrop(handle,.5f,.5f,1,0);
-                int[] mask=new int[1];GLES30.glGenTextures(1,mask,0);textures[2]=mask[0];
-                configure(textures[2]);
-                GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D,0,GLES30.GL_RGB,1,1,0,GLES30.GL_RGB,GLES30.GL_UNSIGNED_BYTE,ByteBuffer.allocateDirect(3));
-                NativeScene.texture(handle,0,textures[2],style.size,style.size);
-                masks=new MaskFrames(assets,new Handler(Looper.myLooper()),invalidate,style);
-            }
+            loadAsset(1,"shader/photo/aod/lensPhoto/lens_decorator.png",false);
+            if(!home.equals(photo))loadImage(6,home);
+            if(variant==602&&!frame.equals(photo))loadImage(7,frame);
+            configure(options);
         } catch(IOException|RuntimeException|LinkageError failure) {
             close();throw failure;
         }
     }
 
-    private static File photo(Context context,boolean preview) {
-        File draft=AliveSettings.draft(context);
-        return preview&&draft.isFile()?draft:new File(context.getFilesDir(),"alive/photo.png");
+    private void loadImage(int index,File file)throws IOException {
+        Bitmap bitmap=BitmapFactory.decodeFile(file.getAbsolutePath());
+        if(bitmap==null)throw new IOException("Photo is missing or cannot be decoded");
+        try{textures[index]=upload(bitmap);textureWidth[index]=bitmap.getWidth();textureHeight[index]=bitmap.getHeight();}
+        finally{bitmap.recycle();}
+    }
+    private void loadAsset(int index,String path,boolean repeat)throws IOException {
+        if(textures[index]!=0)return;
+        try(InputStream in=assets.open(path)){
+            Bitmap bitmap=BitmapFactory.decodeStream(in);
+            if(bitmap==null)throw new IOException("Invalid texture: "+path);
+            try{textures[index]=upload(bitmap);textureWidth[index]=bitmap.getWidth();textureHeight[index]=bitmap.getHeight();}
+            finally{bitmap.recycle();}
+            if(repeat){
+                GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D,GLES30.GL_TEXTURE_WRAP_S,GLES30.GL_REPEAT);
+                GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D,GLES30.GL_TEXTURE_WRAP_T,GLES30.GL_REPEAT);
+            }
+        }
+    }
+    private void bind(int slot,int texture){NativeScene.texture(handle,slot,textures[texture],textureWidth[texture],textureHeight[texture]);}
+    private void masks(int next){
+        if(masks!=null){masks.close();masks=null;}
+        if(frameMotion!=null){frameMotion.close();frameMotion=null;}
+        if(next<1||next>5)return;
+        PhotoStyle style=PhotoStyle.get(next);
+        frameMotion=new FrameMotion(width,height,mode,next==1,style);
+        if(textures[2]==0){
+            int[] id=new int[1];GLES30.glGenTextures(1,id,0);textures[2]=id[0];configure(textures[2]);
+            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D,0,GLES30.GL_RGB,1,1,0,GLES30.GL_RGB,GLES30.GL_UNSIGNED_BYTE,ByteBuffer.allocateDirect(3));
+        }
+        textureWidth[2]=textureHeight[2]=style.size;
+        masks=new MaskFrames(assets,new Handler(Looper.myLooper()),invalidate,style);
     }
 
     private static void configure(int texture) {
@@ -99,31 +120,52 @@ final class PhotoRenderer implements WallpaperRenderer {
     }
 
     public WallpaperMotion motion(){return motion;}
+    public void continuous(boolean value){continuous=value;}
     boolean animating(){return scene.transitionActive()||textureMotion.active()||frameMotion!=null&&frameMotion.active();}
     void configure(PhotoOptions options) {
-        if(lockStyle!=options.lockStyle) {
-            long next=NativeScene.create(width,height,mode,aod,options.lockStyle,6);
+        this.options=options;
+        int nextAod=options.aod(variant);
+        if(lockStyle!=options.lockStyle||homeStyle!=options.homeStyle||aod!=nextAod) {
+            try {
+                if(options.lockStyle==3||options.homeStyle==3){
+                    loadAsset(3,"shader/photo/lock/groundGlass/gray.png",false);
+                    loadAsset(4,"shader/photo/lock/groundGlass/mask.png",true);
+                }
+                if(nextAod==101)loadAsset(5,"shader/photo/aod/fullAod/gray.png",false);
+            }catch(IOException e){throw new IllegalStateException("Photo auxiliary textures failed",e);}
+            long next=NativeScene.create(width,height,mode,nextAod,options.lockStyle,6+options.homeStyle);
             if(next==0)throw new IllegalStateException("Photo effect change failed");
-            NativeScene.destroy(handle);handle=next;lockStyle=options.lockStyle;
-            scene.close();textureMotion.close();
-            scene=new SceneMotion(width,height,mode,aod==1?-1:0,lockStyle,6,false);
-            textureMotion=new TextureMotion(width,height,mode,lockStyle,6);
-            if(frameMotion!=null) {
-                frameMotion.close();frameMotion=new FrameMotion(width,height,mode,true);
-                NativeScene.texture(handle,5,textures[0],photoWidth,photoHeight);
-                NativeScene.texture(handle,0,textures[2],720,720);
-            }
-            NativeScene.tint(handle,0xff264552);
+            NativeScene.destroy(handle);handle=next;lockStyle=options.lockStyle;homeStyle=options.homeStyle;
+            if(scene!=null)scene.close();if(textureMotion!=null)textureMotion.close();
+            scene=new SceneMotion(width,height,mode,nextAod>=1&&nextAod<=5?-1:nextAod,lockStyle,6+homeStyle,false);
+            textureMotion=new TextureMotion(width,height,mode,lockStyle,6+homeStyle);
+            if(aod!=nextAod){masks(nextAod);aod=nextAod;}
+            else if(frameMotion!=null){frameMotion.close();frameMotion=new FrameMotion(width,height,mode,aod==1,PhotoStyle.get(aod));}
+            if(aod>=1&&aod<=5)bind(0,2);
+            if(aod==1)bind(5,textures[7]!=0?7:0);
+            if(lockStyle==3||homeStyle==3){bind(1,3);bind(2,4);}
+            if(aod==101)bind(3,5);
         }
+        // The home composition owns its crop even when it references the same image.
+        bind(4,!options.followLock&&textures[6]!=0?6:0);
+        NativeScene.tint(handle,options.tint);
         NativeScene.photoCrop(handle,options.x,options.y,options.zoom);
+        NativeScene.homeCrop(handle,options.followLock?options.x:options.homeX,options.followLock?options.y:options.homeY,options.followLock?options.zoom:options.homeZoom);
         NativeScene.frameCrop(handle,options.frameX,options.frameY,options.frameSize,options.frameAngle);
-        scene.followClock(options.aodOffsetX,.335f-options.aodOffsetY);
-        if(frameMotion!=null)frameMotion.position(options.aodOffsetX,.315f-options.aodOffsetY);
+        anchor(anchorX,anchorY,systemAnchor);
+        sample.clear();
+    }
+    void anchor(float x,float y,boolean system){
+        anchorX=x;anchorY=y;systemAnchor=system;
+        scene.followClock(x+options.aodOffsetX,(system?y:.335f+y-.165f)-options.aodOffsetY);
+        if(frameMotion!=null)frameMotion.position(x+options.aodOffsetX,(system?y:.315f+y-.165f)-options.aodOffsetY);
         sample.clear();
     }
     public boolean frameReady(){return submitted;}
+    boolean needsRedraw(){return catchUp;}
     public void render() {
         submitted=false;
+        boolean delayedSample=sample.pending;
         if(frameMotion!=null) {
             if(!sample.pending)sample.captureTextures(textureMotion);
             sample.capture(frameMotion,scene,SystemClock.uptimeMillis());
@@ -137,7 +179,9 @@ final class PhotoRenderer implements WallpaperRenderer {
         if(!NativeScene.effects(handle,frameMotion==null?textureMotion.packet():sample.textures)
                 ||!NativeScene.render(handle,textures[0],textures[1],aspect,frameMotion==null?scene.packet():sample.base))
             throw new IllegalStateException("Invalid photo scene packet");
-        submitted=true;sample.clear();
+        // CPU animation may have finished while this older sample waited for its mask.
+        // Present the latest snapshot once more before allowing the worker to go idle.
+        catchUp=delayedSample;submitted=true;sample.clear();
     }
 
     public void close() {
@@ -157,9 +201,11 @@ final class PhotoRenderer implements WallpaperRenderer {
             scene.change(next);if(!animate)scene.finish();mode=next;
         }
         public void advance(long time,float speed) {
+            // A settings repaint must not rotate an otherwise frozen AOD photo by the idle time.
+            float rotationSpeed=continuous||animating()?speed:0;
             textureMotion.advance(time);
             if(frameMotion!=null)frameMotion.advance(time);
-            scene.advance(time,speed);
+            scene.advance(time,rotationSpeed);
         }
         // Launcher offsets are not lens/clock coordinates. Cropping belongs to the photo editor.
         public void follow(float x,float y){}

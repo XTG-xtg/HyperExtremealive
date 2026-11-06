@@ -1,6 +1,6 @@
 package com.frederic22.hyperextreme.alive.core;
 
-/** A visible AOD surface is not an interactive lockscreen. Photo scenes must not expand for it. */
+/** 兼容旧类名：电源保护现用于所有 Alive 壁纸，可见的 AOD 不等于亮屏锁屏。 */
 public final class PhotoPowerGate {
     public static final int REJECT=-1;
     private boolean sleeping;

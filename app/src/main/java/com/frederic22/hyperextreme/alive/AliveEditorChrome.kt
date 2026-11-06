@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Text
 
-internal enum class AliveToolIcon { PHOTO, POSITION, CROP, TEXTURE, OPTIONS, PLAY, STOP }
+internal enum class AliveToolIcon { PHOTO, STYLE, POSITION, CROP, TEXTURE, OPTIONS, PLAY, STOP }
 internal data class AliveEditorTool(val label: String, val icon: AliveToolIcon, val enabled: Boolean = true, val onClick: () -> Unit)
 
 /** Pure UI: this layer cannot write config or signal a wallpaper. */
@@ -48,15 +48,8 @@ internal fun AliveEditorChrome(
     onMode: (Int) -> Unit,
 ) {
     Box(Modifier.fillMaxSize()) {
-        Row(Modifier.align(Alignment.TopCenter).fillMaxWidth()
-            .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = .45f), Color.Transparent)))
-            .statusBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-            EditorPill("取消", !busy, false, onCancel)
-            Text(title, color = Color.White, fontSize = 15.sp, textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
-            EditorPill(if (busy) "处理中" else "应用", !busy && canApply, true, onApply)
-        }
+        AliveEditorTopBar(title, "取消", if(busy) "处理中" else "应用", !busy, !busy && canApply,
+            onCancel, onApply, Modifier.align(Alignment.TopCenter))
         Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth()
             .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = .68f))))
             .navigationBarsPadding().padding(top = 28.dp, bottom = 16.dp),
@@ -99,6 +92,21 @@ internal fun AliveEditorChrome(
     }
 }
 
+@Composable
+internal fun AliveEditorTopBar(title: String, startLabel: String, endLabel: String,
+    startEnabled: Boolean, endEnabled: Boolean, onStart: () -> Unit, onEnd: () -> Unit,
+    modifier: Modifier = Modifier) {
+    Row(modifier.fillMaxWidth()
+        .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = .45f), Color.Transparent)))
+        .statusBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        EditorPill(startLabel, startEnabled, false, onStart)
+        Text(title, color = Color.White, fontSize = 15.sp, textAlign = TextAlign.Center,
+            modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
+        EditorPill(endLabel, endEnabled, true, onEnd)
+    }
+}
+
 /**
  * 编辑器面板里的分段选择器（2–4 项）。
  *
@@ -134,7 +142,7 @@ internal fun AliveSegments(
 
 @Composable
 private fun EditorPill(label: String, enabled: Boolean, primary: Boolean, onClick: () -> Unit) {
-    Box(Modifier.widthIn(min = 74.dp).heightIn(min = 48.dp).clip(CircleShape)
+    Box(Modifier.testTag("alive-header-$label").widthIn(min = 74.dp).heightIn(min = 48.dp).clip(CircleShape)
         .background(if (primary) Color(0xFF2F6BFF).copy(alpha = if (enabled) 1f else .45f) else Color(0xCC3A3A3C))
         .clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(horizontal = 18.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center) {
@@ -150,6 +158,10 @@ internal fun AliveToolGlyph(icon: AliveToolIcon, modifier: Modifier = Modifier, 
         fun line(x: Float, y: Float, x2: Float, y2: Float) =
             drawLine(tint, Offset(x * u, y * u), Offset(x2 * u, y2 * u), 1.6f * u, StrokeCap.Round)
         when (icon) {
+            AliveToolIcon.STYLE -> {
+                for(x in listOf(3f,14f)) for(y in listOf(3f,14f))
+                    drawRoundRect(tint,Offset(x*u,y*u),Size(7*u,7*u),CornerRadius(2*u),style=stroke)
+            }
             AliveToolIcon.PHOTO -> {
                 drawRoundRect(tint, Offset(3*u, 3*u), Size(18*u, 18*u), CornerRadius(3*u), style = stroke)
                 drawCircle(tint, 1.7f*u, Offset(8*u, 8*u))

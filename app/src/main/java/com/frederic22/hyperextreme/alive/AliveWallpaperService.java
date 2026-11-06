@@ -20,7 +20,6 @@ public abstract class AliveWallpaperService extends WallpaperService {
         private final KeyguardManager keyguard=getSystemService(KeyguardManager.class);
         private final PowerManager power=getSystemService(PowerManager.class);
         private boolean lastInteractive=power.isInteractive();
-        private boolean photo(){int variant=Config.variant(AliveWallpaperService.this);return !isPreview()&&(variant==601||variant==602);}
         private final BroadcastReceiver events=new BroadcastReceiver(){public void onReceive(Context c,Intent i){
             String a=i.getAction();
             if(Intent.ACTION_SCREEN_OFF.equals(a))signal(0,"screen-off");
@@ -32,6 +31,7 @@ public abstract class AliveWallpaperService extends WallpaperService {
             super.onCreate(holder);setTouchEventsEnabled(true);setOffsetNotificationsEnabled(true);
             worker=new EglWorker(AliveWallpaperService.this,isPreview());
             if(!isPreview())EngineRegistry.register(slot,this);IntentFilter f=new IntentFilter();f.addAction(Intent.ACTION_SCREEN_OFF);f.addAction(Intent.ACTION_SCREEN_ON);f.addAction(Intent.ACTION_USER_PRESENT);
+            if(!isPreview())signal(!power.isInteractive()?0:keyguard.isKeyguardLocked()?1:2,"engine-created");
             if(!isPreview())getContentResolver().notifyChange(Protocol.CONFIG,null);
             registerReceiver(events,f,Context.RECEIVER_EXPORTED);
             displays.registerDisplayListener(this,EngineRegistry.MAIN);
@@ -42,17 +42,27 @@ public abstract class AliveWallpaperService extends WallpaperService {
         @Override public void onVisibilityChanged(boolean value){
             worker.visible(value);
             if(value){Display d=displays.getDisplay(Display.DEFAULT_DISPLAY);int state=d==null?Display.STATE_ON:d.getState();
-                int mode=(state==Display.STATE_OFF||state==Display.STATE_DOZE||state==Display.STATE_DOZE_SUSPEND||photo()&&!power.isInteractive())?0:keyguard.isKeyguardLocked()?1:2;
+                int mode=(state==Display.STATE_OFF||state==Display.STATE_DOZE||state==Display.STATE_DOZE_SUSPEND||!power.isInteractive())?0:keyguard.isKeyguardLocked()?1:2;
                 signal(mode,"visible-slot-"+slot);transition();}
             Log.i(Protocol.TAG,"visible slot="+slot+" value="+value);
         }
         @Override public void onOffsetsChanged(float x,float y,float xs,float ys,int xp,int yp){worker.offset(x-.5f,y-.5f);}
-        @Override public void onTouchEvent(MotionEvent e){if(e.getActionMasked()==MotionEvent.ACTION_MOVE)worker.offset(e.getX()/Math.max(1,getSurfaceHolder().getSurfaceFrame().width())-.5f,e.getY()/Math.max(1,getSurfaceHolder().getSurfaceFrame().height())-.5f);}
+        @Override public void onTouchEvent(MotionEvent e){
+            float x=e.getX()/Math.max(1,getSurfaceHolder().getSurfaceFrame().width()),y=e.getY()/Math.max(1,getSurfaceHolder().getSurfaceFrame().height());
+            worker.touch(e.getActionMasked(),x,y);
+            if(e.getActionMasked()==MotionEvent.ACTION_MOVE)worker.offset(x-.5f,y-.5f);
+        }
         @Override public Bundle onCommand(String action,int x,int y,int z,Bundle extras,boolean result){
             // Standard platform lifecycle commands only; arbitrary external "mode" commands are ignored.
             if("android.wallpaper.wakingup".equals(action))signal(keyguard.isKeyguardLocked()?1:2,"wallpaper-waking");
             if("android.wallpaper.goingtosleep".equals(action))signal(0,"screen-off");
             return super.onCommand(action,x,y,z,extras,result);
+        }
+        // Hidden platform callback on ROMs that deliver ambient changes to wallpaper engines.
+        public void onAmbientModeChanged(boolean ambient,long duration){
+            // Ambient hints cannot wake the scene; PowerManager and the wake fence arbitrate.
+            if(ambient)signal(0,"wallpaper-ambient");
+            else if(power.isInteractive())signal(keyguard.isKeyguardLocked()?1:2,"wallpaper-ambient-exit");
         }
         private void signal(int mode,String reason){
             long now=SystemClock.uptimeMillis();
@@ -61,11 +71,12 @@ public abstract class AliveWallpaperService extends WallpaperService {
             }else EngineRegistry.signal(AliveWallpaperService.this,mode,now,reason);
         }
         void transition(){if(!isPreview())worker.state(EngineRegistry.snapshot());}
+        void clock(ClockSnapshot snapshot){if(!isPreview())worker.clock(snapshot);}
         void reload(){android.graphics.Rect r=getSurfaceHolder().getSurfaceFrame();worker.attach(getSurfaceHolder().getSurface(),r.width(),r.height(),Config.variant(AliveWallpaperService.this),Config.dark(AliveWallpaperService.this));}
         public void onDisplayAdded(int id){}
         public void onDisplayRemoved(int id){}
         public void onDisplayChanged(int id){if(id==Display.DEFAULT_DISPLAY){
-            if(photo()) {
+            if(!isPreview()) {
                 boolean interactive=power.isInteractive();
                 if(interactive!=lastInteractive)signal(interactive?(keyguard.isKeyguardLocked()?1:2):0,interactive?"display-awake":"display-asleep");
                 lastInteractive=interactive;

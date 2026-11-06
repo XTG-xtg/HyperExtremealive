@@ -56,8 +56,8 @@ internal fun AliveLibrary(onBack: () -> Unit) {
     var failure by remember { mutableStateOf("") }
     var group by rememberSaveable { mutableIntStateOf(0) }
     var revision by remember { mutableIntStateOf(0) }
-    val groups = listOf(-1, 0, 2, 1, 3, 4)
-    val labels = listOf("全部", "启航", "流光", "轻启", "视频", "立体")
+    val groups = aliveDynamicGroups
+    val labels = aliveDynamicLabels
     val colors = aliveUiColors()
     LaunchedEffect(Unit) {
         val result = withContext(Dispatchers.IO) { runCatching { AliveCatalog.load(app).filter { it.group != 5 } } }
@@ -136,6 +136,9 @@ internal fun AliveDiagnostics() {
                 stringResource(if (runtime.getBoolean("lock_engine")) R.string.alive_running else R.string.alive_not_running),
                 stringResource(if (runtime.getBoolean("enabled")) R.string.alive_on else R.string.alive_off), runtime.getLong("frames")))
             BasicComponent(title = stringResource(R.string.alive_refresh), enabled = !busy, onClick = { runtime = EngineRegistry.status(app) })
+            BasicComponent(title = "系统息屏时钟布局", summary = if(runtime.containsKey("aod_clock_bounds"))
+                "已获取系统坐标；包含系统防烧屏位移" else "尚未获取。应用后进入一次息屏再刷新；当前使用默认位置与小幅位移兜底。")
+            BasicComponent(title = "电源状态", summary = "${if(runtime.getBoolean("power_sleeping")) "息屏保护中" else "可交互"} · ${runtime.getString("reason", "initial")}")
             BasicComponent(title = stringResource(if (busy) R.string.alive_busy else R.string.alive_root_query),
                 summary = stringResource(R.string.alive_root_note), enabled = !busy, onClick = {
                     scope.launch {
