@@ -36,6 +36,8 @@
 
 ## 使用方法
 
+从 [Releases](https://github.com/XTG-xtg/HyperExtremealive/releases/latest) 下载正式安装包。
+
 1. 安装模块，在 LSPosed 中启用并勾选模块推荐的作用域，按提示重启。首次安装和更新后均需确认作用域生效。
 2. 打开 **功能 → Alive 动态壁纸**，选择壁纸、编辑照片并预览，满意后点击应用。
 3. Alive、空间、光栅和视差壁纸不能同时启用，切换前请先关闭正在使用的另一项。
@@ -49,10 +51,11 @@
 Python 3.10+，以及 Rust 1.96.0 和 `aarch64-linux-android` target。
 
 ```powershell
-.\gradlew.bat :app:assembleDebug
+.\gradlew.bat :app:testDebugUnitTest :app:assembleRelease
 ```
 
-构建产物位于 `app/build/outputs/apk/debug/`。本地签名配置参考
+正式构建开启 R8 优化与资源收缩，产物位于 `app/build/outputs/apk/release/`。
+开发调试可使用 `:app:assembleDebug`。本地签名配置参考
 `keystore.properties.example`，不要提交密钥；签名不同的 APK 无法直接覆盖安装。
 开发记录与验证资料保留在 [docs/alive](docs/alive/)。
 

@@ -35,6 +35,7 @@ final class EglWorker {
     private AodPresentation presentation;
     private ClockSnapshot clock;
     private int width,height;
+    private float presentationX,presentationY;
     private final Runnable minuteTick=()->{applyPlacement();request();};
     private boolean visible;
     private volatile boolean closed;
@@ -51,6 +52,7 @@ final class EglWorker {
     long attach(Surface surface, int w, int h, int variant, boolean dark) {
         final long generation = generations.incrementAndGet();
         handler.post(() -> {
+            if(closed||generation!=generations.get())return;
             release();
             renderedFrames=0;error="";
             activeGeneration=generation;
@@ -58,7 +60,7 @@ final class EglWorker {
             try {
                 width=w;height=h;clock=EngineRegistry.clock(true);if(!preview)options=AliveRenderOptions.load(context);
                 display=acquireDisplay();
-                EGLConfig[] configs={CosmicEgl.choose(display,EGL14.EGL_WINDOW_BIT)};
+                EGLConfig[] configs={CosmicEgl.choose(display,EGL14.EGL_WINDOW_BIT,variant<201||variant>=501&&variant<=503)};
                 eglContext=EGL14.eglCreateContext(display,configs[0],EGL14.EGL_NO_CONTEXT,new int[]{EGL14.EGL_CONTEXT_CLIENT_VERSION,3,EGL14.EGL_NONE},0);
                 check(eglContext!=EGL14.EGL_NO_CONTEXT,"create context");
                 eglSurface=EGL14.eglCreateWindowSurface(display,configs[0],surface,new int[]{EGL14.EGL_NONE},0);
@@ -137,14 +139,15 @@ final class EglWorker {
     private void applyPlacement(){
         handler.removeCallbacks(minuteTick);
         if(renderer==null)return;
-        boolean system=options.followClock&&clock!=null&&clock.bounds.fits(width,height)
-            &&SystemClock.uptimeMillis()-clock.at<120000;
+        boolean anchored=renderer instanceof PhotoRenderer||renderer.motion() instanceof CosmicMotion;
+        boolean system=anchored&&options.followClock&&clock!=null&&clock.usable(width,height);
         float x=system?clock.bounds.x():0,y=system?clock.bounds.y():.165f;
         // A live system snapshot already contains burn-in motion: never add it twice.
         if(!system&&!preview&&options.burnIn){x+=com.frederic22.hyperextreme.alive.core.AodPlacement.driftX(System.currentTimeMillis());y+=com.frederic22.hyperextreme.alive.core.AodPlacement.driftY(System.currentTimeMillis());}
+        presentationX=options.aodOffsetX+x;presentationY=options.aodOffsetY-(y-.165f);
         synchronized(motionSession){
             if(renderer instanceof PhotoRenderer)((PhotoRenderer)renderer).anchor(x,y,system);
-            else if(renderer.motion() instanceof CosmicMotion)renderer.motion().follow(x,y);
+            else if(renderer.motion() instanceof CosmicMotion)renderer.motion().follow(x+options.aodOffsetX,y-options.aodOffsetY);
         }
         if(visible&&!preview&&state.mode==0)handler.postDelayed(minuteTick,60000-System.currentTimeMillis()%60000);
     }
@@ -166,7 +169,7 @@ final class EglWorker {
         if(!(renderer.motion() instanceof CosmicMotion)&&!(renderer.motion() instanceof GradientMotion))renderer.motion().follow(x,y);
         renderer.interaction();request();
     }}); }
-    void detach() { handler.post(this::release); }
+    void detach() { generations.incrementAndGet();handler.post(this::release); }
     void close() { handler.post(()->{closed=true;release();thread.quitSafely();}); }
     private void request() {
         if(Looper.myLooper()!=handler.getLooper()){handler.post(this::request);return;}
@@ -189,7 +192,12 @@ final class EglWorker {
             motionSession.frame(state.sequence,state.mode,state.startMs*1000000L,frameNanos,renderer::render);
             float progress=Math.max(0,Math.min(1,(SystemClock.uptimeMillis()-state.startMs)/700f));
             float from=state.from==0?options.brightness:1,to=state.mode==0?options.brightness:1;
-            if(renderer.frameReady())presentation.render(from+(to-from)*progress);
+            // Families with native anchors preserve their full background. Other families use
+            // the presentation pass, fading the displacement out before lock/home settles.
+            float aodWeight=(state.from==0?1:0)+((state.mode==0?1:0)-(state.from==0?1:0))*progress;
+            boolean translate=!(renderer instanceof PhotoRenderer)&&!(renderer.motion() instanceof CosmicMotion);
+            if(renderer.frameReady())presentation.render(from+(to-from)*progress,
+                translate?presentationX*aodWeight:0,translate?presentationY*aodWeight:0);
             int glError=GLES30.glGetError();if(glError!=GLES30.GL_NO_ERROR)throw new IllegalStateException("GL error 0x"+Integer.toHexString(glError));
             if(renderer.frameReady()) {
                 check(EGL14.eglSwapBuffers(display,eglSurface),"swap");

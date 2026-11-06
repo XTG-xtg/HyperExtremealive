@@ -1,0 +1,16 @@
+����: [options] Դֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ŀ��ֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ҫ�����й��ѹ�ʱѡ��ľ���, ��ʹ�� -Xlint:-options��
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+3 ������
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-photo-device\dex\classes.dex: 1 file pushed, 0 skipped. 138.9 MB/s (372600 bytes in 0.003s)
+.reference\ui5-native\libhyperextreme_photo.so: 1 file pushed, 0 skipped. 155.6 MB/s (495800 bytes in 0.003s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\outputs\apk\debug\app-debug.apk: 1 file pushed, 0 skipped. 48.6 MB/s (203055470 bytes in 3.984s)
+photo-gpu-perf 0 PHOTO_GPU_PERF mode=0 size=1200x2670 samples=90 p50Ms=5.786354 p95Ms=6.126094
+
+PHOTO_GPU_PERF mode=1 size=1200x2670 samples=90 p50Ms=2.400834 p95Ms=3.016354
+
+PHOTO_GPU_PERF mode=2 size=1200x2670 samples=90 p50Ms=4.135938 p95Ms=5.555
+
+

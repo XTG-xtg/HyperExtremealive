@@ -22,7 +22,6 @@ final class PhotoStyleThumbnails implements AutoCloseable {
     private EGLSurface surface=EGL14.EGL_NO_SURFACE;
     private PhotoRenderer renderer;
     private File photo,home,frame;
-    private File sample;
     private int index;
     private long started;
     private volatile boolean cancelled;
@@ -41,16 +40,8 @@ final class PhotoStyleThumbnails implements AutoCloseable {
     private void start(){
         try{
             if(cancelled){finish("cancelled");return;}
-            photo=PhotoMedia.resolve(context,options,true,0);home=PhotoMedia.resolve(context,options,true,1);frame=PhotoMedia.resolve(context,options,true,2);
-            if(!photo.isFile()){
-                // A first-use sample is copied only into the disposable cache, never draft/applied media.
-                sample=File.createTempFile("alive-photo-tile-",".png",context.getCacheDir());photo=sample;
-                try(InputStream in=context.getAssets().open("stereo/preview_v6.png");FileOutputStream out=new FileOutputStream(photo)){
-                    byte[] buffer=new byte[32768];for(int n;(n=in.read(buffer))!=-1;)out.write(buffer,0,n);
-                }
-            }
-            if(!home.isFile())home=photo;if(!frame.isFile())frame=photo;
-            display=EglWorker.acquireDisplay();EGLConfig config=CosmicEgl.choose(display,EGL14.EGL_PBUFFER_BIT);
+            photo=PhotoMedia.prepare(context,options,true,0);home=PhotoMedia.prepare(context,options,true,1);frame=PhotoMedia.prepare(context,options,true,2);
+            display=EglWorker.acquireDisplay();EGLConfig config=CosmicEgl.choose(display,EGL14.EGL_PBUFFER_BIT,false);
             eglContext=EGL14.eglCreateContext(display,config,EGL14.EGL_NO_CONTEXT,new int[]{EGL14.EGL_CONTEXT_CLIENT_VERSION,3,EGL14.EGL_NONE},0);
             surface=EGL14.eglCreatePbufferSurface(display,config,new int[]{EGL14.EGL_WIDTH,W,EGL14.EGL_HEIGHT,H,EGL14.EGL_NONE},0);
             if(!EGL14.eglMakeCurrent(display,surface,surface,eglContext))throw new IOException("Photo tile EGL failed");
@@ -104,7 +95,6 @@ final class PhotoStyleThumbnails implements AutoCloseable {
             EglWorker.releaseDisplay();EGL14.eglReleaseThread();display=EGL14.EGL_NO_DISPLAY;
         }
         if(cancelled||!error.isEmpty())for(Bitmap image:images)if(image!=null)image.recycle();
-        if(sample!=null)sample.delete();
         if(!cancelled)callback.complete(error.isEmpty()?images:new Bitmap[0],error);thread.quitSafely();
     }
     @Override public void close(){cancelled=true;handler.post(()->finish("cancelled"));}

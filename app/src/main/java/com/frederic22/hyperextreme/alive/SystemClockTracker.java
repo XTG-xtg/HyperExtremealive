@@ -30,7 +30,7 @@ final class SystemClockTracker implements ViewTreeObserver.OnPreDrawListener, Vi
         View view=root.get();long now=SystemClock.uptimeMillis();
         if(view==null||!active.getAsBoolean()||now-lastSample<200)return true;lastSample=now;
         View clock=find(view);if(clock==null)return true;
-        Rect rect=new Rect();if(!clock.getGlobalVisibleRect(rect)||rect.isEmpty())return true;
+        Rect rect=contentBounds(clock);if(rect.isEmpty())return true;
         android.util.DisplayMetrics metrics=new android.util.DisplayMetrics();
         if(view.getDisplay()==null||view.getDisplay().getDisplayId()!=android.view.Display.DEFAULT_DISPLAY)return true;
         view.getDisplay().getRealMetrics(metrics);
@@ -47,20 +47,42 @@ final class SystemClockTracker implements ViewTreeObserver.OnPreDrawListener, Vi
         View group=find(view,true);
         return group!=null?group:find(view,false);
     }
+    static Rect contentBounds(View view){
+        Rect result=new Rect();
+        if(view.getVisibility()!=View.VISIBLE||view.getAlpha()<.05f)return result;
+        if(view instanceof ViewGroup){
+            ViewGroup group=(ViewGroup)view;
+            for(int i=0;i<group.getChildCount();i++)result.union(contentBounds(group.getChildAt(i)));
+        } else if(view instanceof android.widget.TextView){
+            android.widget.TextView text=(android.widget.TextView)view;
+            android.text.Layout layout=text.getLayout();
+            if(text.length()==0||layout==null||!text.getGlobalVisibleRect(result))return new Rect();
+            android.graphics.RectF glyphs=new android.graphics.RectF();
+            for(int i=0;i<layout.getLineCount();i++)glyphs.union(layout.getLineLeft(i),layout.getLineTop(i),layout.getLineRight(i),layout.getLineBottom(i));
+            glyphs.offset(text.getTotalPaddingLeft()-text.getScrollX(),text.getTotalPaddingTop()-text.getScrollY());
+            android.graphics.Matrix matrix=new android.graphics.Matrix();text.transformMatrixToGlobal(matrix);matrix.mapRect(glyphs);
+            Rect bounds=new Rect();glyphs.roundOut(bounds);if(!result.intersect(bounds))result.setEmpty();
+        } else if(!(view instanceof android.widget.Space)&&
+                (view.getClass()!=View.class||view.getBackground()!=null)&&
+                (!(view instanceof android.widget.ImageView)||((android.widget.ImageView)view).getDrawable()!=null)){
+            view.getGlobalVisibleRect(result);
+        }
+        return result;
+    }
     private static View find(View view,boolean groups){
         if(view.getVisibility()!=View.VISIBLE||view.getAlpha()<.05f||view.getWidth()<=0||view.getHeight()<=0)return null;
         String id="";
         try{if(view.getId()!=View.NO_ID)id=view.getResources().getResourceEntryName(view.getId()).toLowerCase(Locale.ROOT);}catch(RuntimeException ignored){}
         // Prefer a bounded clock group over one of its hour/minute children or full-screen hosts.
-        if(groups&&(id.equals("clock_animation_container")||id.equals("keyguard_clock_container")||id.equals("clock_container")
-                ||id.equals("miui_keyguard_clock_container")||id.equals("aod_clock")||id.equals("clock_view"))
-                &&view.getHeight()<view.getRootView().getHeight()*.65f)return view;
         if(view instanceof ViewGroup){ViewGroup group=(ViewGroup)view;
             for(int i=0;i<group.getChildCount();i++){View result=find(group.getChildAt(i),groups);if(result!=null)return result;}}
+        if(groups&&(id.equals("clock_animation_container")||id.equals("keyguard_clock_container")||id.equals("clock_container")
+                ||id.equals("miui_keyguard_clock_container")||id.equals("aod_clock")||id.equals("clock_view"))
+                &&view.getHeight()<view.getRootView().getHeight()*.35f)return view;
         // Never use the small status-bar clock when the actual keyguard clock is hidden.
         return !groups&&(id.equals("clock")||id.equals("time_view")||id.equals("aod_time"))
             &&view.getHeight()>view.getRootView().getHeight()*.035f
-            &&view.getHeight()<view.getRootView().getHeight()*.65f?view:null;
+            &&view.getHeight()<view.getRootView().getHeight()*.35f?view:null;
     }
     public void onViewAttachedToWindow(View v){}
     public void onViewDetachedFromWindow(View v){if(v.getViewTreeObserver().isAlive())v.getViewTreeObserver().removeOnPreDrawListener(this);v.removeOnAttachStateChangeListener(this);TRACKERS.remove(v);}

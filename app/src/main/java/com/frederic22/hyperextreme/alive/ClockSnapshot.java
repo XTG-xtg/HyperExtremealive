@@ -11,9 +11,14 @@ final class ClockSnapshot {
     final boolean aod;
     ClockSnapshot(Bundle b) {
         bounds=new AodPlacement(b.getInt("width"),b.getInt("height"),b.getInt("left"),b.getInt("top"),b.getInt("right"),b.getInt("bottom"));
+        if(!bounds.isClockContent())throw new IllegalArgumentException("Clock host is not content geometry");
         at=b.getLong("at");aod=b.getBoolean("aod");
         long now=SystemClock.uptimeMillis();
         if(at<0||at>now||now-at>5000)throw new IllegalArgumentException("Stale clock geometry");
+    }
+    boolean usable(int width,int height){
+        long age=SystemClock.uptimeMillis()-at;
+        return aod&&age>=0&&age<120000&&bounds.isClockContent()&&bounds.fits(width,height);
     }
     Bundle bundle(){
         Bundle b=new Bundle();b.putInt("width",bounds.width);b.putInt("height",bounds.height);

@@ -41,8 +41,8 @@ final class PhotoRenderer implements WallpaperRenderer {
         this(context,PhotoOptions.load(context,preview),width,height,initial,variant,preview,invalidate);
     }
     PhotoRenderer(Context c,PhotoOptions options,int w,int h,int initial,int variant,boolean preview,Runnable invalidate)throws IOException {
-        this(c.getAssets(),PhotoMedia.resolve(c,options,preview,0),PhotoMedia.resolve(c,options,preview,1),
-            PhotoMedia.resolve(c,options,preview,2),w,h,initial,variant,options,invalidate);
+        this(c.getAssets(),PhotoMedia.prepare(c,options,preview,0),PhotoMedia.prepare(c,options,preview,1),
+            PhotoMedia.prepare(c,options,preview,2),w,h,initial,variant,options,invalidate);
     }
 
     // Device tests use a synthetic image through this constructor, never a user's photo.
@@ -52,7 +52,7 @@ final class PhotoRenderer implements WallpaperRenderer {
     PhotoRenderer(AssetManager assets,File photo,File home,File frame,int width,int height,int initial,int variant,PhotoOptions options,Runnable invalidate)throws IOException {
         if(variant<601||variant>606)throw new IllegalArgumentException("Photo variant "+variant);
         this.assets=assets;this.variant=variant;this.invalidate=invalidate;mode=initial;
-        this.width=width;this.height=height;
+        this.width=width;this.height=height;this.options=options;
         try {
             loadImage(0,photo);photoWidth=textureWidth[0];photoHeight=textureHeight[0];
             aspect=(float)photoWidth/photoHeight;
@@ -66,7 +66,15 @@ final class PhotoRenderer implements WallpaperRenderer {
     }
 
     private void loadImage(int index,File file)throws IOException {
-        Bitmap bitmap=BitmapFactory.decodeFile(file.getAbsolutePath());
+        BitmapFactory.Options decode=new BitmapFactory.Options();decode.inJustDecodeBounds=true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(),decode);
+        // Retain zoom headroom, but do not upload a multi-megapixel photo for a 288px tile.
+        float zoom=index==7?1/options.frameSize:index==6?options.homeZoom:Math.max(options.zoom,options.homeZoom);
+        int target=(int)(Math.max(width,height)*zoom);
+        decode.inSampleSize=1;
+        while(Math.max(decode.outWidth,decode.outHeight)/(decode.inSampleSize*2)>=target)decode.inSampleSize*=2;
+        decode.inJustDecodeBounds=false;
+        Bitmap bitmap=BitmapFactory.decodeFile(file.getAbsolutePath(),decode);
         if(bitmap==null)throw new IOException("Photo is missing or cannot be decoded");
         try{textures[index]=upload(bitmap);textureWidth[index]=bitmap.getWidth();textureHeight[index]=bitmap.getHeight();}
         finally{bitmap.recycle();}

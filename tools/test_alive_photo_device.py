@@ -15,7 +15,12 @@ def main():
     parser.add_argument('--compile-sdk', default='37.0')
     parser.add_argument('--build-tools', default='37.0.0')
     parser.add_argument('--state-only', action='store_true', help='Only run real-Looper photo interruption tests')
+    parser.add_argument('--gpu-perf', action='store_true', help='Measure synchronous GPU frame work without vsync')
+    parser.add_argument('--native-library', type=Path, help='Explicit ABI-compatible native baseline for --gpu-perf only')
+    parser.add_argument('--cache-only', action='store_true', help='Compare cached and fresh texture passes')
     parser.add_argument('--perf-only', action='store_true', help='Only run native-resolution consumed-window benchmarks')
+    parser.add_argument('--placement-only', action='store_true', help='Only compare initial, configured and rebound AOD position')
+    parser.add_argument('--assert-placement', action='store_true')
     parser.add_argument('--variants',default='601,602',help='Comma-separated photo IDs (601..606)')
     parser.add_argument('--power-only',action='store_true',help='Only run hidden live-worker orb regressions')
     parser.add_argument('--assets-only',action='store_true',help='Only run independent photo source pixel assertions')
@@ -27,6 +32,7 @@ def main():
     parser.add_argument('--vivo-fixture',choices=['factory','custom','video'],default='factory')
     parser.add_argument('--shell-uid',action='store_true',help='Run Vivo video diagnostics as shell instead of root (isolated temp storage)')
     args = parser.parse_args()
+    if args.native_library and not args.gpu_perf: parser.error('--native-library requires --gpu-perf')
     if args.shell_uid and not args.vivo: parser.error('--shell-uid requires --vivo')
     repo = Path(__file__).resolve().parents[1]
     out = repo / 'build/alive-photo-device'
@@ -47,6 +53,7 @@ def main():
     files += [repo/'tests/alive/device/VivoWorkerProbe.java']
     files += [repo/'tests/alive/device/PhotoThumbnailProbe.java',repo/'tests/alive/device/BrightnessWorkerProbe.java']
     files += [repo/'tests/alive/device/PreviewSwitchProbe.java']
+    files += [repo/'tests/alive/device/PlacementWorkerProbe.java',repo/'tests/alive/device/PhotoCacheProbe.java',repo/'tests/alive/device/PhotoGpuPerfProbe.java']
     options = ['-encoding', 'UTF-8', '-source', '8', '-target', '8', '-bootclasspath',
                str(android) + os.pathsep + str(tools / 'core-lambda-stubs.jar'),
                '-cp', str(api), '-d', str(classes), *map(str, files)]
@@ -63,7 +70,7 @@ def main():
     adb = [str(sdk / 'platform-tools' / ('adb' + exe)), '-s', args.serial]
     remote = '/data/local/tmp/hyperextreme-photo-test'
     subprocess.run(adb + ['shell', 'mkdir -p ' + remote], check=True)
-    for f in [dex / 'classes.dex', repo / 'app/build/generated/aliveJni/arm64-v8a/libhyperextreme_photo.so']:
+    for f in [dex / 'classes.dex', args.native_library or repo / 'app/build/generated/aliveJni/arm64-v8a/libhyperextreme_photo.so']:
         subprocess.run(adb + ['push', str(f), remote + '/' + f.name], check=True)
     subprocess.run(adb+['push',str(repo/'app/build/outputs/apk/debug/app-debug.apk'),remote+'/candidate.apk'],check=True)
     if args.vivo_mask:
@@ -72,7 +79,7 @@ def main():
                 library=out/name;library.write_bytes(apk.read('lib/arm64-v8a/'+name))
                 subprocess.run(adb+['push',str(library),remote+'/'+name],check=True)
     variants=[int(v) for v in args.variants.split(',')]
-    if not variants or any(v not in range(601,607) for v in variants): raise ValueError('Invalid photo IDs')
+    if not variants or (not args.placement_only and any(v not in range(601,607) for v in variants)): raise ValueError('Invalid photo IDs')
     cases = [(f'photo-{v}-{land}', 'PhotoPipelineProbe', f'{v} {land}')
              for v in variants for land in ['false', 'true']]
     cases += [('presentation','PresentationProbe','')]
@@ -110,8 +117,14 @@ def main():
         cases += [(f'brightness-{v}','BrightnessWorkerProbe',str(v)) for v in [1,601,602,603,604,605,606]]
     if args.preview_switch:
         cases=[('preview-switch','PreviewSwitchProbe','')]
+    if args.placement_only:
+        cases=[(f'placement-{v}','PlacementWorkerProbe',str(v)) for v in variants]
+    if args.gpu_perf:
+        cases=[('photo-gpu-perf','PhotoGpuPerfProbe','')]
+    if args.cache_only:
+        cases=[('photo-cache','PhotoCacheProbe','')]
     for name, test, parameters in cases:
-        command = (f"su -M -c 'CLASSPATH={remote}/classes.dex:{remote}/candidate.apk app_process -Dalive.test.apk={remote}/candidate.apk -Djava.library.path={remote} "
+        command = (f"su -M -c 'CLASSPATH={remote}/classes.dex:{remote}/candidate.apk app_process -Dalive.test.placement.assert={str(args.assert_placement).lower()} -Dalive.test.apk={remote}/candidate.apk -Djava.library.path={remote} "
                    f"/system/bin com.frederic22.hyperextreme.alive.{test} {parameters}'")
         if args.shell_uid:
             command=(f"CLASSPATH={remote}/classes.dex:{remote}/candidate.apk app_process -Dalive.test.out=/data/local/tmp/hyperextreme-vivo-shell-test -Dalive.test.apk={remote}/candidate.apk -Djava.library.path={remote} /system/bin com.frederic22.hyperextreme.alive.{test} {parameters}")
@@ -129,7 +142,7 @@ def main():
                 if args.vivo_mask and not name.startswith('subject-'): continue
                 if args.vivo and not any(name.startswith(f'{family}-{style}-{args.vivo_fixture}-') for family,style in pairs): continue
                 subprocess.run(adb+['pull',path,str(pictures/Path(path).name)],check=True)
-    elif not (args.power_only or args.state_only or args.perf_only or args.assets_only or args.vivo_worker or args.preview_switch):
+    elif not (args.power_only or args.state_only or args.perf_only or args.assets_only or args.vivo_worker or args.preview_switch or args.placement_only or args.cache_only or args.gpu_perf):
         pictures=out/'frames';pictures.mkdir(exist_ok=True)
         listing=subprocess.run(adb+['shell','find',remote,'-maxdepth','1','-name','*.png'],capture_output=True,text=True,check=True)
         for path in listing.stdout.splitlines():

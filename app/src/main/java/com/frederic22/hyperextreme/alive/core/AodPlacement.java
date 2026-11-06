@@ -9,6 +9,8 @@ public final class AodPlacement {
         this.width=width;this.height=height;this.left=left;this.top=top;this.right=right;this.bottom=bottom;
     }
     public boolean fits(int w,int h){return w>0&&h>0&&Math.abs((double)w*height/((double)h*width)-1)<.02;}
+    /** Clock hosts can include empty layout space; they are not glyph bounds. */
+    public boolean isClockContent(){return (bottom-top)<height*.35f && (right-left)<width*.95f;}
     public float x(){return Math.max(-.25f,Math.min(.25f,(left+right)*.5f/width-.5f));}
     // Leave enough room below the clock for the largest AOD orb, without moving off screen.
     public float y(){return .5f-Math.min(.78f,bottom/(float)height+.15f*width/height);}

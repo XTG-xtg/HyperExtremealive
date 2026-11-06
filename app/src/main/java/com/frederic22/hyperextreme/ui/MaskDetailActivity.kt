@@ -149,18 +149,23 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val prefs = remember { MaskPrefs(context) }
-    val state = remember { MaskUiState(context, prefs, scope) }
+    val state = remember(page) { MaskUiState(context, prefs, scope, when (page) {
+        DetailPage.MaskReplace -> MaskPreviewContent.MASK
+        DetailPage.ParallaxBg -> MaskPreviewContent.PARALLAX
+        else -> MaskPreviewContent.NONE
+    }) }
+    DisposableEffect(state) { onDispose { state.close() } }
 
     var askRestartAod by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.revision) {
+    LaunchedEffect(state, state.revision) {
         state.reloadPreviews()
     }
 
     // 回到前台时对齐一次状态：hook 在编辑器进程里可能已经自动解除了保护（用户换了壁纸），
     // 那时只有 SharedPreferences 变了；界面不重新读一次就会永远停在"保护中"。
     val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
+    DisposableEffect(lifecycleOwner, state) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) state.onResume()
         }

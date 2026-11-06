@@ -3,9 +3,6 @@ package com.frederic22.hyperextreme.ui
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -36,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +47,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -211,8 +211,13 @@ internal fun HomeTab(state: MaskUiState) {
  */
 @Composable
 internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
+    val context = LocalContext.current.applicationContext
+    val configuration = LocalConfiguration.current
+    val sizePx = with(LocalDensity.current) { 44.dp.roundToPx() }.coerceIn(1, 512)
+    val icons = remember(context, configuration, sizePx) { AppIconLoader(context, sizePx) }
     TabColumn {
         AppEntryCard(
+            icons = icons,
             packageName = AodPackageName,
             title = "锁屏遮罩替换",
             onClick = { onOpen(DetailPage.MaskReplace) },
@@ -220,6 +225,7 @@ internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
         // 「视差壁纸」（2026-10-31 由「视差壁纸效果」改名）：与「锁屏遮罩替换」同构 ——
         // 同一套系统转场 / 二级页模板。二级页顶栏标题见 `MaskDetailActivity` 的 when。
         AppEntryCard(
+            icons = icons,
             packageName = AodPackageName,
             title = "视差壁纸",
             onClick = { onOpen(DetailPage.ParallaxBg) },
@@ -229,6 +235,7 @@ internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
         // 两者共用「用背景图」这个前提，但状态、开关、渲染管线**互不影响**，
         // 关掉其中任何一个都不影响另一个。入口紧挨着视差，方便对比。
         AppEntryCard(
+            icons = icons,
             // 2026-10-29：图标/包名改成**壁纸服务**本身（空间壁纸是靠改壁纸层实现的，
             // 挂在 AOD 名下不准确）。
             packageName = MiuiWallpaperPackageName,
@@ -239,16 +246,19 @@ internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
         // 渲染层计划复用空间壁纸那套 GL；图标/包名与空间壁纸保持一致（同样是壁纸层的事）。
         // 当前二级页只是**主体验证**（系统 AI 能不能给遮罩），还不是完整功能。
         AppEntryCard(
+            icons = icons,
             packageName = MiuiWallpaperPackageName,
             title = "光栅壁纸",
             onClick = { onOpen(DetailPage.RasterWallpaper) },
         )
         AppEntryCard(
+            icons = icons,
             packageName = MiuiWallpaperPackageName,
             title = androidx.compose.ui.res.stringResource(R.string.alive_title),
             onClick = { onOpen(DetailPage.Alive) },
         )
         AppEntryCard(
+            icons = icons,
             packageName = SystemUiPackageName,
             title = "系统界面",
             onClick = { onOpen(DetailPage.SystemUi) },
@@ -257,6 +267,7 @@ internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
         // 触发信号由桌面自己发给 SystemUI，模块**不往桌面进程装载任何东西**；
         // 生效逻辑（多任务出现 → 藏状态栏内容、退出还原）见 hook/RecentsStatusBar。
         AppEntryCard(
+            icons = icons,
             packageName = MiuiHomePackageName,
             title = "系统桌面",
             onClick = { onOpen(DetailPage.Desktop) },
@@ -268,12 +279,14 @@ internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
  * 一级页的「应用入口」卡片。
  *
  * 图标走**系统里真实的那一个**（`PackageManager.getApplicationIcon`），和桌面 / 设置里看到的一致，
- * 不另外自带图。取不到（理论上不会）就只显示文字，不留空位。
+ * 不另外自带图。异步读取期间保留图标位置，避免文字跳动。
  */
 @Composable
-private fun AppEntryCard(packageName: String, title: String, onClick: () -> Unit) {
+private fun AppEntryCard(icons: AppIconLoader, packageName: String, title: String, onClick: () -> Unit) {
     val haptic = rememberClickHaptic()
-    val icon = rememberAppIcon(packageName)
+    val icon by produceState<ImageBitmap?>(null, icons, packageName) {
+        value = icons.load(packageName)
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -289,16 +302,16 @@ private fun AppEntryCard(packageName: String, title: String, onClick: () -> Unit
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (icon != null) {
-                Image(
-                    bitmap = icon,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                )
-                Spacer(Modifier.width(14.dp))
+            Box(Modifier.size(44.dp)) {
+                icon?.let {
+                    Image(
+                        bitmap = it,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp)),
+                    )
+                }
             }
+            Spacer(Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = title, style = MiuixTheme.textStyles.headline1)
                 Spacer(Modifier.height(2.dp))
@@ -321,40 +334,6 @@ private fun AppEntryCard(packageName: String, title: String, onClick: () -> Unit
         }
     }
 }
-
-/** 取系统里那个应用的真实图标；拿不到就返回 null（卡片只显示文字）。 */
-@Composable
-private fun rememberAppIcon(packageName: String): ImageBitmap? {
-    val context = LocalContext.current
-    return remember(packageName) {
-        runCatching {
-            context.packageManager.getApplicationIcon(packageName)
-                .toBitmapOrNull()
-                ?.asImageBitmap()
-        }.getOrNull()
-    }
-}
-
-/**
- * `Drawable` → `Bitmap`。
- *
- * 不用 `androidx.core` 那个 `toBitmap()`：本工程没有显式依赖 core-ktx，而这点活儿自己画一遍就够了
- * （自适应图标也能按 bounds 正确渲染出来）。
- */
-private fun Drawable.toBitmapOrNull(): Bitmap? = runCatching {
-    if (this is BitmapDrawable) {
-        bitmap?.let { return@runCatching it }
-    }
-    val width = intrinsicWidth.takeIf { it > 0 } ?: FallbackIconSize
-    val height = intrinsicHeight.takeIf { it > 0 } ?: FallbackIconSize
-    val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    setBounds(0, 0, width, height)
-    draw(Canvas(result))
-    result
-}.getOrNull()
-
-/** 图标拿不到内在尺寸时按这个边长画（兜底；这两个系统应用实际上都有尺寸）。 */
-private const val FallbackIconSize = 144
 
 // ------------------------------------------------------------------ 功能（二级：锁屏遮罩替换）
 

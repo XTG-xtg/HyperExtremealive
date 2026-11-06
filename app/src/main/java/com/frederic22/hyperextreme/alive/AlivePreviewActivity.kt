@@ -68,10 +68,10 @@ class AlivePreviewActivity : ComponentActivity() {
 private val PhotoSaver = Saver<PhotoOptions, Bundle>(save = { it.bundle() }, restore = { PhotoOptions.fromBundle(it) })
 private val VivoSaver = Saver<VivoOptions, String>(save = { it.json() }, restore = { VivoOptions.parse(it) })
 
-private val RenderSaver = listSaver<AliveRenderOptions, Float>(
+internal val RenderSaver = listSaver<AliveRenderOptions, Float>(
     save = { listOf(if(it.keepLock) 1f else 0f, if(it.continuousAod) 1f else 0f, if(it.continuousHome) 1f else 0f,
-        if(it.followClock) 1f else 0f, if(it.burnIn) 1f else 0f, if(it.stereoAod) 1f else 0f, it.sensitivity.toFloat(), it.brightness) },
-    restore = { AliveRenderOptions(it[0] == 1f, it[1] == 1f, it[2] == 1f, it[3] == 1f, it[4] == 1f, it[5] == 1f, it[6].toInt(), it[7]) })
+        if(it.followClock) 1f else 0f, if(it.burnIn) 1f else 0f, if(it.stereoAod) 1f else 0f, it.sensitivity.toFloat(), it.brightness, it.aodOffsetX, it.aodOffsetY) },
+    restore = { AliveRenderOptions(it[0] == 1f, it[1] == 1f, it[2] == 1f, it[3] == 1f, it[4] == 1f, it[5] == 1f, it[6].toInt(), it[7], it.getOrElse(8) { 0f }, it.getOrElse(9) { 0f }) })
 
 @Composable
 private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack: () -> Unit) {
@@ -96,7 +96,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
     var vivo by rememberSaveable(stateSaver = VivoSaver) { mutableStateOf(VivoOptions.load(app, if(initialVariant in 701..703) initialVariant else 701, true)) }
     var vivoImport by rememberSaveable { mutableIntStateOf(VivoMediaSelection.WALLPAPER) }
     var maskArea by rememberSaveable { mutableIntStateOf(2) }
-    var renderOptions by rememberSaveable(stateSaver = RenderSaver) { mutableStateOf(AliveRenderOptions.load(app)) }
+    var renderOptions by rememberSaveable(stateSaver = RenderSaver) { mutableStateOf(AliveRenderOptions.load(app, true)) }
     var revision by remember { mutableIntStateOf(0) }
     var sequence by remember { mutableLongStateOf(0) }
     var busy by remember { mutableStateOf(false) }
@@ -109,7 +109,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
     var cropTarget by rememberSaveable { mutableIntStateOf(0) }
     val isPhoto = variant in 601..606
     val isVivo = variant in 701..703
-    val hasPhoto = remember(revision, photo.lockPhoto) { PhotoMedia.resolve(app, photo, true, 0).isFile }
+    val hasPhoto = remember(revision, photo.lockPhoto) { PhotoMedia.available(app, photo, true, 0) }
     val currentPhoto by rememberUpdatedState(photo)
     val currentVivo by rememberUpdatedState(vivo)
     val currentVariant by rememberUpdatedState(variant)
@@ -131,8 +131,8 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
         expectedGeneration = worker.attach(surface.surface, rect.width(), rect.height(), currentVariant, currentDark)
         worker.visible(currentPanel != "mask" && !currentBusy && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
     }
-    LaunchedEffect(variant, dark, revision, renderOptions.keepLock, photo.lockPhoto, photo.homePhoto, photo.framePhoto, photo.followLock) { rendered = false; error = ""; surfaceHolder?.takeIf { it.surface.isValid }?.let { attach(it) } }
-    LaunchedEffect(renderOptions) { worker.options(renderOptions) }
+    LaunchedEffect(surfaceHolder, variant, dark, revision, renderOptions.keepLock, photo.lockPhoto, photo.homePhoto, photo.framePhoto, photo.followLock) { rendered = false; error = ""; surfaceHolder?.takeIf { it.surface.isValid }?.let { attach(it) } }
+    LaunchedEffect(renderOptions) { worker.options(renderOptions); delay(200); renderOptions.saveDraft(app) }
     LaunchedEffect(panel) { worker.visible(panel!="mask" && !busy && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
     LaunchedEffect(mode) {
         worker.state(EngineRegistry.Snapshot(previous, mode, SystemClock.uptimeMillis(), ++sequence)); previous = mode
@@ -154,7 +154,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
     DisposableEffect(owner, worker) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) worker.visible(currentPanel != "mask" && !currentBusy)
-            if (event == Lifecycle.Event.ON_PAUSE) { worker.visible(false); demo = false; currentPhoto.save(app, true); if(currentVariant in 701..703) currentVivo.saveDraft(app) }
+            if (event == Lifecycle.Event.ON_PAUSE) { worker.visible(false); demo = false; currentPhoto.save(app, true); currentOptions.saveDraft(app); if(currentVariant in 701..703) currentVivo.saveDraft(app) }
         }
         owner.lifecycle.addObserver(observer)
         worker.visible(currentPanel != "mask" && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
@@ -229,7 +229,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
             if(key == 1) value == 1f else o.continuousAod, if(key == 2) value == 1f else o.continuousHome,
             if(key == 3) value == 1f else o.followClock, if(key == 4) value == 1f else o.burnIn,
             if(key == 5) value == 1f else o.stereoAod, if(key == 6) value.toInt() else o.sensitivity,
-            if(key == 7) value else o.brightness)
+            if(key == 7) value else o.brightness, o.aodOffsetX, o.aodOffsetY)
     }
 
     Scaffold(contentWindowInsets = WindowInsets(0)) { _ ->
@@ -237,7 +237,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
             AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx ->
                 SurfaceView(ctx).apply { this.holder.addCallback(object : SurfaceHolder.Callback {
                     override fun surfaceCreated(surface: SurfaceHolder) = Unit
-                    override fun surfaceChanged(surface: SurfaceHolder, format: Int, width: Int, height: Int) { surfaceHolder = surface; attach(surface) }
+                    override fun surfaceChanged(surface: SurfaceHolder, format: Int, width: Int, height: Int) { surfaceHolder = surface; revision++ }
                     override fun surfaceDestroyed(surface: SurfaceHolder) { surfaceHolder = null; expectedGeneration = -1; worker.detach() }
                 }); setOnTouchListener { view, event ->
                     if(currentVariant in 701..703 && !currentBusy && !currentSwitching) { worker.touch(event.actionMasked,event.x/view.width.coerceAtLeast(1),event.y/view.height.coerceAtLeast(1)); true } else false
@@ -246,7 +246,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
             Canvas(Modifier.fillMaxSize()) { drawRect(Color.Black, alpha = transition.shade.value) }
             if(rendered && !transition.running && error.isEmpty() && showClockGuide && panel != "crop" && panel != "mask") AliveSceneOverlay(mode, variant = variant)
             if (!transition.running && isPhoto && !hasPhoto) Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("用一张照片，连接息屏与桌面", color = Color.White)
+                Text("所选照片不可用，请重新选择", color = Color.White)
                 TextButton(text = stringResource(R.string.alive_photo), enabled = !busy,
                     colors = ButtonDefaults.textButtonColorsPrimary(),
                     onClick = { pickPhoto(0) })
@@ -260,10 +260,11 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                     add(AliveEditorTool("照片", AliveToolIcon.PHOTO) {
                         openPanel("photos")
                     })
-                    if (mode == 0) add(AliveEditorTool("位置", AliveToolIcon.POSITION, hasPhoto) { openPanel("position") })
+                    
                     add(AliveEditorTool("取景", AliveToolIcon.CROP, hasPhoto) { openPanel("crop") })
                     if (mode != 0) add(AliveEditorTool("纹理", AliveToolIcon.TEXTURE, hasPhoto) { openPanel("texture") })
                 }
+                if(mode == 0 && (!isPhoto || photo.aodMode == 0)) add(AliveEditorTool("位置", AliveToolIcon.POSITION) { openPanel("position") })
                 if(isVivo) add(AliveEditorTool("效果与素材", AliveToolIcon.TEXTURE) { openPanel("vivo") })
                 add(AliveEditorTool("选项", AliveToolIcon.OPTIONS) { openPanel("options") })
                 add(AliveEditorTool(if (demo) "停止" else "演示", if (demo) AliveToolIcon.STOP else AliveToolIcon.PLAY,
@@ -278,7 +279,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
             else AliveEditorChrome(title = title, mode = mode, busy = busy || transition.running,
                 canApply = rendered && error.isEmpty() && (!isPhoto || hasPhoto),
                 message = message.ifEmpty { if(showClockGuide) "示意时钟 · 非系统真实样式" else "仅预览壁纸 · 时钟以系统实际样式为准" },
-                tools = tools, onCancel = { photo.save(app, true); if(isVivo) vivo.saveDraft(app); onBack() },
+                tools = tools, onCancel = { photo.save(app, true); renderOptions.saveDraft(app); if(isVivo) vivo.saveDraft(app); onBack() },
                 onApply = { demo = false; confirmation = true }, onMode = { demo = false; mode = it })
         }
     }
@@ -302,7 +303,16 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                     }
                 })
                 "photos" -> PhotoSourcePanel(photoSourceSlot(mode,variant,photo),photo,!busy,onChange={photo=it},onPick=::pickPhoto)
-                "position", "crop", "texture" -> {
+                "position" -> {
+                    if(variant < 201 || isPhoto) SwitchRow(title = "跟随系统息屏时钟", checked = renderOptions.followClock,
+                        onCheckedChange = { option(3, if(it) 1f else 0f) })
+                    if(isPhoto) PhotoControls(variant, photo, panel, mode, onPreviewMode = { mode = it }) {
+                        photo = it; option(3, 0f)
+                    } else AodPositionControls(renderOptions) { renderOptions = it }
+                    SwitchRow(title = "防烧屏位移", checked = renderOptions.burnIn,
+                        onCheckedChange = { option(4, if(it) 1f else 0f) })
+                }
+                "crop", "texture" -> {
                     PhotoControls(variant, photo, panel, mode, onPreviewMode = { mode = it }) { photo = it }
                 }
                 "options" -> {
@@ -321,7 +331,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                     if(variant < 201 || isPhoto && photo.aodMode == 0) {
                         SwitchRow(title = "跟随系统息屏时钟", summary = "保留系统时钟，图案跟随其真实布局和防烧屏移动", checked = renderOptions.followClock, onCheckedChange = { option(3, if(it) 1f else 0f) })
                         SwitchRow(title = "防烧屏位移兜底", summary = "未读取到系统时钟位置时，每分钟小幅移动图案；不会重复叠加系统位移", checked = renderOptions.burnIn, onCheckedChange = { option(4, if(it) 1f else 0f) })
-                    } else Text("此类为完整画面或背景构图，保留系统时钟及其自身防烧屏位移；当前不对整幅壁纸叠加时钟锚点位移。",style=MiuixTheme.textStyles.body2)
+                    } else SwitchRow(title = "防烧屏位移", checked = renderOptions.burnIn, onCheckedChange = { option(4, if(it) 1f else 0f) })
                     SwitchRow(title = "息屏持续动画", summary = "关闭后保留转场，稳定后停绘；只在可见时运行", checked = renderOptions.continuousAod, onCheckedChange = { option(1, if(it) 1f else 0f) })
                     if(!isPhoto) {
                         SwitchRow(title = "桌面持续动画", checked = renderOptions.continuousHome, onCheckedChange = { option(2, if(it) 1f else 0f) })

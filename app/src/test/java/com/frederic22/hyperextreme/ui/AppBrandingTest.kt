@@ -58,7 +58,7 @@ class AppBrandingTest {
                     controller = remember { ThemeController(ColorSchemeMode.Light) },
                     textStyles = HyperTextStyles,
                 ) {
-                    BigStatusCard(activated = true, hasRoot = true, version = "0.5-alive.7-ui.5", settled = true)
+                    BigStatusCard(activated = true, hasRoot = true, version = "0.5-alive.7-ui.7", settled = true)
                 }
             }
             compose.onNodeWithText("HyperExtreme Alive").assertIsDisplayed()

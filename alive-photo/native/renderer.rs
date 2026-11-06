@@ -23,8 +23,11 @@ unsafe fn program(base: &str) -> Result<Program, String> {
         shaders::source(&f).ok_or(&*f)?).map_err(|e| format!("{base}: {e}"))
 }
 
-#[derive(Clone,Copy,Default)]
+#[derive(Clone,Copy,Default,PartialEq)]
 struct Image { id:u32, width:i32, height:i32 }
+
+#[derive(Clone,Copy,PartialEq)]
+struct PassKey { source:u32, aspect:f32, crop:[f32;3], color:[f32;3], effect:[f32;10], gray:Image, mask:Image }
 
 struct Scene {
     quad:Quad, copy:Program, lock_program:Program, aod_program:Program,
@@ -32,6 +35,7 @@ struct Scene {
     targets:Vec<Target>, images:[Image;6], color:[f32;3], frame:Option<[f32;36]>, effects:Option<[f32;20]>, frame_crop:[f32;4],
     w:i32, h:i32, aod:i32, lock:i32, home:i32,
     photo_crop:[f32;3],home_crop:[f32;3],
+    lock_key:Option<PassKey>,home_key:Option<PassKey>,blur_key:Option<(u32,f32,f32)>,
 }
 
 impl Scene {
@@ -75,6 +79,7 @@ impl Scene {
             aod_program,home_program:program(home_path)?,home_effect_program:program(home_effect_path)?,blend:program(blend_path)?,
             down:program("blur/down_sample")?,gaussian:program("blur/gaussian")?,up:program("blur/up_sample")?,
             targets,images:[Image::default();6],color:[0.15,0.27,0.32],frame:None,effects:None,frame_crop:[0.5,0.5,1.,0.],w,h,aod,lock,home,photo_crop:[0.5,0.5,1.],home_crop:[0.5,0.5,1.],
+            lock_key:None,home_key:None,blur_key:None,
         })
     }
     fn copy(&mut self,input:u32,target:usize,aspect:f32,flip:bool,selection:[f32;3]) {
@@ -87,6 +92,8 @@ impl Scene {
     }
     fn blurred(&mut self,input:u32,radius:f32,limit:f32)->u32 {
         if radius<2. { return input; }
+        let key=(input,radius,limit);
+        if self.blur_key==Some(key){return self.targets[5].texture;}
         let(factor,weights,offsets)=blur::kernel_with_limit(radius,limit);let s=1./factor;
         let matrix=[s,0.,0.,0.,s,0.,(1.-s)/2.,(1.-s)/2.,1.];
         self.targets[4].bind();self.down.bind();self.down.f("u_scale",s);self.down.texture("u_photo",0,input);self.quad.draw();
@@ -98,6 +105,7 @@ impl Scene {
             self.gaussian.f("u_texture_min",(1.-s)/2.);self.gaussian.f("u_texture_max",(1.+s)/2.);self.quad.draw();
         }
         self.targets[5].bind();self.up.bind();self.up.texture("u_photo",0,self.targets[4].texture);self.up.m3("u_texture_matrix",&matrix);self.quad.draw();
+        self.blur_key=Some(key);
         self.targets[5].texture
     }
     unsafe fn lock_pass(&mut self,frame:&Frame) {
@@ -192,13 +200,25 @@ impl Scene {
         let aod_visible=ratio[0]>0.;
         let lock_visible=ratio[1]>0.||(aod_visible&&self.aod>=0);
         let home_visible=ratio[2]>0.;
-        if lock_visible||home_visible {self.copy(photo,0,aspect,true,self.photo_crop);}
-        if lock_visible{self.lock_pass(frame);}
+        // Cache outputs, not target 0: it is scratch space shared by independent photos.
+        // Geometry/decorators still animate every frame; only unchanged texture passes are reused.
+        if lock_visible {
+            let key=PassKey{source:photo,aspect,crop:self.photo_crop,color:self.color,
+                effect:self.effect_values(frame,0),gray:self.images[1],mask:self.images[2]};
+            if self.lock_key!=Some(key){
+                self.copy(photo,0,aspect,true,self.photo_crop);self.lock_pass(frame);
+                self.lock_key=Some(key);self.blur_key=None;
+            }
+        }
         if !(1..=5).contains(&self.aod)&&aod_visible{self.aod_pass(frame,decor);}
         if home_visible||(1..=5).contains(&self.aod)&&aod_visible{
             let home=self.images[4];
-            if home.id!=0{self.copy(home.id,0,home.width as f32/home.height as f32,true,self.home_crop);}
-            self.home_pass(frame);
+            let (source,aspect,crop)=if home.id!=0{(home.id,home.width as f32/home.height as f32,self.home_crop)}else{(photo,aspect,self.photo_crop)};
+            let key=PassKey{source,aspect,crop,color:self.color,
+                effect:self.effect_values(frame,10),gray:self.images[1],mask:self.images[2]};
+            if self.home_key!=Some(key){
+                self.copy(source,0,aspect,true,crop);self.home_pass(frame);self.home_key=Some(key);
+            }
         }
         if (1..=5).contains(&self.aod)&&aod_visible{self.aod_pass(frame,decor);}
         glBindFramebuffer(0x8D40,0);glViewport(0,0,self.w,self.h);self.blend.bind();

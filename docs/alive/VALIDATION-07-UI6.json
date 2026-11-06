@@ -1,0 +1,111 @@
+{
+  "versionName": "0.5-alive.7-ui.6",
+  "versionCode": 21,
+  "package": "com.xtg.hyperextremealive",
+  "unit": {
+    "tests": 107,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "offline": {
+    "passed": true,
+    "structural_asset_checks": 1276,
+    "state_assertions": 18,
+    "photo_power_assertions": 454,
+    "permission_crop_assertions": 57,
+    "motion_session_assertions": 23,
+    "stereo_motion_assertions": 6,
+    "java_sources_compiled": 81,
+    "compile_sdk": "34",
+    "helper_dex": "039",
+    "resources_compiled": true,
+    "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."
+  },
+  "device": {
+    "model": "24129PN74C",
+    "isolated_tests": true,
+    "wallpaper_applied_by_agent": false,
+    "power_changed_by_agent": false,
+    "data_cleared": false,
+    "installed": true,
+    "installed_apk_sha256": "bd82d1a2188f1fd400c6f7680f918e7f05bb73728434ca42e6c78bac79ec2549"
+  },
+  "placement": {
+    "photo_variants": [
+      601,
+      602,
+      603,
+      604,
+      605,
+      606
+    ],
+    "dynamic_variants": [
+      1,
+      101,
+      201,
+      301,
+      401,
+      501
+    ],
+    "checks": "cold/configure/up/rebind/down/separate non-preview worker with synthetic applied preferences",
+    "passed": true,
+    "actual_hook_clock_layout": "Needs user reboot and physical-device acceptance; no claim of end-to-end verification"
+  },
+  "photo_cache_pixel_comparisons": 144,
+  "six_style_portrait_landscape_pipeline": "passed",
+  "hidden_worker_and_interruption": "passed",
+  "brightness_and_real_thumbnails": "passed",
+  "same_surface_family_switches": 12,
+  "gpu_microbenchmark": {
+    "size": "1200x2670",
+    "samples_per_mode": 90,
+    "method": "Same Java host/assets/config, native UI5 library vs UI6 library; glFinish per frame after 20 warmup frames",
+    "before": [
+      {
+        "mode": 0,
+        "p50Ms": 5.786354,
+        "p95Ms": 6.126094
+      },
+      {
+        "mode": 1,
+        "p50Ms": 2.400834,
+        "p95Ms": 3.016354
+      },
+      {
+        "mode": 2,
+        "p50Ms": 4.135938,
+        "p95Ms": 5.555
+      }
+    ],
+    "after": [
+      {
+        "mode": 0,
+        "p50Ms": 2.611979,
+        "p95Ms": 3.237031
+      },
+      {
+        "mode": 1,
+        "p50Ms": 2.646094,
+        "p95Ms": 3.2525
+      },
+      {
+        "mode": 2,
+        "p50Ms": 3.164063,
+        "p95Ms": 3.813438
+      }
+    ],
+    "limits": "Isolated stationary render work, not foreground UI FPS. Consumed-window vsync measurements were variable; no across-the-board FPS claim."
+  },
+  "lint": {
+    "errors": 3,
+    "warnings": 311,
+    "hints": 17,
+    "unchanged_from_ui5": true,
+    "passed": false
+  },
+  "apk_signature": "v2 verified; same debug signing certificate as UI5",
+  "apk_alignment": "16KB verified",
+  "source_pushed_this_turn": false,
+  "release_created": false
+}

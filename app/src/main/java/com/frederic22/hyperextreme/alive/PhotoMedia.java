@@ -13,13 +13,36 @@ import java.util.UUID;
 
 /** Immutable private images: publishing changes references, never a texture's backing file. */
 final class PhotoMedia {
+    static final String DEFAULT_ASSET="photo/default.jpg";
+    private static File defaultFile(Context c){return new File(c.getFilesDir(),"alive/builtin-photo-v1.jpg");}
     private PhotoMedia() { }
     static File resolve(Context c,PhotoOptions options,boolean preview,int slot) {
         String name=slot==2?options.framePhoto:slot==1&&!options.followLock?options.homePhoto:options.lockPhoto;
         if(!name.isEmpty())return new File(c.getFilesDir(),"alive/media/"+name);
         if(slot!=0)return resolve(c,options,preview,0);
         File draft=new File(c.getFilesDir(),"alive/photo-draft.png");
-        return preview&&draft.isFile()?draft:new File(c.getFilesDir(),"alive/photo.png");
+        if(preview&&draft.isFile())return draft;
+        File applied=new File(c.getFilesDir(),"alive/photo.png");
+        return applied.isFile()?applied:defaultFile(c);
+    }
+    static boolean available(Context c,PhotoOptions options,boolean preview,int slot){
+        File file=resolve(c,options,preview,slot);
+        return file.isFile()||file.equals(defaultFile(c));
+    }
+    /** Called by background render/import jobs, never by a Compose key or availability check. */
+    static synchronized File prepare(Context c,PhotoOptions options,boolean preview,int slot)throws IOException {
+        File file=resolve(c,options,preview,slot);
+        if(!file.equals(defaultFile(c))||file.isFile())return file;
+        if(!file.getParentFile().isDirectory()&&!file.getParentFile().mkdirs())throw new IOException("Cannot create default photo directory");
+        File temp=new File(file.getPath()+".next");
+        try {
+            try(java.io.InputStream in=c.getAssets().open(DEFAULT_ASSET);FileOutputStream out=new FileOutputStream(temp)){
+                byte[] buffer=new byte[32768];for(int n;(n=in.read(buffer))!=-1;)out.write(buffer,0,n);
+                out.getFD().sync();
+            }
+            Files.move(temp.toPath(),file.toPath(),StandardCopyOption.ATOMIC_MOVE);
+        }finally{Files.deleteIfExists(temp.toPath());}
+        return file;
     }
     static String importImage(Context c,Uri uri)throws IOException {
         File directory=new File(c.getFilesDir(),"alive/media");
@@ -43,7 +66,7 @@ final class PhotoMedia {
     static void validate(Context c,PhotoOptions options,boolean preview,int variant)throws IOException {
         int slots=variant==602?3:2;
         for(int slot=0;slot<slots;slot++){
-            File file=resolve(c,options,preview,slot);
+            File file=prepare(c,options,preview,slot);
             if(!file.isFile()||file.length()==0)throw new IOException("Photo is missing for slot "+slot+"; choose it again");
         }
     }
@@ -53,7 +76,7 @@ final class PhotoMedia {
         if(!directory.isDirectory()&&!directory.mkdirs())throw new IOException("Cannot create photo directory");
         String name="photo-"+UUID.randomUUID().toString().replace("-","")+".png";
         File destination=new File(directory,name);
-        try(java.io.FileInputStream in=new java.io.FileInputStream(resolve(c,options,preview,0));FileOutputStream out=new FileOutputStream(destination)){
+        try(java.io.FileInputStream in=new java.io.FileInputStream(prepare(c,options,preview,0));FileOutputStream out=new FileOutputStream(destination)){
             byte[] buffer=new byte[32768];int size;while((size=in.read(buffer))!=-1)out.write(buffer,0,size);out.getFD().sync();
         }
         android.os.Bundle b=options.bundle();b.putStringArray("media",new String[]{name,options.homePhoto,options.framePhoto});

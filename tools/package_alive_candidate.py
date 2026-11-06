@@ -7,7 +7,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'deliverables'
-NAME = 'HyperExtreme-Alive-0.5-alive.7-ui.5-candidate'
+NAME = 'HyperExtreme-Alive-0.5-alive.7-ui.7'
 ROOT_FILES = ['.gitignore', 'ALIVE-POWER-FIX.md', 'ALIVE-UI-NOTES.md', 'README.md',
               'LICENSE', 'MIT_License.md', 'build.gradle.kts', 'settings.gradle.kts',
               'gradle.properties', 'gradlew', 'gradlew.bat', 'keystore.properties.example']
@@ -19,9 +19,17 @@ FORBIDDEN = {'.reference', 'build', '.gradle', '.kotlin', '__pycache__', '.cxx',
 
 def main():
     OUT.mkdir(exist_ok=True)
-    apk = ROOT / 'app/build/outputs/apk/debug/app-debug.apk'
+    apk = ROOT / 'app/build/outputs/apk/release/app-release.apk'
     if not apk.is_file():
-        raise SystemExit('Build and verify the candidate APK before packaging.')
+        raise SystemExit('Build and verify :app:assembleRelease before packaging (not the debug APK).')
+    metadata = json.loads((apk.parent / 'output-metadata.json').read_text(encoding='utf-8'))
+    if (metadata['applicationId'] != 'com.xtg.hyperextremealive' or metadata['variantName'] != 'release'
+            or len(metadata['elements']) != 1 or metadata['elements'][0]['versionCode'] != 22
+            or metadata['elements'][0]['versionName'] != '0.5-alive.7-ui.7'):
+        raise SystemExit('Release metadata does not match the candidate version.')
+    mapping = ROOT / 'app/build/outputs/mapping/release/mapping.txt'
+    if not mapping.is_file():
+        raise SystemExit('The R8 mapping must be archived with every optimized APK.')
     files = {ROOT / p for p in ROOT_FILES + EXTRA_FILES}
     for directory in SOURCE_DIRS:
         files.update(p for p in (ROOT / directory).rglob('*') if p.is_file()
@@ -41,7 +49,12 @@ def main():
         archive.writestr(NAME + '-source/SOURCE-MANIFEST.json', json.dumps(
             {'files': {relative: digest for _, relative, digest in entries}}, indent=2))
     shutil.copyfile(apk, OUT / (NAME + '.apk'))
-    output = [OUT / (NAME + '.apk'), OUT / (NAME + '-source.zip')]
+    symbols = OUT / (NAME + '-r8-mapping.zip')
+    with zipfile.ZipFile(symbols, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
+        archive.write(mapping, 'mapping.txt')
+        archive.writestr('apk.json', json.dumps({'apk': NAME + '.apk',
+            'sha256': hashlib.sha256(apk.read_bytes()).hexdigest()}, indent=2))
+    output = [OUT / (NAME + '.apk'), OUT / (NAME + '-source.zip'), symbols]
     checksums = '\n'.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name for p in output) + '\n'
     (OUT / 'SHA256SUMS.txt').write_text(checksums, encoding='ascii')
     with zipfile.ZipFile(output[1]) as archive:

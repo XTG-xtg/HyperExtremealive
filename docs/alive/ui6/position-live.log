@@ -1,0 +1,189 @@
+����: [options] Դֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ŀ��ֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ҫ�����й��ѹ�ʱѡ��ľ���, ��ʹ�� -Xlint:-options��
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+3 ������
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-photo-device\dex\classes.dex: 1 file pushed, 0 skipped. 114.0 MB/s (372600 bytes in 0.003s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\generated\aliveJni\arm64-v8a\libhyperextreme_photo.so: 1 file pushed, 0 skipped. 116.9 MB/s (497240 bytes in 0.004s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\outputs\apk\debug\app-debug.apk: 1 file pushed, 0 skipped. 49.2 MB/s (203055470 bytes in 3.935s)
+placement-601 0 PLACEMENT_SAMPLE variant=601 step=0 centerY=0.15305923 frames=1
+
+PLACEMENT_SAMPLE variant=601 step=1 centerY=0.15305923 frames=2
+
+PLACEMENT_SAMPLE variant=601 step=2 centerY=0.11305955 frames=3
+
+PLACEMENT_SAMPLE variant=601 step=3 centerY=0.11305955 frames=4
+
+PLACEMENT_SAMPLE variant=601 step=4 centerY=0.4530591 frames=5
+
+PLACEMENT_SAMPLE variant=601 step=5 centerY=0.4530591 frames=1
+
+PLACEMENT_WORKER_PASS variant=601 centers=[0.15305923, 0.15305923, 0.11305955, 0.11305955, 0.4530591, 0.4530591]
+
+
+placement-602 0 PLACEMENT_SAMPLE variant=602 step=0 centerY=0.18497945 frames=1
+
+PLACEMENT_SAMPLE variant=602 step=1 centerY=0.18497945 frames=2
+
+PLACEMENT_SAMPLE variant=602 step=2 centerY=0.14497946 frames=3
+
+PLACEMENT_SAMPLE variant=602 step=3 centerY=0.14497946 frames=4
+
+PLACEMENT_SAMPLE variant=602 step=4 centerY=0.48497882 frames=5
+
+PLACEMENT_SAMPLE variant=602 step=5 centerY=0.48497882 frames=1
+
+PLACEMENT_WORKER_PASS variant=602 centers=[0.18497945, 0.18497945, 0.14497946, 0.14497946, 0.48497882, 0.48497882]
+
+
+placement-603 0 PLACEMENT_SAMPLE variant=603 step=0 centerY=0.08250323 frames=2
+
+PLACEMENT_SAMPLE variant=603 step=1 centerY=0.08250323 frames=3
+
+PLACEMENT_SAMPLE variant=603 step=2 centerY=0.042503234 frames=4
+
+PLACEMENT_SAMPLE variant=603 step=3 centerY=0.042503234 frames=5
+
+PLACEMENT_SAMPLE variant=603 step=4 centerY=0.3825031 frames=6
+
+PLACEMENT_SAMPLE variant=603 step=5 centerY=0.3825031 frames=1
+
+PLACEMENT_WORKER_PASS variant=603 centers=[0.08250323, 0.08250323, 0.042503234, 0.042503234, 0.3825031, 0.3825031]
+
+
+placement-604 0 PLACEMENT_SAMPLE variant=604 step=0 centerY=0.16713195 frames=2
+
+PLACEMENT_SAMPLE variant=604 step=1 centerY=0.16713195 frames=3
+
+PLACEMENT_SAMPLE variant=604 step=2 centerY=0.12713192 frames=4
+
+PLACEMENT_SAMPLE variant=604 step=3 centerY=0.12713192 frames=5
+
+PLACEMENT_SAMPLE variant=604 step=4 centerY=0.46712822 frames=6
+
+PLACEMENT_SAMPLE variant=604 step=5 centerY=0.46712822 frames=1
+
+PLACEMENT_WORKER_PASS variant=604 centers=[0.16713195, 0.16713195, 0.12713192, 0.12713192, 0.46712822, 0.46712822]
+
+
+placement-605 0 PLACEMENT_SAMPLE variant=605 step=0 centerY=0.17681685 frames=1
+
+PLACEMENT_SAMPLE variant=605 step=1 centerY=0.17681685 frames=2
+
+PLACEMENT_SAMPLE variant=605 step=2 centerY=0.13681684 frames=3
+
+PLACEMENT_SAMPLE variant=605 step=3 centerY=0.13681684 frames=4
+
+PLACEMENT_SAMPLE variant=605 step=4 centerY=0.47681683 frames=5
+
+PLACEMENT_SAMPLE variant=605 step=5 centerY=0.47681683 frames=2
+
+PLACEMENT_WORKER_PASS variant=605 centers=[0.17681685, 0.17681685, 0.13681684, 0.13681684, 0.47681683, 0.47681683]
+
+
+placement-606 0 PLACEMENT_SAMPLE variant=606 step=0 centerY=0.18444914 frames=1
+
+PLACEMENT_SAMPLE variant=606 step=1 centerY=0.18444914 frames=2
+
+PLACEMENT_SAMPLE variant=606 step=2 centerY=0.14444888 frames=3
+
+PLACEMENT_SAMPLE variant=606 step=3 centerY=0.14444888 frames=4
+
+PLACEMENT_SAMPLE variant=606 step=4 centerY=0.4844494 frames=5
+
+PLACEMENT_SAMPLE variant=606 step=5 centerY=0.4844494 frames=1
+
+PLACEMENT_WORKER_PASS variant=606 centers=[0.18444914, 0.18444914, 0.14444888, 0.14444888, 0.4844494, 0.4844494]
+
+
+placement-1 0 PLACEMENT_SAMPLE variant=1 step=0 centerY=0.3399578 frames=1
+
+PLACEMENT_SAMPLE variant=1 step=1 centerY=0.33989403 frames=2
+
+PLACEMENT_SAMPLE variant=1 step=2 centerY=0.13974896 frames=3
+
+PLACEMENT_SAMPLE variant=1 step=3 centerY=0.1399576 frames=4
+
+PLACEMENT_SAMPLE variant=1 step=4 centerY=0.63989425 frames=5
+
+PLACEMENT_SAMPLE variant=1 step=5 centerY=0.639958 frames=1
+
+PLACEMENT_WORKER_PASS variant=1 centers=[0.3399578, 0.33989403, 0.13974896, 0.1399576, 0.63989425, 0.639958]
+
+
+placement-101 0 PLACEMENT_SAMPLE variant=101 step=0 centerY=0.32104495 frames=1
+
+PLACEMENT_SAMPLE variant=101 step=1 centerY=0.32114765 frames=2
+
+PLACEMENT_SAMPLE variant=101 step=2 centerY=0.121221915 frames=3
+
+PLACEMENT_SAMPLE variant=101 step=3 centerY=0.12104456 frames=4
+
+PLACEMENT_SAMPLE variant=101 step=4 centerY=0.6211478 frames=5
+
+PLACEMENT_SAMPLE variant=101 step=5 centerY=0.6210452 frames=1
+
+PLACEMENT_WORKER_PASS variant=101 centers=[0.32104495, 0.32114765, 0.121221915, 0.12104456, 0.6211478, 0.6210452]
+
+
+placement-201 0 PLACEMENT_SAMPLE variant=201 step=0 centerY=0.45898134 frames=1
+
+PLACEMENT_SAMPLE variant=201 step=1 centerY=0.45819393 frames=2
+
+PLACEMENT_SAMPLE variant=201 step=2 centerY=0.25767252 frames=3
+
+PLACEMENT_SAMPLE variant=201 step=3 centerY=0.25898132 frames=4
+
+PLACEMENT_SAMPLE variant=201 step=4 centerY=0.7581939 frames=5
+
+PLACEMENT_SAMPLE variant=201 step=5 centerY=0.75898135 frames=1
+
+PLACEMENT_WORKER_PASS variant=201 centers=[0.45898134, 0.45819393, 0.25767252, 0.25898132, 0.7581939, 0.75898135]
+
+
+placement-301 0 PLACEMENT_SAMPLE variant=301 step=0 centerY=0.46174812 frames=1
+
+PLACEMENT_SAMPLE variant=301 step=1 centerY=0.4617724 frames=2
+
+PLACEMENT_SAMPLE variant=301 step=2 centerY=0.35739803 frames=3
+
+PLACEMENT_SAMPLE variant=301 step=3 centerY=0.35757333 frames=4
+
+PLACEMENT_SAMPLE variant=301 step=4 centerY=0.647731 frames=5
+
+PLACEMENT_SAMPLE variant=301 step=5 centerY=0.6477217 frames=1
+
+PLACEMENT_WORKER_PASS variant=301 centers=[0.46174812, 0.4617724, 0.35739803, 0.35757333, 0.647731, 0.6477217]
+
+
+placement-401 0 PLACEMENT_SAMPLE variant=401 step=0 centerY=0.39609692 frames=136
+
+PLACEMENT_SAMPLE variant=401 step=1 centerY=0.39902917 frames=217
+
+PLACEMENT_SAMPLE variant=401 step=2 centerY=0.33689317 frames=298
+
+PLACEMENT_SAMPLE variant=401 step=3 centerY=0.32762587 frames=376
+
+PLACEMENT_SAMPLE variant=401 step=4 centerY=0.60474306 frames=457
+
+PLACEMENT_SAMPLE variant=401 step=5 centerY=0.6042738 frames=108
+
+PLACEMENT_WORKER_PASS variant=401 centers=[0.39609692, 0.39902917, 0.33689317, 0.32762587, 0.60474306, 0.6042738]
+
+
+placement-501 0 PLACEMENT_SAMPLE variant=501 step=0 centerY=0.55893195 frames=1
+
+PLACEMENT_SAMPLE variant=501 step=1 centerY=0.55893195 frames=2
+
+PLACEMENT_SAMPLE variant=501 step=2 centerY=0.43131924 frames=3
+
+PLACEMENT_SAMPLE variant=501 step=3 centerY=0.43131924 frames=4
+
+PLACEMENT_SAMPLE variant=501 step=4 centerY=0.69152445 frames=5
+
+PLACEMENT_SAMPLE variant=501 step=5 centerY=0.69152445 frames=1
+
+PLACEMENT_WORKER_PASS variant=501 centers=[0.55893195, 0.55893195, 0.43131924, 0.43131924, 0.69152445, 0.69152445]
+
+

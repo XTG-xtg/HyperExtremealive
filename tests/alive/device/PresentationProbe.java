@@ -28,6 +28,20 @@ public final class PresentationProbe {
             if(source==0&&actual!=0)throw new AssertionError("Black must stay black");
             System.out.println("TONE source="+source+" gain="+gain+" expected="+expected+" actual="+actual);
         }
+        for(float y:new float[]{-.25f,0,.25f}){
+            GLES30.glDisable(GLES30.GL_SCISSOR_TEST);GLES30.glColorMask(true,true,true,true);
+            GLES30.glClearColor(0,0,0,1);GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
+            GLES30.glEnable(GLES30.GL_SCISSOR_TEST);GLES30.glScissor(24,40,16,16);
+            GLES30.glClearColor(.5f,.5f,.5f,1);GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
+            GLES30.glDisable(GLES30.GL_SCISSOR_TEST);pass.render(1,0,y);
+            ByteBuffer pixels=ByteBuffer.allocateDirect(64*96*4);
+            GLES30.glReadPixels(0,0,64,96,GLES30.GL_RGBA,GLES30.GL_UNSIGNED_BYTE,pixels);
+            float sum=0;int count=0;
+            for(int row=0;row<96;row++)for(int x=0;x<64;x++)if((pixels.get((row*64+x)*4)&255)>50){sum+=row;count++;}
+            if(count!=256||Math.abs(sum/count-(47.5f-y*96))>.6f)throw new AssertionError("Position sign or extent: "+y);
+        }
+        if(GLES30.glGetError()!=GLES30.GL_NO_ERROR)throw new AssertionError("Position GL error");
+        System.out.println("PRESENTATION_POSITION_OK");
         pass.close();EGL14.eglMakeCurrent(d,EGL14.EGL_NO_SURFACE,EGL14.EGL_NO_SURFACE,EGL14.EGL_NO_CONTEXT);
         EGL14.eglDestroySurface(d,s);EGL14.eglDestroyContext(d,c);EglWorker.releaseDisplay();
         System.out.println("PRESENTATION_OK");System.exit(0);

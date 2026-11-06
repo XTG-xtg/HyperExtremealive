@@ -34,3 +34,7 @@ Xposed API 82 仅用于编译，不打进 APK；运行时由 LSPosed 提供。
 - `app/assets/branding/`、`app/res/drawable/ic_xiaomi_official.xml`：小米官网的 MI 标识，保留官方路径与颜色；原始 SVG、网址及 SHA-256 见 `branding/`。商标与图形权利归原权利人。
 - `vendor/onnxruntime/`：Microsoft ONNX Runtime Android 1.23.2 的 Java 类和 arm64 原生库，采用 MIT；原始发行来源和 SHA-256 见 `source.json`，许可证与第三方声明随 APK 一同打包至 `assets/licenses/onnxruntime/`。
 - `app/assets/vivo/models/u2netp.onnx`：rembg 发布的 U2NetP ONNX 模型，原项目为 U-2-Net，其项目采用 Apache-2.0 并提供预训练权重链接。模型未修改；来源、固定版本的上游校验依据和 SHA-256 见同目录 `source.json`，原项目许可证一并保留。
+
+## 本分支内置示例照片
+
+`app/src/main/assets/photo/default.jpg` 取自用户提供的 `HyperAlive_Module.zip` 中 `HyperAlive_Module/module/assets/photo/default.jpg`，用于首次进入照片 Alive 的离线示例。原文件未修改，SHA-256 见 `PROVENANCE.json`；插画权利归原权利人，不将其重新声明为 MIT 授权。用户选择的照片优先，预览和应用均不会用示例图覆盖已有选择。

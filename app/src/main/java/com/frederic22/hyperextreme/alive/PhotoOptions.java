@@ -29,7 +29,7 @@ final class PhotoOptions {
         this.x=finite(x,0,1,.5f);this.y=finite(y,0,1,.5f);this.zoom=finite(zoom,1,4,1);
         this.frameX=finite(frameX,0,1,.5f);this.frameY=finite(frameY,0,1,.5f);
         this.frameSize=finite(frameSize,.25f,1,1);this.frameAngle=finite(frameAngle,-45,45,0);
-        this.aodOffsetX=finite(aodOffsetX,-.2f,.2f,0);this.aodOffsetY=finite(aodOffsetY,-.02f,.4f,0);
+        this.aodOffsetX=finite(aodOffsetX,-.45f,.45f,0);this.aodOffsetY=finite(aodOffsetY,-.45f,.45f,0);
         this.lockPhoto=mediaName(lockPhoto);this.homePhoto=mediaName(homePhoto);this.framePhoto=mediaName(framePhoto);
         this.followLock=followLock;this.homeX=finite(homeX,0,1,.5f);this.homeY=finite(homeY,0,1,.5f);this.homeZoom=finite(homeZoom,1,4,1);
         this.aodMode=aodMode>=0&&aodMode<=2?aodMode:0;this.tint=tint|0xff000000;

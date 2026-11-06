@@ -40,7 +40,7 @@ final class AliveLayoutFrames implements AutoCloseable {
         try {
             if (cancelled) { finish("cancelled"); return; }
             display = EglWorker.acquireDisplay();
-            EGLConfig config = CosmicEgl.choose(display, EGL14.EGL_PBUFFER_BIT);
+            EGLConfig config = CosmicEgl.choose(display, EGL14.EGL_PBUFFER_BIT,variant<201||variant>=501&&variant<=503);
             eglContext = EGL14.eglCreateContext(display, config, EGL14.EGL_NO_CONTEXT,
                 new int[]{EGL14.EGL_CONTEXT_CLIENT_VERSION, 3, EGL14.EGL_NONE}, 0);
             surface = EGL14.eglCreatePbufferSurface(display, config,
@@ -65,10 +65,10 @@ final class AliveLayoutFrames implements AutoCloseable {
                 : variant>=701&&variant<=703?new VivoRenderer(context,VivoOptions.load(context,variant,false),width,height,mode,true,dark,invalidate)
                 : WallpaperRenderer.create(context.getAssets(), variant, dark, width, height, mode, options.keepLock, invalidate);
             ClockSnapshot clock=EngineRegistry.clock(true);
-            if(options.followClock&&clock!=null&&clock.bounds.fits(width,height)){
-                if(renderer instanceof PhotoRenderer)((PhotoRenderer)renderer).anchor(clock.bounds.x(),clock.bounds.y(),true);
-                else renderer.motion().follow(clock.bounds.x(),clock.bounds.y());
-            }
+            boolean system=options.followClock&&clock!=null&&clock.usable(width,height);
+            float x=system?clock.bounds.x():0,y=system?clock.bounds.y():.165f;
+            if(renderer instanceof PhotoRenderer)((PhotoRenderer)renderer).anchor(x,y,system);
+            else if(renderer.motion() instanceof CosmicMotion)renderer.motion().follow(x+options.aodOffsetX,y-options.aodOffsetY);
             renderer.continuous(false);
             renderer.motion().change(mode, false);
             renderer.motion().advance(1_000_000_000L, 1f);
@@ -85,7 +85,8 @@ final class AliveLayoutFrames implements AutoCloseable {
                 if (SystemClock.uptimeMillis() - started > 4000) throw new IllegalStateException("Layout frame timed out");
                 handler.removeCallbacks(draw); handler.postDelayed(draw, 16); return;
             }
-            if(mode==0)presentation.render(options.brightness);
+            if(mode==0){boolean move=!(renderer instanceof PhotoRenderer)&&!(renderer.motion() instanceof CosmicMotion);
+                presentation.render(options.brightness,move?options.aodOffsetX:0,move?options.aodOffsetY:0);}
             ByteBuffer rgba = ByteBuffer.allocateDirect(width * height * 4);
             GLES30.glReadPixels(0, 0, width, height, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, rgba);
             if (GLES30.glGetError() != GLES30.GL_NO_ERROR) throw new IllegalStateException("Layout readback failed");

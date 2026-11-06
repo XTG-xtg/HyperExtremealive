@@ -53,6 +53,7 @@ class MaskUiState(
     val context: Context,
     val prefs: MaskPrefs,
     private val scope: CoroutineScope,
+    private val previewContent: MaskPreviewContent = MaskPreviewContent.NONE,
 ) {
 
     var revision by mutableLongStateOf(prefs.revision)
@@ -60,7 +61,7 @@ class MaskUiState(
 
     var previews by mutableStateOf<Map<MaskRole, Bitmap?>>(emptyMap())
 
-    var sizes by mutableStateOf(roleState { MaskStore.sizeText(context, it) })
+    var sizes by mutableStateOf(if (previewContent == MaskPreviewContent.MASK) roleState { MaskStore.sizeText(context, it) } else emptyMap())
 
     var verbose by mutableStateOf(prefs.verboseLog)
 
@@ -264,25 +265,22 @@ class MaskUiState(
     val effectiveRoles: List<MaskRole>
         get() = configuredRoles.ifEmpty { injectedRoles }
 
+    private val previewLoader = MaskPreviewLoader(context.applicationContext, previewContent)
     suspend fun reloadPreviews() {
-        previews = withContext(Dispatchers.IO) {
-            // 遮罩页两个候选（主体 / 遮罩）预览也**不压分辨率**了（2026-10-13 用户要求）：
-            // 按存储文件原分辨率解码（4096 = 导入封顶，等于不降采样）。
-            MaskRole.selectable.associateWith { MaskStore.loadPreview(context, it, PreviewMaxEdge) }
-        }
-        parallaxPreview = withContext(Dispatchers.IO) {
-            // 视差页预览不压缩（2026-10-12 用户要求）：同一套上限。
-            MaskStore.loadParallaxPreview(context, PreviewMaxEdge)
-        }
+        if (closed) return
+        val snapshot = previewLoader.load(prefs.revision)
+        if (closed) return
+        previews = snapshot.masks
+        parallaxPreview = snapshot.parallax
     }
 
     fun refreshLocal() {
         // 自愈会写回 prefs，而写回又会触发上面的监听 → 用这个标记断开重入。
-        if (refreshing) return
+        if (refreshing || closed) return
         refreshing = true
         try {
             revision = prefs.revision
-            sizes = roleState { MaskStore.sizeText(context, it) }
+            if (previewContent == MaskPreviewContent.MASK) sizes = roleState { MaskStore.sizeText(context, it) }
             hookStatus = readHookStatus(prefs)
             frameworkConnected = ActivationState.frameworkConnected
             themeMode = ThemeMode.of(prefs.themeMode)
@@ -300,6 +298,7 @@ class MaskUiState(
      * 界面不重新读一次就会一直停在旧状态 —— 这也是"行为没有同步"的一半原因。
      */
     fun onResume() {
+        if (closed) return
         // 用户可能在后台把模块从 LSPosed 里取消了：框架服务 binder 一失效就立刻翻回未激活，
         // 不用等应用重启。
         if (ActivationState.frameworkConnected && !XposedProvider.isFrameworkAlive()) {
@@ -327,6 +326,8 @@ class MaskUiState(
 
     private val main = Handler(Looper.getMainLooper())
     private var refreshing = false
+    private var closed = false
+    private val refresh = Runnable { refreshLocal() }
 
     /**
      * 让界面跟着"别处写出来的状态"自动走。
@@ -336,11 +337,18 @@ class MaskUiState(
      * 一次生命周期变化（Activity 可能一直没被 stop），界面就会停在"保护中"。
      */
     private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-        main.post { refreshLocal() }
+        main.removeCallbacks(refresh)
+        if (!closed) main.post(refresh)
     }
 
     init {
         prefs.registerListener(prefsListener)
+    }
+
+    fun close() {
+        closed = true
+        prefs.unregisterListener(prefsListener)
+        main.removeCallbacks(refresh)
     }
 
     /**

@@ -189,6 +189,7 @@ private fun MaskSwapShell(
     val scope = rememberCoroutineScope()
     val prefs = remember { MaskPrefs(context) }
     val state = remember { MaskUiState(context, prefs, scope) }
+    DisposableEffect(state) { onDispose { state.close() } }
 
     // 用 HorizontalPager 承载四个页签：翻页动画走 miuix 的 PagerGestureUtils
     //（PagerNavigationSpringSpec + springAnimateToPage + pagerGestureOverride），对齐 HyperOS 系统手感。
@@ -251,10 +252,6 @@ private fun MaskSwapShell(
     // 系统栏/导航条的图标明暗跟着【应用】主题走：SDK 默认判定读的是系统配置，
     // 应用强制浅色而系统是深色时，状态栏图标会看不见。
     LaunchedEffect(isDark) { onDarkModeChange(isDark) }
-
-    LaunchedEffect(state.revision) {
-        state.reloadPreviews()
-    }
 
     // 回到前台时对齐一次状态：hook 在编辑器进程里可能已经自动解除了保护（用户换了壁纸），
     // 那时只有 SharedPreferences 变了；界面不重新读一次就会永远停在"保护中"。
@@ -409,7 +406,7 @@ private fun MaskSwapShell(
                         userScrollEnabled = false,
                         pageNestedScrollConnection = PagerGestureNestedScrollConnection,
                         flingBehavior = pagerFlingBehavior,
-                        beyondViewportPageCount = 1,
+                        beyondViewportPageCount = 0,
                     ) { page ->
                         val tab = Tab.entries[page]
                         TabHost(title = tab.label, onRestartAod = { askRestartAod = true }) {

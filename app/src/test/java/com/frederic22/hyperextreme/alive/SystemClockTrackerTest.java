@@ -35,4 +35,16 @@ public class SystemClockTrackerTest {
         assertSame(time,SystemClockTracker.find(root));
         time.setAlpha(0);assertNull(SystemClockTracker.find(root));
     }
+    @Test public void nestedClockContentExcludesPaddingAndBlankSpacers(){
+        FrameLayout root=new FrameLayout(context());root.layout(0,0,1080,2400);
+        FrameLayout host=new FrameLayout(context());host.setId(2);root.addView(host);host.layout(0,100,1080,1100);
+        View spacer=new View(context());host.addView(spacer);spacer.layout(0,0,1080,1000);
+        android.widget.TextView clock=new android.widget.TextView(context());clock.setText("12:34");clock.setTextSize(50);
+        host.addView(clock);clock.measure(View.MeasureSpec.makeMeasureSpec(800,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(700,View.MeasureSpec.EXACTLY));
+        clock.layout(100,100,900,800);
+        android.graphics.Rect rect=SystemClockTracker.contentBounds(host);
+        assertFalse(rect.isEmpty());assertTrue(rect.height()<300);assertTrue(rect.width()<800);
+        assertTrue(rect.bottom<600);
+        clock.setText("");assertTrue(SystemClockTracker.contentBounds(host).isEmpty());
+    }
 }

@@ -1,0 +1,107 @@
+{
+  "versionName": "0.5-alive.7-ui.7",
+  "versionCode": 22,
+  "package": "com.xtg.hyperextremealive",
+  "build": {
+    "type": "release",
+    "r8": true,
+    "shrinkResources": true,
+    "debuggable": false,
+    "baselineProfileIncluded": true,
+    "signatureMatchesUI6": true,
+    "zipalign16k": true,
+    "lintVital": "passed",
+    "fullLint": "not rerun; UI6 baseline has existing findings"
+  },
+  "unit": {
+    "tests": 116,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "offline": {
+    "passed": true,
+    "structural_asset_checks": 1276,
+    "state_assertions": 18,
+    "photo_power_assertions": 454,
+    "permission_crop_assertions": 57,
+    "motion_session_assertions": 23,
+    "stereo_motion_assertions": 6,
+    "java_sources_compiled": 81,
+    "compile_sdk": "37.0",
+    "helper_dex": "039",
+    "resources_compiled": true,
+    "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."
+  },
+  "releaseRuntime": {
+    "passed": true,
+    "cases": 42,
+    "actualOptimizedApk": true,
+    "productionClassesRecompiledByProbe": false,
+    "variants": [
+      1,
+      101,
+      201,
+      301,
+      501,
+      601,
+      602,
+      603,
+      604,
+      605,
+      606,
+      701,
+      702,
+      703
+    ],
+    "modes": [
+      "aod",
+      "lock",
+      "home"
+    ],
+    "log": "ui7/release-runtime.log",
+    "limitations": "Representative offscreen smoke only; not full UI, hook, video, power or long-duration coverage."
+  },
+  "assets": {
+    "compared": 486,
+    "allUnchangedFromUI6": true,
+    "excludes": [
+      "assets/dexopt/"
+    ]
+  },
+  "size": {
+    "ui6Debug": {
+      "apkBytes": 203056898,
+      "dexBytes": 34706088,
+      "dexFiles": 12
+    },
+    "ui7Release": {
+      "apkBytes": 169976477,
+      "dexBytes": 3702164,
+      "dexFiles": 1
+    }
+  },
+  "device": {
+    "model": "24129PN74C",
+    "installed": true,
+    "installedApkSha256": "a36e355dd3355f096c5e77e327d312aeed7a5c6ae7255109c648f7ea72f32859",
+    "existingAlivePreferenceFilesUnchanged": 5,
+    "dataCleared": false,
+    "wallpaperAppliedByAgent": false,
+    "powerKeySimulated": false,
+    "systemProcessRestarted": false,
+    "forcedStopForBenchmark": false
+  },
+  "startup": {
+    "command": "am start -W (without -S)",
+    "status": "ok",
+    "launchState": "UNKNOWN",
+    "commandWaitMs": 50,
+    "comparableColdStartMs": null,
+    "reason": "Keyguard remained foreground; command wait time is not time to first frame. No controlled before/after startup benchmark."
+  },
+  "publishing": {
+    "sourcePushed": false,
+    "githubReleaseCreated": false
+  }
+}

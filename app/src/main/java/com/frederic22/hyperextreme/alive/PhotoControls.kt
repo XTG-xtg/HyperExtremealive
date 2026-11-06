@@ -33,9 +33,8 @@ internal fun PhotoControls(variant: Int, options: PhotoOptions, section: String,
                 Text(if(previewMode == 2) "仅调整桌面纹理，不改变锁屏。" else "仅调整锁屏纹理，不改变桌面。", style = MiuixTheme.textStyles.body2)
             }
             "position" -> {
-                CropSlider("水平位置", options.aodOffsetX, -.2f.. .2f) { update(8, it) }
-                CropSlider("垂直位置", options.aodOffsetY, -.02f.. .4f) { update(9, it) }
-                Text("移动整个息屏图案。开启跟随系统时钟后，这里的位置作为微调叠加；真实时钟的防烧屏位移会同步到壁纸。未获取到系统位置时使用小幅防烧屏位移。", style = MiuixTheme.textStyles.body2)
+                CropSlider("水平位置", options.aodOffsetX, -.45f.. .45f) { update(8, it) }
+                CropSlider("垂直位置", options.aodOffsetY, -.45f.. .45f) { update(9, it) }
                 TextButton(text = "恢复默认位置", onClick = { onChange(options.edit(8, 0f).edit(9, 0f)) })
             }
             else -> {
@@ -58,4 +57,11 @@ internal fun PhotoControls(variant: Int, options: PhotoOptions, section: String,
 private fun CropSlider(label: String, value: Float, range: ClosedFloatingPointRange<Float>, onChange: (Float) -> Unit) {
     Text(label, style = MiuixTheme.textStyles.body2, color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
     Slider(value = value, valueRange = range, onValueChange = onChange, modifier = Modifier.fillMaxWidth())
+}
+
+@Composable
+internal fun AodPositionControls(options: AliveRenderOptions, onChange: (AliveRenderOptions) -> Unit) {
+    CropSlider("水平位置", options.aodOffsetX, -.45f.. .45f) { onChange(options.position(it, options.aodOffsetY)) }
+    CropSlider("垂直位置", options.aodOffsetY, -.45f.. .45f) { onChange(options.position(options.aodOffsetX, it)) }
+    TextButton(text = "恢复默认位置", onClick = { onChange(options.position(0f, 0f)) })
 }

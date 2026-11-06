@@ -1463,7 +1463,7 @@ class HookEntry : XposedModule() {
          * 起因：排查时连续几轮都只能看到旧的「已挂」日志，无法区分"没装新包"和"新逻辑没跑到"。
          * **每次改动都更新它。**
          */
-        const val BUILD_TAG = "HyperExtreme Alive 0.5-alive.7-ui.5 (20) / upstream 0.5 Beta2 e4f7626d"
+        const val BUILD_TAG = "HyperExtreme Alive 0.5-alive.7-ui.7 (22) / upstream 0.5 Beta2 e4f7626d"
 
         /** 第二个作用域（2026-09-28 起）：只为了锁屏那个「自定义锁屏」按钮的层级。 */
         const val SYSTEM_UI_PACKAGE = "com.android.systemui"

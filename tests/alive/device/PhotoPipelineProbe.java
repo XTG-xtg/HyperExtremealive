@@ -76,7 +76,7 @@ public final class PhotoPipelineProbe {
         positioned.change(0,anchored);anchored.change(0);positioned.finish();anchored.finish();
         check(Math.abs(anchored.values[9]-.235f)<.0001f&&Math.abs(positioned.values[5]-.215f)<.0001f,"sleep returns to edited anchors");
         PhotoOptions clamped=new PhotoOptions(0,.5f,.5f,1,.5f,.5f,1,0,Float.NaN,99);
-        check(clamped.aodOffsetX==0&&clamped.aodOffsetY==.4f,"bounded finite anchors");
+        check(clamped.aodOffsetX==0&&clamped.aodOffsetY==.45f,"bounded finite anchors");
         anchored.close();positioned.close();
         SceneMotion early=new SceneMotion(W,H,0,0,2,6,false),late=new SceneMotion(W,H,0,0,2,6,false);
         early.change(2);early.advance(now);late.change(2);late.advance(now);

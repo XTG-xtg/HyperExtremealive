@@ -37,7 +37,7 @@ internal fun PhotoCropEditor(variant: Int, options: PhotoOptions, target: Int,
     LaunchedEffect(file) {
         imageAspect = withContext(Dispatchers.IO) {
             val info = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            BitmapFactory.decodeFile(file.path, info)
+            BitmapFactory.decodeFile(PhotoMedia.prepare(context, options, true, target).path, info)
             if(info.outWidth > 0 && info.outHeight > 0) info.outWidth.toFloat() / info.outHeight else 1f
         }
     }

@@ -1,0 +1,15 @@
+����: [options] Դֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ŀ��ֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ҫ�����й��ѹ�ʱѡ��ľ���, ��ʹ�� -Xlint:-options��
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+3 ������
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-photo-device\dex\classes.dex: 1 file pushed, 0 skipped. 82.5 MB/s (368116 bytes in 0.004s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\generated\aliveJni\arm64-v8a\libhyperextreme_photo.so: 1 file pushed, 0 skipped. 159.7 MB/s (497240 bytes in 0.003s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\outputs\apk\debug\app-debug.apk: 1 file pushed, 0 skipped. 48.4 MB/s (201986279 bytes in 3.984s)
+perf-601 0 PHOTO_PERF variant=601 size=1200x2670 firstMs=155 samples=37 gapP50Ms=16 gapP95Ms=45 gapMaxMs=53 idleWindowMs=2000 idleFrames=45 total=373 startHz=120.00001 endHz=120.00001
+
+
+perf-602 0 PHOTO_PERF variant=602 size=1200x2670 firstMs=154 samples=48 gapP50Ms=16 gapP95Ms=19 gapMaxMs=20 idleWindowMs=2000 idleFrames=0 total=169 startHz=120.00001 endHz=120.00001
+
+

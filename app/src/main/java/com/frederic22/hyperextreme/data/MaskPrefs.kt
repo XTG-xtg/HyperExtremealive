@@ -941,6 +941,10 @@ class MaskPrefs(context: Context) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
     }
 
+    fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
+    }
+
     companion object {
         const val NAME = WallpaperFeaturePolicy.PREFS
 

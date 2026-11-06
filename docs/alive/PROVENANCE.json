@@ -1886,6 +1886,13 @@
       "upstream": "native/shaders.rs",
       "destination": "alive-photo/native/shaders.rs",
       "upstream_sha256": "dcc9d05c8ddec3023ed901ae2777e5fc8b93e578bd4d762156fba769d251259a"
+    },
+    {
+      "kind": "Bundled example image; separate third-party artwork, not relicensed as MIT",
+      "source": "User-supplied HyperAlive_Module.zip",
+      "upstream": "HyperAlive_Module/module/assets/photo/default.jpg",
+      "destination": "app/src/main/assets/photo/default.jpg",
+      "sha256": "1ae216aedb48f7f608c0ebe9f96cb8e02bbd94cf2824c53e7b58f25c30055d6d"
     }
   ]
 }

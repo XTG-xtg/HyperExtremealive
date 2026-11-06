@@ -1,13 +1,13 @@
 {
   "passed": true,
-  "structural_asset_checks": 1275,
+  "structural_asset_checks": 1276,
   "state_assertions": 18,
   "photo_power_assertions": 454,
   "permission_crop_assertions": 57,
   "motion_session_assertions": 23,
   "stereo_motion_assertions": 6,
   "java_sources_compiled": 81,
-  "compile_sdk": "34",
+  "compile_sdk": "37.0",
   "helper_dex": "039",
   "resources_compiled": true,
   "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."

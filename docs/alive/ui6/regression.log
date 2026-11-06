@@ -1,0 +1,155 @@
+����: [options] Դֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ŀ��ֵ 8 �ѹ�ʱ������δ�����а���ɾ��
+����: [options] Ҫ�����й��ѹ�ʱѡ��ľ���, ��ʹ�� -Xlint:-options��
+ע: ĳЩ�����ļ�ʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+3 ������
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\build\alive-photo-device\dex\classes.dex: 1 file pushed, 0 skipped. 134.9 MB/s (373588 bytes in 0.003s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\generated\aliveJni\arm64-v8a\libhyperextreme_photo.so: 1 file pushed, 0 skipped. 103.6 MB/s (497240 bytes in 0.005s)
+C:\Users\Administrator\Documents\Codex\2026-11-05\c-users-administrator-downloads-hyperalive-module\outputs\HyperExtreme-Alive-0.5-alive.6-ui.3-source\app\build\outputs\apk\debug\app-debug.apk: 1 file pushed, 0 skipped. 49.1 MB/s (203056674 bytes in 3.942s)
+photo-601-false 0 PHOTO_PASS variant=601 landscape=false checks=289971 frames=1897 waits=0 intermediate=0 lockHomeMAE=13.288611979166667
+
+
+photo-601-true 0 PHOTO_PASS variant=601 landscape=true checks=289971 frames=1897 waits=0 intermediate=0 lockHomeMAE=12.029106770833334
+
+
+photo-602-false 0 PHOTO_PASS variant=602 landscape=false checks=290327 frames=1897 waits=159 intermediate=28 lockHomeMAE=13.288611979166667
+
+
+photo-602-true 0 PHOTO_PASS variant=602 landscape=true checks=290375 frames=1897 waits=175 intermediate=28 lockHomeMAE=12.029106770833334
+
+
+photo-603-false 0 PHOTO_PASS variant=603 landscape=false checks=290137 frames=1897 waits=87 intermediate=30 lockHomeMAE=13.288611979166667
+
+
+photo-603-true 0 PHOTO_PASS variant=603 landscape=true checks=290110 frames=1897 waits=78 intermediate=30 lockHomeMAE=12.029106770833334
+
+
+photo-604-false 0 PHOTO_PASS variant=604 landscape=false checks=290176 frames=1897 waits=109 intermediate=36 lockHomeMAE=13.288611979166667
+
+
+photo-604-true 0 PHOTO_PASS variant=604 landscape=true checks=290153 frames=1897 waits=101 intermediate=36 lockHomeMAE=12.029106770833334
+
+
+photo-605-false 0 PHOTO_PASS variant=605 landscape=false checks=290517 frames=1897 waits=241 intermediate=42 lockHomeMAE=13.288611979166667
+
+
+photo-605-true 0 PHOTO_PASS variant=605 landscape=true checks=290551 frames=1897 waits=252 intermediate=42 lockHomeMAE=12.029106770833334
+
+
+photo-606-false 0 PHOTO_PASS variant=606 landscape=false checks=290735 frames=1897 waits=327 intermediate=54 lockHomeMAE=13.288611979166667
+
+
+photo-606-true 0 PHOTO_PASS variant=606 landscape=true checks=290774 frames=1897 waits=341 intermediate=54 lockHomeMAE=12.029106770833334
+
+
+presentation 0 TONE source=0.0 gain=0.25 expected=0 actual=0
+
+TONE source=0.05 gain=0.25 expected=3 actual=3
+
+TONE source=0.2 gain=0.25 expected=13 actual=13
+
+TONE source=0.6 gain=0.25 expected=38 actual=38
+
+TONE source=1.0 gain=0.25 expected=64 actual=64
+
+TONE source=0.0 gain=0.5 expected=0 actual=0
+
+TONE source=0.05 gain=0.5 expected=6 actual=7
+
+TONE source=0.2 gain=0.5 expected=26 actual=26
+
+TONE source=0.6 gain=0.5 expected=77 actual=77
+
+TONE source=1.0 gain=0.5 expected=128 actual=128
+
+TONE source=0.0 gain=1.0 expected=0 actual=0
+
+TONE source=0.05 gain=1.0 expected=13 actual=13
+
+TONE source=0.2 gain=1.0 expected=51 actual=51
+
+TONE source=0.6 gain=1.0 expected=153 actual=153
+
+TONE source=1.0 gain=1.0 expected=255 actual=255
+
+TONE source=0.0 gain=1.3 expected=0 actual=0
+
+TONE source=0.05 gain=1.3 expected=16 actual=17
+
+TONE source=0.2 gain=1.3 expected=64 actual=64
+
+TONE source=0.6 gain=1.3 expected=178 actual=178
+
+TONE source=1.0 gain=1.3 expected=255 actual=255
+
+TONE source=0.0 gain=2.0 expected=0 actual=0
+
+TONE source=0.05 gain=2.0 expected=25 actual=25
+
+TONE source=0.2 gain=2.0 expected=92 actual=92
+
+TONE source=0.6 gain=2.0 expected=214 actual=214
+
+TONE source=1.0 gain=2.0 expected=255 actual=255
+
+TONE source=0.0 gain=3.0 expected=0 actual=0
+
+TONE source=0.05 gain=3.0 expected=36 actual=37
+
+TONE source=0.2 gain=3.0 expected=124 actual=124
+
+TONE source=0.6 gain=3.0 expected=239 actual=239
+
+TONE source=1.0 gain=3.0 expected=255 actual=255
+
+PRESENTATION_POSITION_OK
+
+PRESENTATION_OK
+
+
+photo-assets 0 PHOTO_ASSETS_PASS checks=29 lock=red home=green frame=blue follow=red
+
+
+power-1 0 HIDDEN_EVENTS_OK variant=1 sequence=4 frames=31
+
+LIVE_POWER_OK variant=1 frames=120
+
+
+power-101 0 HIDDEN_EVENTS_OK variant=101 sequence=4 frames=22
+
+LIVE_POWER_OK variant=101 frames=109
+
+
+power-201 0 HIDDEN_EVENTS_OK variant=201 sequence=4 frames=33
+
+LIVE_POWER_OK variant=201 frames=121
+
+
+photo601 0 LIVE_FRAMES windowMs=3000 frames=69 fps=23.0 error=
+
+IDLE_WAKE_RESUMED=true
+
+HIDDEN_STOPPED=true
+
+
+photo602 0 LIVE_FRAMES windowMs=3004 frames=1 fps=0.33288948069241014 error=
+
+STATIC_IDLE_STOPPED=true
+
+IDLE_WAKE_RESUMED=true
+
+HIDDEN_STOPPED=true
+
+
+dual 0 LIVE_FRAMES windowMs=2999 frames=69 fps=23.00766922307436 error=
+
+GRADIENT_SECONDS=5.9580626
+
+SHARED_MOTION=true framesB=228
+
+HIDDEN_STOPPED=true
+
+
+interrupted-sleep 0 PHOTO_INTERRUPTION_PASS events=14 checks=58681 finalLensScale=0.22 finalMask=0.0
+
