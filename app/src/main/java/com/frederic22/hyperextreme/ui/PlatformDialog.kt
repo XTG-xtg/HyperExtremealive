@@ -7,12 +7,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.LocalDismissState
@@ -31,45 +36,31 @@ internal const val DeveloperGithubUrl = "https://github.com/22Frederic/HyperExtr
 /** B 站主页。 */
 internal const val DeveloperBilibiliUrl = "https://space.bilibili.com/204757951"
 
-/**
- * 三个平台，**顺序即弹窗里的显示顺序**（用户 2026-10-31 指定：Github → 哔哩哔哩 → 酷安）。
- * 文案按用户给的原话，`Github` 的拼写照抄，不要"纠正"成 GitHub。
- */
-private val PlatformEntries = listOf(
-    "打开Github" to DeveloperGithubUrl,
-    "打开哔哩哔哩" to DeveloperBilibiliUrl,
-    "打开酷安" to DeveloperCoolapkUrl,
-)
-
-/**
- * 「选择平台」弹窗（2026-10-31）—— 关于页开发者卡点一下弹它，**不再直接跳酷安**。
- *
- * 三个平台**直接可点**（用户原话），所以没有确认按钮，只在底部留一个「取消」。
- * 行的排版照 [RestartDialog]：整行可点、12dp 圆角、12dp 内边距、`textStyles.main`
- * （与 `WindowDialog` 标题同号）。
- *
- * 点某一项 = 关弹窗 + 打开链接，顺序与 [RestartDialog] 的确认一致：
- * 先 `onDismissRequest` 再 `dismissState.invoke()`，让退出动画正常播。
- */
+/** Contributor-specific links, preserving the original platform selection interaction. */
 @Composable
 internal fun PlatformDialog(
     show: Boolean,
+    title: String,
+    summary: String,
+    entries: List<Pair<String, String>>,
     onDismissRequest: () -> Unit,
     onPick: (String) -> Unit,
 ) {
     WindowDialog(
-        title = "选择平台",
+        title = title,
+        summary = summary,
         show = show,
         onDismissRequest = onDismissRequest,
     ) {
         val dismissState = LocalDismissState.current
-        Column(modifier = Modifier.fillMaxWidth()) {
-            PlatformEntries.forEach { (label, url) ->
+        Column(modifier = Modifier.fillMaxWidth().testTag("contributor-platforms").verticalScroll(rememberScrollState())) {
+            entries.forEach { (label, url) ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .heightIn(min = 48.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .clickable {
+                        .clickable(role = Role.Button) {
                             onDismissRequest()
                             dismissState?.invoke()
                             onPick(url)

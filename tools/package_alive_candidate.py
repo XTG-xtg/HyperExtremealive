@@ -7,7 +7,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'deliverables'
-NAME = 'HyperExtreme-Alive-0.5-alive.7-ui.3-candidate'
+NAME = 'HyperExtreme-Alive-0.5-alive.7-ui.4-candidate'
 ROOT_FILES = ['.gitignore', 'ALIVE-POWER-FIX.md', 'ALIVE-UI-NOTES.md', 'README.md',
               'LICENSE', 'MIT_License.md', 'build.gradle.kts', 'settings.gradle.kts',
               'gradle.properties', 'gradlew', 'gradlew.bat', 'keystore.properties.example']

@@ -1,0 +1,109 @@
+{
+  "version": "0.5-alive.7-ui.4",
+  "version_code": 19,
+  "date": "2026-11-07",
+  "candidate": true,
+  "openalive_full_merge_complete": false,
+  "scope": "About contributors only; no wallpaper, power, clock or preview behavior changes",
+  "apk": {
+    "bytes": 201087940,
+    "sha256": "0488821734fd6c7411df74035a079c568f5cdec6d2531b799a3bb50a9ef24940",
+    "v2_signature_verified": true,
+    "zipalign_16kb_verified": true,
+    "signer_certificate_sha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d"
+  },
+  "gradle": {
+    "build": "passed",
+    "unit_tests": {
+      "tests": 76,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "about_tests": 7,
+    "lint": {
+      "passed": false,
+      "counts": {
+        "Error": 3,
+        "Warning": 256,
+        "Hint": 17
+      },
+      "errors": [
+        {
+          "id": "MissingPermission",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/data/DesktopWallpaperInjector.kt",
+          "line": 104
+        },
+        {
+          "id": "UnspecifiedRegisterReceiverFlag",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/hook/ParallaxBg.kt",
+          "line": 1070
+        },
+        {
+          "id": "UnspecifiedRegisterReceiverFlag",
+          "file": "app/src/main/java/com/frederic22/hyperextreme/hook/ScreenFlash.kt",
+          "line": 51
+        }
+      ],
+      "errors_unchanged_from_ui3": true
+    }
+  },
+  "about": {
+    "contributors": 4,
+    "avatar_shape": "circle",
+    "avatar_dp": 52,
+    "local_avatars": 4,
+    "minimum_touch_target_dp": 48,
+    "compact_width_dp": 320,
+    "font_scale_tested": 1.6,
+    "themes_tested": [
+      "light",
+      "dark"
+    ],
+    "hyperalive_coolapk_only": true,
+    "all_8_platform_links_tested": true,
+    "cancel_and_reselect_tested": true,
+    "full_accessibility_names_tested": true
+  },
+  "avatars": {
+    "contributor_hyperalive.png": {
+      "bytes": 5083,
+      "sha256": "36373fb66a7020ebe59fae720a1664105be6e11c175fdadf02b35b1dd3d11434"
+    },
+    "contributor_hyperextreme.jpg": {
+      "bytes": 74733,
+      "sha256": "2316a7fa2184bc4bae92b195ffa8c5681bf45b036d3d14165a54e4a50e20d2f5"
+    },
+    "contributor_maintainer.jpg": {
+      "bytes": 53839,
+      "sha256": "3eb5c35fa9f34bbd6c5c9099d1534f8c84a6291db63a6736dcddffb35f027bb6"
+    },
+    "contributor_openalive.jpg": {
+      "bytes": 53460,
+      "sha256": "2c0ac625d397092eaa2012fac4a2064f4440751cdc710d9e7b7c9e72d2cc7d3e"
+    }
+  },
+  "publication": {
+    "release_created": false,
+    "tag_pushed": false,
+    "apk_uploaded": false
+  },
+  "limits": [
+    "Screenshots are Robolectric renders, not physical device captures",
+    "No APK installation, device state changes or external app launch in this run",
+    "No new wallpaper/AOD/GPU/power acceptance tests",
+    "Existing OpenAlive full-integration gaps and third-party asset rights remain unchanged"
+  ],
+  "evidence_sha256": {
+    "contributors-compact-large-text.png": "024933ce9ec95e8a864513b4fde2d283c831d6f81d02d08a6b21a14d5e8d4fce",
+    "contributors-dark.png": "4e9b142ddf8609f3a7f1d8845a89a49c76cdb5e43effd6cb468b3e5b56ee42a6",
+    "contributors-light.png": "3f5756b1ab6647c1e4cda35adae898b6d865ab370c36df0684027c4e61cc8717",
+    "platforms-compact-large-text.png": "91059a8850f00e7e7e2a9a4f84a067f53972a5744c3fb5423fcac543fe48bc43",
+    "platforms-maintainer.png": "ec7281e15185ead54f846c2f1717010d143588ed91f184a319513c4d61b654ab",
+    "platforms-original.png": "93eebd3b9e598ecf15061939d53f85fd5651fc28e183982c811977e1d7c24d1b",
+    "ui4-final.log": "1b0551dc8fcb2aae090e4ba54df3e71a91557945d3ab2172a0c73b0429e710df",
+    "ui4-lint.log": "c9dfd6062a268c809b591b4ffe4f7adb89edb6f5589c61e0fa8d43aecfc59b39",
+    "ui4-signature.log": "b8d9e6ec3ca6df3dbd6366e91afd727fc6c368bc8141cd4adc73722ee2d55a1c",
+    "ui4-zipalign.log": "ef63da29d384378532aa72d67e526d466668e47491ed9b14b78390a0b91796af"
+  }
+}

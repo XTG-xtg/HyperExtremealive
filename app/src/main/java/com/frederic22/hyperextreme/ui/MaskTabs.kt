@@ -1382,46 +1382,14 @@ internal fun openUrl(context: Context, url: String) {
 @Composable
 internal fun AboutTab(state: MaskUiState) {
     val context = state.context
-    val haptic = rememberClickHaptic()
-    // 「选择平台」弹窗的显隐（2026-10-31）：开发者卡不再直接跳酷安，先弹三选一。
-    var showPlatform by remember { mutableStateOf(false) }
     TabColumn {
-        // 状态卡已于 2026-10-29 搬回主页最上面（见 [HomeTab]）—— 关于页从开发者卡开始。
-        // 开发者卡：头像 + 名字 + 一句话 + 右侧箭头，整行可点（打开 Coolapk 主页）。
-        // 排版用 miuix 官方的 `BasicComponent`：`startAction` 放头像、`endActions` 放右侧箭头，
-        // 官方那套 16dp 内边距与行高照旧。箭头照官方 `ArrowPreference` 的画法
-        // （`onSurfaceVariantActions` 描色、在行内垂直居中），只是图标换成 `ChevronForward` ——
-        // 我们依赖的 miuix-icons 0.9.4 里还没有官方那个 `MiuixIcons.Basic.ArrowRight`。
-        Card(
+        AboutContributorsCard(
+            onOpenUrl = { openUrl(context, it) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
                 .padding(top = 12.dp),
-            insideMargin = PaddingValues(0.dp),
-        ) {
-            BasicComponent(
-                title = "Frederic22",
-                summary = "相逢的人会再相逢。",
-                startAction = {
-                    Image(
-                        painter = painterResource(R.drawable.profile_photo),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            // BasicComponent 里头像与文字之间固定 8dp，这里再补 6dp（共 14dp），
-                            // 让间距宽一点点。padding 必须放在 size **之前**，否则会被 clip 压成 42dp。
-                            .padding(end = 6.dp)
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(14.dp)),
-                    )
-                },
-                endActions = { LinkArrow() },
-                onClick = {
-                    haptic()
-                    showPlatform = true
-                },
-            )
-        }
+        )
 
         // 开源代码许可：一条一条列（名字 + "开发者 | 协议" + 右侧箭头），整行可点 → 对应仓库。
         // 排版和开发者卡一致（官方 `BasicComponent`），每条自带 16dp 内边距与行高。
@@ -1442,12 +1410,6 @@ internal fun AboutTab(state: MaskUiState) {
         }
     }
 
-    // 「选择平台」弹窗：**常驻组合树、用 show 控制**（条件包裹会让 miuix 的退出动画播不出来）。
-    PlatformDialog(
-        show = showPlatform,
-        onDismissRequest = { showPlatform = false },
-        onPick = { openUrl(context, it) },
-    )
 }
 
 /** 一条可点的链接行：标题 + 说明 + 右侧箭头，整行可点。[summary] 传 null 则不画副标题。 */

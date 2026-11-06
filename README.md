@@ -33,9 +33,13 @@
 
 ## Alive 整合修复候选
 
-HyperAlive 作者主页：[酷安主页](https://www.coolapk.com/u/39588100)。
+当前源码版本为 **`0.5-alive.7-ui.4` / versionCode 19**。关于页四位贡献者使用并排圆形头像，
+点击头像选择各自的平台。头像全部内置，不依赖网络加载；HyperAlive 使用用户提供的酷安
+默认头像且仅显示酷安入口，其余三位保留 Github / 酷安，原作保留原有哔哩哔哩入口。
+本轮只修改关于页，不修改壁纸渲染、电源状态或已应用配置。
+校验和发布状态见 [REPAIR-07-UI4](docs/alive/REPAIR-07-UI4.zh-CN.md)。
 
-最新源码与候选 APK 为 **`0.5-alive.7-ui.3` / versionCode 18**。照片/动态分类增加过渡，
+`0.5-alive.7-ui.3` / versionCode 18：照片/动态分类增加过渡，
 真实引擎切换先淡出、等新画面首帧再淡入；取景和预览共用椭圆顶栏按钮。
 照片面板按当前预览状态显示，桌面只保留「跟随锁屏」开关及「选择照片」设置行，
 无小字备注或大按钮。跟随不合并桌面纹理，独立选图成功才关闭跟随，取消不改变设置。
@@ -118,3 +122,16 @@ OpenAlive 的 MIT 源码许可、移植来源与素材哈希保留在 `docs/aliv
 强杀逻辑。现在必须显式传入设备序列号、APK 和 `--install` 才会覆盖安装；默认仅打印
 计划。作用域确认和重启由用户手动完成。`tools/package_alive_candidate.py` 以白名单
 打包源码、校验归档及逐文件哈希，不包含参考包、构建缓存、密钥或本机配置。
+
+## 鸣谢
+
+本项目是基于 **HyperExtreme** 的 Alive 壁纸适配分支，参考 **HyperAlive** 的界面与交互，
+并移植、整合 **OpenAlive** 的照片渲染器及相关功能，针对 HyperOS 进行适配与维护。
+感谢各位作者的开源与分享：
+
+- **HyperExtreme · Frederic22**：本项目的基础与原作。[Github](https://github.com/22Frederic/HyperExtreme) · [酷安](https://www.coolapk.com/u/3268364)
+- **HyperAlive · AXLES**：Alive 壁纸界面与交互的参考来源。[酷安](https://www.coolapk.com/u/39588100)
+- **OpenAlive · 下北沢最速傳說 / Maga-King**：照片渲染管线及相关功能的移植来源。[Github](https://github.com/Maga-King/OpenAlive) · [酷安](https://www.coolapk.com/u/24655132)
+- **整合维护 · 年华虚度 / XTG-xtg**：本分支的整合、HyperOS 适配与维护。[Github](https://github.com/XTG-xtg/HyperExtremealive) · [酷安](https://www.coolapk.com/u/44199044)
+
+上游代码保留原作者署名与相应许可；官方运行时、字体、壁纸及素材的权利仍归原权利人。
