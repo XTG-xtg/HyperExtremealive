@@ -26,6 +26,10 @@ final class VivoOptions {
     }
     float x=.5f,y=.5f,zoom=1;
     boolean wallpaperZoom=true,aodAnimation=true;
+    boolean autoSubject=true;
+    boolean liquidAutoMotion=false;
+    int subjectEngine=0;
+    String subjectSource="",subjectDetail="";
     VivoOptions(int family){this.family=family;area=family==LIQUID?2:family==FLASH?1:4;}
     static VivoOptions parse(String text){
         if(text==null||text.isEmpty())return null;
@@ -37,6 +41,10 @@ final class VivoOptions {
             o.sensitivity=Math.max(-50,Math.min(50,j.optInt("sensitivity",0)));
             o.wallpaperZoom=j.optBoolean("wallpaperZoom",true);
             o.aodAnimation=j.optBoolean("aodAnimation",true);
+            o.autoSubject=j.optBoolean("autoSubject",true);
+            o.liquidAutoMotion=j.optBoolean("liquidAutoMotion",false);
+            o.subjectEngine=Math.max(0,Math.min(2,j.optInt("subjectEngine",0)));
+            o.subjectSource=j.optString("subjectSource","");o.subjectDetail=j.optString("subjectDetail","");
             String pattern=j.optString("pattern",o.pattern);if(pattern.matches("d5_pattern_[a-z0-9_-]+"))o.pattern=pattern;
             o.paint=safe(j.optString("paint"));o.subject=safe(j.optString("subject"));o.video=safe(j.optString("video"));
             o.videoFirstFrame=safe(j.optString("videoFirstFrame"));o.videoDuration=Math.max(0,j.optLong("videoDuration"));
@@ -63,7 +71,8 @@ final class VivoOptions {
             return new JSONObject().put("slots",transforms).put("family",family).put("style",style).put("area",area).put("refraction",refraction)
             .put("pattern",pattern).put("paint",paint).put("subject",subject).put("video",video).put("sensitivity",sensitivity)
             .put("videoFirstFrame",videoFirstFrame).put("videoDuration",videoDuration).put("videoFrames",videoFrames).put("videoRate",videoRate)
-            .put("photos",new JSONArray(photos)).put("rasterVideos",clips).put("x",x).put("y",y).put("zoom",zoom).put("wallpaperZoom",wallpaperZoom).put("aodAnimation",aodAnimation).toString();}
+            .put("photos",new JSONArray(photos)).put("rasterVideos",clips).put("x",x).put("y",y).put("zoom",zoom).put("wallpaperZoom",wallpaperZoom).put("aodAnimation",aodAnimation)
+            .put("autoSubject",autoSubject).put("liquidAutoMotion",liquidAutoMotion).put("subjectEngine",subjectEngine).put("subjectSource",subjectSource).put("subjectDetail",subjectDetail).toString();}
         catch(JSONException impossible){throw new IllegalStateException(impossible);}
     }
     String engineJson(){
@@ -82,6 +91,8 @@ final class VivoOptions {
         VivoOptions copy=parse(json());copy.sensitivity=other.sensitivity;
         copy.wallpaperZoom=other.wallpaperZoom;
         copy.aodAnimation=other.aodAnimation;
+        copy.autoSubject=other.autoSubject;copy.subjectEngine=other.subjectEngine;
+        copy.subjectSource=other.subjectSource;copy.subjectDetail=other.subjectDetail;
         return copy.json().equals(other.json());
     }
     static VivoOptions load(android.content.Context c,int variant,boolean preview){

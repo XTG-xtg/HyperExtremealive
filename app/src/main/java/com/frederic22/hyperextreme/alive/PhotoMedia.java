@@ -70,14 +70,22 @@ final class PhotoMedia {
             if(!file.isFile()||file.length()==0)throw new IOException("Photo is missing for slot "+slot+"; choose it again");
         }
     }
-    static PhotoOptions freezeLegacy(Context c,PhotoOptions options,boolean preview)throws IOException {
+    static synchronized PhotoOptions freezeLegacy(Context c,PhotoOptions options,boolean preview)throws IOException {
         if(!options.lockPhoto.isEmpty())return options;
         File directory=new File(c.getFilesDir(),"alive/media");
         if(!directory.isDirectory()&&!directory.mkdirs())throw new IOException("Cannot create photo directory");
-        String name="photo-"+UUID.randomUUID().toString().replace("-","")+".png";
+        File source=prepare(c,options,preview,0);
+        java.security.MessageDigest digest;
+        try{digest=java.security.MessageDigest.getInstance("SHA-256");}catch(java.security.NoSuchAlgorithmException e){throw new IOException(e);}
+        try(java.io.InputStream in=new java.io.FileInputStream(source)){byte[] buffer=new byte[32768];for(int n;(n=in.read(buffer))!=-1;)digest.update(buffer,0,n);}
+        StringBuilder hash=new StringBuilder();for(byte v:digest.digest())hash.append(String.format(java.util.Locale.ROOT,"%02x",v&255));
+        String name="photo-"+hash.substring(0,32)+".png";
         File destination=new File(directory,name);
-        try(java.io.FileInputStream in=new java.io.FileInputStream(prepare(c,options,preview,0));FileOutputStream out=new FileOutputStream(destination)){
-            byte[] buffer=new byte[32768];int size;while((size=in.read(buffer))!=-1)out.write(buffer,0,size);out.getFD().sync();
+        if(!destination.isFile()||destination.length()!=source.length()){
+            android.util.AtomicFile target=new android.util.AtomicFile(destination);FileOutputStream out=target.startWrite();
+            try(java.io.FileInputStream in=new java.io.FileInputStream(source)){
+                byte[] buffer=new byte[32768];int size;while((size=in.read(buffer))!=-1)out.write(buffer,0,size);target.finishWrite(out);
+            }catch(IOException|RuntimeException error){target.failWrite(out);throw error;}
         }
         android.os.Bundle b=options.bundle();b.putStringArray("media",new String[]{name,options.homePhoto,options.framePhoto});
         return PhotoOptions.fromBundle(b);

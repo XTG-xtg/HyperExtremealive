@@ -1,5 +1,21 @@
 # 资源说明
 
+## 本分支 ui.8 的新增范围
+
+以下原版时钟与光效资源从 OpenAlive 引入，逐文件来源及 SHA-256 见
+`IMPORTED-EXTENSIONS.json`。上游所称 `app/assets/` 在本分支对应 `app/src/main/assets/`。
+
+- `native-clock/runtime/hyperos/`：独立时钟控件运行库及原版字体；不是小米超级壁纸包。
+- `native-clock/runtime/flyme/`、`ui/editor-ui.apk`：原版时钟控件、资源及 SVGA 解码／绘制库。
+- `native-clock/vivo/`、`native-clock/previews/`：原版布局、字体和上游生成的对应缩略图。
+- `notification/`：原版光环、双侧光带及来源说明。
+
+这些资源仍归原权利人，不因 OpenAlive 的 MIT 许可而获得再分发或商用授权。
+适配代码不安装这些 APK、不启动其应用组件。四个兼容类单独构建为隔离 DEX，
+不会把同名 MIUI 类混入模块主类加载器。本分支使用 libxposed API 102；下文 API 82 描述保留为上游记录。
+
+## 上游资源说明
+
 **部分资产来源于魅族22FlymeOS。** 本项目使用的参考版本为魅族 22 的 Flyme 12.6.0.0A，包含 AliveWallPaper 13.0.5 和 SystemUIEditor。
 
 以下内容保留各自权利人的版权及原有许可，不适用本项目的 MIT 许可：

@@ -11,12 +11,18 @@ final class Config {
     static Bundle read(Context c) {
         SharedPreferences p = prefs(c); Bundle b = new Bundle();
         b.putInt("variant", variant(c)); b.putBoolean("dark", dark(c));
-        b.putBoolean("enabled", p.getBoolean("enabled", false) && EngineRegistry.hasEngine());
+        b.putBoolean("configured", p.getBoolean("enabled", false));
+        b.putBoolean("enabled", b.getBoolean("configured") && EngineRegistry.hasEngine());
         b.putBoolean("clock", p.getBoolean("clock", false));
         b.putInt("clock_color", p.getInt("clock_color", 0xffeeeeee));
         b.putFloat("clock_scale", Math.max(.5f, Math.min(2f, p.getFloat("clock_scale", 1f))));
         b.putLong("revision", p.getLong("revision", 0));
+        if(b.getBoolean("enabled")&&variant(c)==701){
+            LiquidTouchMap map=EngineRegistry.liquidMap();
+            if(map!=null&&map.scene.equals(VivoOptions.load(c,701,false).json()))b.putBundle("liquid_touch",map.bundle());
+        }
         AliveRenderOptions.load(c).write(b);
+        ExtensionOptions.load(c).write(b);
         return b;
     }
     static void changed(Context c) {

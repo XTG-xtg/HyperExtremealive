@@ -33,11 +33,14 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
-internal val aliveDynamicGroups = listOf(-1, 0, 2, 1, 3, 4, 6)
-internal val aliveDynamicLabels = listOf("全部", "启航", "流光", "轻启", "视频", "立体", "Vivo")
+internal val aliveDynamicGroups = listOf(-1, 0, 2, 1, 3, 4)
+internal val aliveDynamicLabels = listOf("全部", "启航", "流光", "轻启", "视频", "立体")
+internal fun isAliveDynamicScene(scene: AliveCatalog.Scene) = scene.group in 0..4
 
 internal fun previewVivoSceneKey(options: VivoOptions): String = VivoOptions.parse(options.json()).apply {
     sensitivity = 0; wallpaperZoom = true; aodAnimation = true
+    autoSubject = true; subjectEngine = 0; subjectSource = ""; subjectDetail = ""
+    if (family != VivoOptions.RASTER) { x = .5f; y = .5f; zoom = 1f }
 }.json()
 
 /** Saves only drafts; never changes the applied variant or publishes a wallpaper. */
@@ -107,7 +110,7 @@ internal fun AliveWallpaperPickerContent(variant: Int, scenes: List<AliveCatalog
                     LazyVerticalGrid(GridCells.Fixed(columns), modifier = Modifier.fillMaxSize().testTag("alive-picker-grid"),
                         contentPadding = PaddingValues(bottom = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        items(scenes.filter { it.group != 5 && (group == 0 || it.group == aliveDynamicGroups[group]) }, key = { it.id }) { scene ->
+                        items(scenes.filter { isAliveDynamicScene(it) && (group == 0 || it.group == aliveDynamicGroups.getOrElse(group) { -1 }) }, key = { it.id }) { scene ->
                             Column(Modifier.clip(RoundedCornerShape(12.dp))
                                 .selectable(selected = scene.id == variant, enabled = enabled, role = Role.Tab, onClick = { onSelect(scene) })
                                 .testTag("alive-picker-scene-${scene.id}"), horizontalAlignment = Alignment.CenterHorizontally) {

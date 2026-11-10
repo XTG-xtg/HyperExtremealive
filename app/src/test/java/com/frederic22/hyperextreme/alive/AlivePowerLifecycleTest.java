@@ -135,6 +135,46 @@ public class AlivePowerLifecycleTest {
             : new BubbleMotion(context.getAssets(), id, false, mode, false);
     }
 
+    @Test public void confirmedExitStartsBeforeUserPresentAndSurvivesLateVisibilityHints() {
+        variant(1);
+        event(0,"screen-off",false);
+        event(1,"screen-on",true);
+        EngineRegistry.Snapshot exit=event(2,"keyguard-going-away",true,100);
+        assertEquals(AliveState.HOME,exit.mode);
+        assertEquals(exit.sequence,event(1,"visible-slot-1",true,300).sequence);
+        assertEquals(exit.sequence,event(1,"scrim-keyguard",true,400).sequence);
+        assertEquals(exit.sequence,event(2,"user-present",true,100).sequence);
+        assertEquals(exit.startMs,EngineRegistry.snapshot().startMs);
+    }
+
+    @Test public void exitOvertakenByVisibilityIsAcceptedButCannotCrossANewerSleep() {
+        variant(3);event(0,"screen-off",false);event(1,"screen-on",true);
+        long exitAt=at+10;
+        event(1,"visible-slot-1",true,30);
+        EngineRegistry.signal(context,2,exitAt,"keyguard-going-away");shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(AliveState.HOME,EngineRegistry.snapshot().mode);
+        EngineRegistry.Snapshot sleep=event(0,"screen-off",true,20);
+        EngineRegistry.signal(context,2,exitAt,"keyguard-going-away");shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(sleep.sequence,EngineRegistry.snapshot().sequence);
+        assertEquals(AliveState.AOD,EngineRegistry.snapshot().mode);
+    }
+
+    @Test public void explicitExitCancellationAndNoninteractivePowerRemainAuthoritative() {
+        variant(4);event(0,"screen-off",false);event(1,"screen-on",true);
+        event(2,"keyguard-going-away",true,100);
+        assertEquals(AliveState.LOCK,event(1,"keyguard-exit-cancelled",true,20).mode);
+        assertEquals(AliveState.AOD,event(2,"keyguard-going-away",false,50).mode);
+    }
+
+    @Test public void unlockHintFenceIsBoundedAndDoesNotAffectLaterLockCycles() {
+        variant(1);event(0,"screen-off",false);event(1,"screen-on",true);
+        event(2,"keyguard-going-away",true,100);
+        assertEquals(AliveState.LOCK,event(1,"scrim-keyguard",true,2100).mode);
+        event(2,"keyguard-going-away",true,100);
+        assertEquals(AliveState.AOD,event(0,"screen-off",true,50).mode);
+        assertEquals(AliveState.LOCK,event(1,"screen-on",true,300).mode);
+    }
+
     private float[] values(WallpaperMotion motion) {
         return motion instanceof CosmicMotion ? ((CosmicMotion) motion).values : ((BubbleMotion) motion).values;
     }

@@ -74,10 +74,10 @@ final class PhotoRenderer implements WallpaperRenderer {
         decode.inSampleSize=1;
         while(Math.max(decode.outWidth,decode.outHeight)/(decode.inSampleSize*2)>=target)decode.inSampleSize*=2;
         decode.inJustDecodeBounds=false;
-        Bitmap bitmap=BitmapFactory.decodeFile(file.getAbsolutePath(),decode);
-        if(bitmap==null)throw new IOException("Photo is missing or cannot be decoded");
-        try{textures[index]=upload(bitmap);textureWidth[index]=bitmap.getWidth();textureHeight[index]=bitmap.getHeight();}
-        finally{bitmap.recycle();}
+        String key=file.getAbsolutePath()+":"+file.length()+":"+file.lastModified()+":"+decode.inSampleSize;
+        PhotoImageCache.SHARED.use(key,()->BitmapFactory.decodeFile(file.getAbsolutePath(),decode),bitmap->{
+            textures[index]=upload(bitmap);textureWidth[index]=bitmap.getWidth();textureHeight[index]=bitmap.getHeight();
+        });
     }
     private void loadAsset(int index,String path,boolean repeat)throws IOException {
         if(textures[index]!=0)return;

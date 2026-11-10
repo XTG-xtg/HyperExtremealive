@@ -13,7 +13,7 @@ final class AodPresentation implements AutoCloseable {
     AodPresentation(AssetManager assets,int width,int height)throws IOException{
         this.width=width;this.height=height;this.assets=assets;
     }
-    private void prepare(){
+    void prepare(){
         if(shader!=null)return;
         try {
         shader=new AssetGl(assets,"shader/alive/presentation.vert","shader/alive/presentation.frag");

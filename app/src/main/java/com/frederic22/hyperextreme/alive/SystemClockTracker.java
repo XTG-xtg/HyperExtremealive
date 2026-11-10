@@ -71,6 +71,8 @@ final class SystemClockTracker implements ViewTreeObserver.OnPreDrawListener, Vi
     }
     private static View find(View view,boolean groups){
         if(view.getVisibility()!=View.VISIBLE||view.getAlpha()<.05f||view.getWidth()<=0||view.getHeight()<=0)return null;
+        // A successfully loaded replacement contains clocks only, unlike the native AOD root.
+        if(groups&&view instanceof GuardedClockFrame)return view;
         String id="";
         try{if(view.getId()!=View.NO_ID)id=view.getResources().getResourceEntryName(view.getId()).toLowerCase(Locale.ROOT);}catch(RuntimeException ignored){}
         // Prefer a bounded clock group over one of its hour/minute children or full-screen hosts.

@@ -85,7 +85,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.ChevronForward
-import top.yukonga.miuix.kmp.overlay.OverlayListPopup
+import top.yukonga.miuix.kmp.window.WindowListPopup
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import com.frederic22.hyperextreme.ui.nav.NavBgState
 import com.frederic22.hyperextreme.ui.nav.reportSliderRect
@@ -256,6 +256,18 @@ internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
             packageName = MiuiWallpaperPackageName,
             title = androidx.compose.ui.res.stringResource(R.string.alive_title),
             onClick = { onOpen(DetailPage.Alive) },
+        )
+        AppEntryCard(
+            icons = icons,
+            packageName = MiuiWallpaperPackageName,
+            title = "液态壁纸",
+            onClick = { onOpen(DetailPage.LiquidWallpaper) },
+        )
+        AppEntryCard(
+            icons = icons,
+            packageName = MiuiWallpaperPackageName,
+            title = "闪卡壁纸",
+            onClick = { onOpen(DetailPage.FlashWallpaper) },
         )
         AppEntryCard(
             icons = icons,
@@ -1418,7 +1430,7 @@ internal fun AboutTab(state: MaskUiState) {
 
 /** 一条可点的链接行：标题 + 说明 + 右侧箭头，整行可点。[summary] 传 null 则不画副标题。 */
 @Composable
-private fun LinkRow(title: String, summary: String?, onClick: () -> Unit) {
+internal fun LinkRow(title: String, summary: String?, onClick: () -> Unit) {
     val haptic = rememberClickHaptic()
     BasicComponent(
         title = title,
@@ -1510,7 +1522,7 @@ internal fun SwitchRow(
  * > 那些在**另一个模块 `miuix-preference`**，本工程没引（也不打算引：本地缓存只有 `0.9.4-rc01`，
  * > 与其余 miuix 模块的 `0.9.4` 不是同一版本，混用有风险）。所以这里用 `miuix-ui` 里
  * > 官方提供的**积木**、照上面那份源码接线 —— 观感、动画、配色仍然是官方那套。
- * > 部件全是官方的：`BasicComponent` / `OverlayListPopup` / `ListPopupColumn` / `DropdownImpl` /
+ * > 部件全是官方的：`BasicComponent` / `WindowListPopup` / `ListPopupColumn` / `DropdownImpl` /
  * > `DropdownItem` / `DropdownEntry` / `DropdownArrowEndAction` / `DropdownDefaults`。
  */
 @Composable
@@ -1564,9 +1576,12 @@ internal fun DropdownRow(
             )
             DropdownArrowEndAction(actionColor = actionColor)
             // 弹出层**就在 endActions 里**（要点 1）。
-            OverlayListPopup(
+            // The row is also used inside WindowBottomSheet: an overlay would be
+            // hosted by the underlying page and end up behind that dialog window.
+            WindowListPopup(
                 show = expanded.value,
                 alignment = PopupPositionProvider.Align.End,
+                enableWindowDim = false,
                 onDismissRequest = { expanded.value = false },
                 onDismissFinished = { holdDown.value = false },
             ) {

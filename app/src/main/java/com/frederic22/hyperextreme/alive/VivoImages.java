@@ -47,6 +47,10 @@ final class VivoImages implements AutoCloseable {
     static Bitmap slot(Context host,VivoEngineRuntime runtime,VivoOptions options,int index)throws IOException{
         return index<options.photos.size()?file(host,options.photos.get(index)):asset(runtime,"vivo/default/raster-"+index+".jpg");
     }
+    static Bitmap original(Context host,VivoEngineRuntime runtime,VivoOptions options)throws IOException{
+        if(!options.photos.isEmpty())return file(host,options.photos.get(0));
+        return asset(runtime,"vivo/default/"+(options.family==VivoOptions.LIQUID?"liquid.jpg":options.family==VivoOptions.FLASH?"flash.jpg":"raster-0.jpg"));
+    }
     private static Bitmap file(Context host,String name)throws IOException{
         File f=new File(host.getFilesDir(),name);
         if(!name.matches("vivo-[A-Za-z0-9._-]+"))throw new IOException("Invalid image path");

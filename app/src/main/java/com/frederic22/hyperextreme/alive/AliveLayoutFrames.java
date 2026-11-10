@@ -22,6 +22,9 @@ final class AliveLayoutFrames implements AutoCloseable {
     private WallpaperRenderer renderer;
     private AodPresentation presentation;
     private final AliveRenderOptions options;
+    private final PhotoOptions photo;
+    private final boolean coverOnly;
+    private final VivoOptions vivo;
     private final Bitmap[] images = new Bitmap[3];
     private int mode;
     private long started;
@@ -30,9 +33,15 @@ final class AliveLayoutFrames implements AutoCloseable {
     private final Runnable draw = this::render;
 
     AliveLayoutFrames(Context context, int variant, boolean dark, int width, int height, Callback callback) {
+        this(context,variant,dark,width,height,AliveRenderOptions.load(context),PhotoOptions.load(context,false),false,callback);
+    }
+    AliveLayoutFrames(Context context,int variant,boolean dark,int width,int height,AliveRenderOptions options,PhotoOptions photo,boolean coverOnly,Callback callback) {
+        this(context,variant,dark,width,height,options,photo,null,coverOnly,callback);
+    }
+    AliveLayoutFrames(Context context,int variant,boolean dark,int width,int height,AliveRenderOptions options,PhotoOptions photo,VivoOptions vivo,boolean coverOnly,Callback callback) {
         this.context = context.getApplicationContext(); this.variant = variant; this.dark = dark;
         this.width = width; this.height = height; this.callback = callback;
-        options=AliveRenderOptions.load(context);
+        this.options=options;this.photo=photo;this.vivo=vivo;this.coverOnly=coverOnly;mode=coverOnly?1:0;
         thread.start(); handler = new Handler(thread.getLooper()); handler.post(this::start);
     }
 
@@ -57,12 +66,12 @@ final class AliveLayoutFrames implements AutoCloseable {
         try {
             if (cancelled) { finish("cancelled"); return; }
             if (renderer != null) { renderer.close(); renderer = null; }
-            if (mode == 3) { finish(""); return; }
+            if (mode == 3 || coverOnly && mode == 2) { finish(""); return; }
             started = SystemClock.uptimeMillis();
             Runnable invalidate = () -> { if (!finished && !cancelled) { handler.removeCallbacks(draw); handler.post(draw); } };
             renderer = variant >= 601 && variant <= 606
-                ? new PhotoRenderer(context, width, height, mode, variant, false, invalidate)
-                : variant>=701&&variant<=703?new VivoRenderer(context,VivoOptions.load(context,variant,false),width,height,mode,true,dark,invalidate)
+                ? new PhotoRenderer(context, photo, width, height, mode, variant, false, invalidate)
+                : variant>=701&&variant<=703?new VivoRenderer(context,vivo!=null?vivo:VivoOptions.load(context,variant,false),width,height,mode,true,dark,invalidate)
                 : WallpaperRenderer.create(context.getAssets(), variant, dark, width, height, mode, options.keepLock, invalidate);
             ClockSnapshot clock=EngineRegistry.clock(true);
             boolean system=options.followClock&&clock!=null&&clock.usable(width,height);
@@ -115,7 +124,7 @@ final class AliveLayoutFrames implements AutoCloseable {
             EglWorker.releaseDisplay(); EGL14.eglReleaseThread(); display = EGL14.EGL_NO_DISPLAY;
         }
         if (cancelled || !error.isEmpty()) for (Bitmap image : images) if (image != null) image.recycle();
-        if (!cancelled) callback.complete(error.isEmpty() ? images : new Bitmap[0], error);
+        if (!cancelled) callback.complete(error.isEmpty() ? (coverOnly?new Bitmap[]{images[1]}:images) : new Bitmap[0], error);
         thread.quitSafely();
     }
 

@@ -21,10 +21,15 @@ final class VivoEngineScene implements AutoCloseable {
     private VivoSensorGain sensorGain;
     private VivoLiquidSensitivity liquidSensitivity;
     private Bitmap liquidMask;
+    private VivoLiquidRegion liquidRegion;
+    private VivoLiquidRegionPass regionPass;
+    private boolean touching;
+    private volatile long touchUntil;
     private int photoWidth,photoHeight;
     private VivoOptions options;
     private volatile boolean closed,visible;
     private volatile boolean flashReady;
+    private volatile boolean flashDemo;
     private boolean preview,visibilitySet,running,allowAnimation=true;
     private int mode=1;
     private final int width,height;
@@ -64,6 +69,8 @@ final class VivoEngineScene implements AutoCloseable {
             if(family==VivoOptions.RASTER)layer.clips(runtime.getFilesDir(),options,displayP3,invalidate);
             layerContract=layer.proxy;Class<?> layerType=api.type("com.android.systemui.plugins.IVAGLayer");
             if(family==VivoOptions.LIQUID){
+                liquidRegion=new VivoLiquidRegion(options,photos.get(0),subject,paint,width,height);
+                regionPass=new VivoLiquidRegionPass(photos.get(0),liquidRegion.mask,displayP3);
                 Object config=api.make("D3.a",new Class<?>[0]);
                 Object bean=bean(BASE+"plugin.effectscard.EffectsCardCustomDataBean",options.engineJson());
                 api.call(config,"setCustomDataBean",new Class<?>[]{bean.getClass()},bean);
@@ -72,16 +79,7 @@ final class VivoEngineScene implements AutoCloseable {
                 api.set(config,"surfaceType",2);api.set(config,"isPreview",true);
                 if(options.style==1){
                     photoWidth=photos.get(0).getWidth();photoHeight=photos.get(0).getHeight();
-                    Bitmap source=options.area==1?(paint==null?subject:paint):subject;
-                    if(options.area==4){liquidMask=Bitmap.createBitmap(64,64,Bitmap.Config.ARGB_8888);liquidMask.eraseColor(Color.WHITE);}
-                    else if(source!=null){
-                        liquidMask=source.copy(Bitmap.Config.ARGB_8888,true);
-                        if(options.area==3){
-                            int[] pixels=new int[liquidMask.getWidth()*liquidMask.getHeight()];liquidMask.getPixels(pixels,0,liquidMask.getWidth(),0,0,liquidMask.getWidth(),liquidMask.getHeight());
-                            for(int i=0;i<pixels.length;i++)pixels[i]=0xff000000|(~pixels[i]&0xffffff);
-                            liquidMask.setPixels(pixels,0,liquidMask.getWidth(),0,0,liquidMask.getWidth(),liquidMask.getHeight());
-                        }
-                    }
+                    liquidMask=liquidRegion.mask;
                     liquidWeights(config,options.viewport());
                 }
                 controller=api.make(BASE+"plugin.naturaleffects.NaturalEffectsPreCtrl",new Class<?>[]{render.getClass()},render);
@@ -89,6 +87,7 @@ final class VivoEngineScene implements AutoCloseable {
                 api.call(controller,"onGLSurfaceChanged",new Class<?>[]{int.class,int.class},width,height);
                 Object animation=api.get(api.get(controller,"mStrategy"),"d");
                 liquidSensitivity=new VivoLiquidSensitivity(api,api.get(animation,options.style==1?"f":"e"),options.sensitivity);
+                if(!options.liquidAutoMotion)main.post(()->{if(!closed)try{idleLiquid();}catch(Exception e){android.util.Log.e("AliveClean","Liquid idle failed",e);}});
             }else{
                 Object data=bean(BASE+"PageContext$Data","{}");
                 Object wrap=api.make(BASE+"ThemeEditInterfaceWrap",new Class<?>[]{api.type(BASE+"PageManager")},(Object)null);
@@ -144,11 +143,11 @@ final class VivoEngineScene implements AutoCloseable {
                 // A display/AOD callback can arrive without a visibility edge.
                 // Restore only the subscription; replaying the controller would
                 // reset the flash posture while AOD is still visible.
-                if(value&&sensorGain!=null)sensorGain.start();
+                if(value&&sensorGain!=null&&!flashDemo)sensorGain.start();
                 return;
             }
             if(!value)stop();
-            else if(family==VivoOptions.LIQUID)api.call(controller,"playAnim");
+            else if(family==VivoOptions.LIQUID){if(options.liquidAutoMotion)api.call(controller,"playAnim");else idleLiquid();}
             else if(family==VivoOptions.RASTER){
                 Object sensor=sensor();
                 api.set(sensor,"e",0L); // Never integrate the time spent asleep.
@@ -161,13 +160,23 @@ final class VivoEngineScene implements AutoCloseable {
                 // no velocity sample may integrate time spent with the screen off.
                 Object sensor=api.get(api.get(controller,"f"),"e");
                 api.set(sensor,"e",0L);api.set(sensor,"f",0f);api.set(sensor,"g",0f);api.set(sensor,"h",0f);
-                api.call(controller,"a");flashReady=true;invalidate.run();
+                api.call(controller,flashDemo?"d":"a");flashReady=true;invalidate.run();
             }
-            if(value&&sensorGain!=null)sensorGain.start();
+            if(value&&sensorGain!=null&&!flashDemo)sensorGain.start();
             running=value;
         }catch(Exception e){android.util.Log.e("AliveClean","Vivo lifecycle failed",e);}});
     }
     void animationEnabled(boolean value){if(allowAnimation!=value){allowAnimation=value;updateAnimation();}}
+    void flashDemo(boolean value){
+        if(!preview||family!=VivoOptions.FLASH||closed||flashDemo==value)return;
+        flashDemo=value;
+        main.post(()->{if(closed||!running)return;try{
+            if(sensorGain!=null)sensorGain.close();
+            api.call(controller,flashDemo?"d":"a");
+            if(!flashDemo&&sensorGain!=null)sensorGain.start();
+            invalidate.run();
+        }catch(Exception e){android.util.Log.e("AliveClean","Flash preview demo failed",e);}});
+    }
     void mode(int next,boolean animate){transition(next,animate,nightLevel,aodMask);}
     void transition(int next,boolean animate,float night,float mask){
         transitionAt(next,animate,night,mask,System.nanoTime());
@@ -178,7 +187,14 @@ final class VivoEngineScene implements AutoCloseable {
     }
     void darkWallpaper(boolean dark,boolean animate){nightLevel=dark?.76f:1f;dim.target(nightLevel,aodMask,mode,animate,System.nanoTime());invalidate.run();}
     boolean animateInAod(){return options.animateInAod();}
-    boolean transitionActive(){return zoom.active()||dim.active();}
+    boolean transitionActive(){return zoom.active()||dim.active()||SystemClock.uptimeMillis()<touchUntil;}
+    LiquidTouchMap touchMap(VivoOptions snapshot){return liquidRegion==null?null:liquidRegion.touchMap(snapshot);}
+    private void idleLiquid()throws Exception{
+        api.call(controller,"stopAnim");
+        // Keep the real strategy visible without the editor's wake/gyro demonstration.
+        api.set(controller,"mPreviewMode",true);
+        api.call(api.get(controller,"mStrategy"),"f");
+    }
     boolean updateSensitivity(VivoOptions next){
         if(closed||!options.sameScene(next))return false;
         if(options.wallpaperZoom!=next.wallpaperZoom){zoom.enabled(next.wallpaperZoom,mode,System.nanoTime());invalidate.run();}
@@ -208,6 +224,7 @@ final class VivoEngineScene implements AutoCloseable {
             if(uprightLiquid())api.call(matrix,"d",new Class<?>[]{float.class,float.class,float.class},180f,1f,0f);
             if(family==VivoOptions.FLASH)drawFlash();else api.call(controller,"onGLSurfaceDraw");
         }finally{api.call(matrix,"b");}
+        if(regionPass!=null)regionPass.draw(liquidRegion.crop,scale,width,height);
         dimPass.draw(dim.sample(now),width,height);
     }
     private boolean uprightLiquid(){return family==VivoOptions.LIQUID&&options.style==1;}
@@ -233,9 +250,11 @@ final class VivoEngineScene implements AutoCloseable {
     }
     void crop(PhotoViewport viewport,boolean finish)throws Exception{
         layer.crop(viewport);
+        if(liquidRegion!=null)liquidRegion.crop(viewport);
         if(finish&&family==VivoOptions.LIQUID&&liquidMask!=null){
             liquidWeights(api.call(controller,"getConfig"),viewport);
             api.call(controller,"onGLSurfaceChanged",new Class<?>[]{int.class,int.class},width,height);
+            if(!options.liquidAutoMotion)main.post(()->{if(!closed)try{idleLiquid();}catch(Exception e){android.util.Log.e("AliveClean","Liquid crop idle failed",e);}});
         }
         api.call(controller,family==VivoOptions.FLASH?"e":"reLoadSource",new Class<?>[]{api.type("com.android.systemui.plugins.IVAGLayer")},layerContract);
         if(family==VivoOptions.FLASH)layer.bindLiveFlashMask(api,render,controller,options.area);
@@ -256,7 +275,11 @@ final class VivoEngineScene implements AutoCloseable {
         Object effect=api.make(BASE+"bean.EffectJsonBean",new Class<?>[0]);api.set(effect,"maskWeights",weights);api.set(config,"effect",effect);
     }
     void touch(int action,float x,float y){
-        if(family!=VivoOptions.LIQUID)return;
+        if(family!=VivoOptions.LIQUID||liquidRegion==null)return;
+        if(action==0)touching=liquidRegion.hit(x,y,drawnScale);
+        if(!touching)return;
+        if(action==1||action==3)touching=false;
+        touchUntil=SystemClock.uptimeMillis()+5000;
         final float tx=.5f+(x-.5f)/drawnScale,ty=.4f+(y-.4f)/drawnScale;
         main.post(()->{if(closed||!visible)return;try{
             String json="{\"data\":{\"eventAction\":"+action+",\"x\":"+tx+",\"y\":"+ty+"}}";
@@ -265,6 +288,7 @@ final class VivoEngineScene implements AutoCloseable {
         }catch(Exception e){android.util.Log.w("AliveClean","Vivo touch unavailable",e);}});
     }
     private void stop()throws Exception{
+        touchUntil=0;touching=false;
         if(sensorGain!=null)sensorGain.close();
         if(family!=VivoOptions.FLASH)api.call(controller,"stopAnim");
         else {Object animation=api.get(controller,"f");api.call(animation,"b");api.call(animation,"f");api.call(api.get(controller,"e"),"h");}
@@ -283,7 +307,8 @@ final class VivoEngineScene implements AutoCloseable {
         try{shutdown.get(3,TimeUnit.SECONDS);if(family==VivoOptions.FLASH){FutureTask<Void> barrier=new FutureTask<>(()->null);main.post(barrier);barrier.get(3,TimeUnit.SECONDS);}drain();
             if(family==VivoOptions.RASTER&&controller!=null){Object res=api.get(controller,"b");api.call(controller,"destroy");if(res!=null&&!videoRaster())((ExecutorService)api.get(res,"h")).shutdownNow();}
         }catch(Exception e){android.util.Log.w("AliveClean","Vivo renderer release incomplete",e);}
-        closed=true;main.removeCallbacksAndMessages(null);glTasks.clear();dimPass.close();if(layer!=null){layer.close();layer=null;}if(liquidMask!=null){liquidMask.recycle();liquidMask=null;}
+        closed=true;main.removeCallbacksAndMessages(null);glTasks.clear();dimPass.close();if(layer!=null){layer.close();layer=null;}
+        if(regionPass!=null){regionPass.close();regionPass=null;}if(liquidRegion!=null){liquidRegion.close();liquidRegion=null;}liquidMask=null;
         // A deleted but still-current program can survive until the next renderer
         // binds another one. Do not let Vivo's FBO helper try to restore that name.
         android.opengl.GLES30.glUseProgram(0);android.opengl.GLES30.glBindVertexArray(0);

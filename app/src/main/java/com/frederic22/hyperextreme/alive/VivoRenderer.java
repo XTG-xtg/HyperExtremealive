@@ -39,9 +39,18 @@ final class VivoRenderer implements WallpaperRenderer {
         scene.visible(visible);
     }
     void configure(VivoOptions next){
-        if(scene.updateSensitivity(next)){options=VivoOptions.parse(next.json());syncAnimation();}
+        VivoOptions tuning=VivoOptions.parse(next.json());
+        boolean cropped=next.family!=VivoOptions.RASTER&&(options.x!=next.x||options.y!=next.y||options.zoom!=next.zoom);
+        if(cropped){tuning.x=options.x;tuning.y=options.y;tuning.zoom=options.zoom;}
+        if(scene.updateSensitivity(tuning)){
+            try { if(cropped)scene.crop(next.viewport()); }
+            catch(Exception e){throw new IllegalStateException("Vivo crop update failed",e);}
+            options=VivoOptions.parse(next.json());syncAnimation();
+        }
     }
     void touch(int action,float x,float y){if(visible&&mode!=0)scene.touch(action,x,y);}
+    void flashDemo(boolean value){scene.flashDemo(value);}
+    LiquidTouchMap touchMap(){return scene.touchMap(options);}
     public void close(){scene.close();GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER,0);}
     private final class Motion implements WallpaperMotion {
         private int pending=-1;private boolean animate;

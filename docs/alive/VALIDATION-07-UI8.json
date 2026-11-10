@@ -1,0 +1,54 @@
+{
+  "versionName": "0.5-alive.7-ui.8",
+  "versionCode": 23,
+  "applicationId": "com.xtg.hyperextremealive",
+  "status": "offline-experimental-candidate",
+  "published": false,
+  "deviceUsed": false,
+  "gradleTasks": [
+    ":app:testDebugUnitTest",
+    ":app:assembleRelease"
+  ],
+  "junit": {
+    "tests": 134,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "extensionTestCount": 18,
+  "offline": {
+    "checks": 360,
+    "deviceUsed": false,
+    "rendererInflationTested": false,
+    "archivedRomSha256": "4f3b62bc17600beb3b732dbbfa4e3eb42a690c4050bbc722782a553200d3cc84",
+    "apkSha256": "61353d249aafe3dfb6e28b22927dde5d8f61bbf38e44b722cefd4b9fd4e013fa"
+  },
+  "existingRegression": {
+    "passed": true,
+    "structural_asset_checks": 1328,
+    "state_assertions": 18,
+    "photo_power_assertions": 454,
+    "permission_crop_assertions": 57,
+    "motion_session_assertions": 23,
+    "stereo_motion_assertions": 6,
+    "java_sources_compiled": 103,
+    "compile_sdk": "34",
+    "helper_dex": "039",
+    "resources_compiled": true,
+    "limits": "Does not compile Compose/Kotlin, build a complete APK, or validate live hooks/GPU/power."
+  },
+  "apk": {
+    "bytes": 259885150,
+    "sha256": "61353d249aafe3dfb6e28b22927dde5d8f61bbf38e44b722cefd4b9fd4e013fa",
+    "signingCertificateSha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d",
+    "debuggable": false,
+    "r8": true
+  },
+  "limitations": [
+    "Original vendor DEX inflation on ART not executed",
+    "ROM notification/AOD windows not exercised",
+    "Fingerprint HBM/authentication masks not changed or device-tested",
+    "Lock-screen replacement and native system editor protocol not implemented",
+    "No standby-power measurements"
+  ]
+}

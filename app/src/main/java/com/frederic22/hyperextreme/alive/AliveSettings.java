@@ -38,6 +38,11 @@ public final class AliveSettings {
 
     public static synchronized void disable(Context c) throws Exception { setEnabled(c, false); }
 
+    static synchronized void disableVariant(Context c, int variant) throws Exception {
+        if (Config.variant(c) != variant) throw new IllegalStateException("当前已切换到其他壁纸，请刷新后重试");
+        setEnabled(c, false);
+    }
+
     static synchronized RootBridge.Result setEnabled(Context c, boolean enabled) throws Exception {
         recoverPendingApply(c);
         if (!enabled) {
@@ -73,6 +78,9 @@ public final class AliveSettings {
                 PhotoMedia.freezeLegacy(c,photo,true).save(c,false);
             }
             android.content.SharedPreferences.Editor editor=Config.prefs(c).edit();
+            int previousVariant=Config.variant(c);
+            if(previousVariant<701)editor.putInt("alive_last_variant",previousVariant);
+            if(variant<701)editor.putInt("alive_last_variant",variant);
             if(variant>=701&&variant<=703){
                 VivoOptions vivo=VivoOptions.load(c,variant,true);vivo.validateFiles(c);editor.putString("vivo_options",vivo.json());
             }

@@ -13,6 +13,15 @@ plugins {
 val keystoreProps = rootProject.file("keystore.properties").takeIf { it.exists() }?.let { f ->
     JavaProperties().apply { f.inputStream().use(::load) }
 }
+// Explicit spare-device UI probe only; production support remains Android 13+.
+val legacyUiSmoke = providers.gradleProperty("legacyUiSmoke").orNull == "true"
+if (legacyUiSmoke && gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) })
+    error("legacyUiSmoke is a debug-only UI probe, not a supported release")
+if (legacyUiSmoke) gradle.taskGraph.whenReady {
+    check(allTasks.none { it.project == project && it.name.contains("release", ignoreCase = true) }) {
+        "legacyUiSmoke cannot build release tasks, including through aggregate tasks"
+    }
+}
 
 android {
     namespace = "com.frederic22.hyperextreme"
@@ -31,10 +40,10 @@ android {
 
     defaultConfig {
         applicationId = "com.xtg.hyperextremealive"
-        minSdk = 33
+        minSdk = if (legacyUiSmoke) 31 else 33
         targetSdk = 37
-        versionCode = 22
-        versionName = "0.5-alive.7-ui.7"
+        versionCode = 31
+        versionName = "0.5-alive.7-ui.16" + if (legacyUiSmoke) "-ui-smoke-api31" else ""
 
         ndk {
             abiFilters += "arm64-v8a"
@@ -101,6 +110,7 @@ android {
     }
 
     sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/aliveAssets").get().asFile)
+    sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/aliveClockAssets").get().asFile)
     sourceSets.getByName("main").jniLibs.srcDir(layout.buildDirectory.dir("generated/aliveJni").get().asFile)
     androidResources { noCompress += listOf("mp4", "dex") }
 
@@ -129,6 +139,7 @@ dependencies {
     // libxposed API 102（由 io.github.libxposed:api:102.0.0 的 AAR 解出的 classes.jar）。
     // 只参与编译，运行时由框架提供，绝不打包进 APK。
     compileOnly(files("libs/libxposed-api-102.jar"))
+    testImplementation(files("libs/libxposed-api-102.jar"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.jetbrains.compose.foundation)
@@ -174,3 +185,13 @@ val prepareAlivePhoto by tasks.registering(Exec::class) {
     )
 }
 tasks.named("preBuild") { dependsOn(prepareAlivePhoto) }
+
+val prepareAliveClocks by tasks.registering(Exec::class) {
+    inputs.dir(rootProject.file("alive-clock/bridge"))
+    inputs.file(rootProject.file("tools/build_clock_bridge.py"))
+    outputs.dir(layout.buildDirectory.dir("generated/aliveClockAssets"))
+    workingDir(rootProject.projectDir)
+    commandLine(System.getenv("PYTHON") ?: "python", "tools/build_clock_bridge.py",
+        "--sdk", android.sdkDirectory.absolutePath, "--java-home", System.getProperty("java.home"))
+}
+tasks.named("preBuild") { dependsOn(prepareAliveClocks) }

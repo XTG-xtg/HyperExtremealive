@@ -33,10 +33,23 @@ public final class AliveHooks {
     private static volatile Context context;
     private static volatile Bundle cached = Bundle.EMPTY;
     private static Handler ipc;
-    private static long readAt, errorAt;
+    private static long readAt = -750, errorAt;
+    private static int refreshFailures;
     private static boolean observing;
     private static XposedModule logger;
-    private static final ThreadLocal<Object> NORMAL_PANEL_HOST=new ThreadLocal<>();
+    private static final ThreadLocal<AodWallpaperGuard.Panel> NORMAL_PANEL=new ThreadLocal<>();
+    private static final AodWallpaperGuard AOD_WALLPAPER=new AodWallpaperGuard();
+    private static final ThreadLocal<AodCreation> AOD_CREATION=new ThreadLocal<>();
+    private static final class AodCreation {
+        final Object host;final boolean eligible;boolean denied;
+        AodCreation(Object host,ClassLoader loader){
+            this.host=host;Object c=field(host,"mContext");
+            eligible=c instanceof Context&&AodWallpaperEligibility.allowed((Context)c,loader)
+                &&Boolean.FALSE.equals(field(host,"mKeyguardOccluded"))&&Boolean.FALSE.equals(field(host,"mFingerprintPressed"));
+        }
+    }
+    private static boolean aodGuardEnabled;
+    private static final Runnable RETRY_CONFIG=()->{readAt=-750;refresh();};
 
     private static synchronized Handler worker() {
         if (ipc == null) {
@@ -67,38 +80,52 @@ public final class AliveHooks {
         long now = SystemClock.uptimeMillis();
         if (now - readAt < 750) return cached;
         readAt = now;
+        boolean retry=false;
         try {
             Context c = context();
-            if (c == null) return Bundle.EMPTY;
+            if (c == null) { retryRefresh();return cached; }
             if (!observing) {
                 c.getContentResolver().registerContentObserver(Protocol.CONFIG, false,
                     new ContentObserver(worker()) {
                         @Override public void onChange(boolean selfChange) {
-                            readAt = 0;
+                            readAt = -750;refreshFailures=0;
                             refresh();
-                            MAIN.post(() -> {
-                                for (ViewGroup root : new java.util.ArrayList<>(CLOCKS.keySet())) {
-                                    if (root != null) updateClock(root);
-                                }
-                            });
                         }
                     });
                 observing = true;
             }
             Bundle result = c.getContentResolver().call(Protocol.CONFIG, "getConfig", null, null);
             cached = result == null ? Bundle.EMPTY : result;
+            retry=result==null||cached.getBoolean("configured",false)&&!cached.getBoolean("enabled",false);
+            LiquidKeyguardHooks.config(cached);
         } catch (RuntimeException error) {
             cached = Bundle.EMPTY;
+            LiquidKeyguardHooks.config(cached);
+            retry=true;
             if (now - errorAt > 30000) {
                 errorAt = now;
                 log("Alive 配置读取失败：" + error);
             }
         }
+        if(retry)retryRefresh();else {refreshFailures=0;worker().removeCallbacks(RETRY_CONFIG);}
+        // Initial reads and retries must reconcile a panel too, not only observer notifications.
+        MAIN.post(() -> {
+            AOD_WALLPAPER.refresh(cached.getBoolean("enabled",false));
+            HyperOsExtensionHooks.refresh();
+            for(ViewGroup root:new java.util.ArrayList<>(CLOCKS.keySet()))if(root!=null)updateClock(root);
+        });
         return cached;
+    }
+    private static void retryRefresh(){
+        worker().removeCallbacks(RETRY_CONFIG);
+        long[] delays={150,500,1500};
+        if(refreshFailures<delays.length)worker().postDelayed(RETRY_CONFIG,delays[refreshFailures++]);
     }
 
     private static void signal(int mode, String reason) {
-        long at = SystemClock.uptimeMillis();
+        signal(mode,reason,SystemClock.uptimeMillis());
+    }
+    private static void signal(int mode, String reason, long at) {
         worker().post(() -> {
             if (!refresh().getBoolean("enabled", false)) return;
             try {
@@ -121,7 +148,7 @@ public final class AliveHooks {
 
     private interface Interceptor { Object invoke(XposedInterface.Chain chain) throws Throwable; }
 
-    private static void hook(XposedModule module, ClassLoader loader, String name, String method,
+    private static boolean hook(XposedModule module, ClassLoader loader, String name, String method,
                              Interceptor interceptor) {
         try {
             Class<?> type = Class.forName(name, false, loader);
@@ -133,7 +160,8 @@ public final class AliveHooks {
                 count++;
             }
             if (count > 0) log("Alive hook：" + name + "#" + method + " ×" + count);
-        } catch (Throwable error) { log("Alive 可选 hook 不可用：" + name + "#" + method + " / " + error); }
+            return count>0;
+        } catch (Throwable error) { log("Alive 可选 hook 不可用：" + name + "#" + method + " / " + error);return false; }
     }
 
     public static void installSystem(XposedModule module, ClassLoader loader) {
@@ -173,6 +201,11 @@ public final class AliveHooks {
 
     public static void installUi(XposedModule module, ClassLoader loader) {
         logger = module;
+        LiquidKeyguardHooks.install(module,loader,event->worker().post(()->{
+            try{Context c=context();if(c!=null)c.getContentResolver().call(Protocol.CONFIG,"liquidTap",null,event);}
+            catch(RuntimeException error){log("Liquid touch delivery failed: "+error);}
+        }),AliveHooks::log);
+        HyperOsExtensionHooks.install(module, loader, () -> cached, value -> log("Alive extensions: " + value));
         hook(module, Application.class.getClassLoader(), "android.app.Application", "attach", chain -> {
             Object result = chain.proceed();
             Object arg = chain.getArgs().get(0);
@@ -181,6 +214,27 @@ public final class AliveHooks {
             return result;
         });
         worker().post(AliveHooks::refresh);
+        // USER_PRESENT can arrive after HyperOS's entire ~800ms exit animation.
+        // Observe accepted exit callbacks instead; never change keyguard/authentication state.
+        hook(module,loader,"com.android.systemui.statusbar.policy.KeyguardStateControllerImpl","notifyKeyguardGoingAway",chain->{
+            long at=SystemClock.uptimeMillis();
+            boolean leaving=UnlockSignals.goingAway((Method)chain.getExecutable(),chain.getArgs());
+            Object result=chain.proceed();
+            if(leaving)signal(2,"keyguard-going-away",at);
+            return result;
+        });
+        hook(module,loader,"com.android.systemui.keyguard.KeyguardViewMediator","startKeyguardExitAnimation",chain->{
+            long at=SystemClock.uptimeMillis();
+            Object result=chain.proceed();
+            if(UnlockSignals.exitStart((Method)chain.getExecutable()))signal(2,"keyguard-going-away",at);
+            return result;
+        });
+        hook(module,loader,"com.android.systemui.keyguard.KeyguardViewMediator","finishSurfaceBehindRemoteAnimation",chain->{
+            boolean relock=UnlockSignals.cancelled((Method)chain.getExecutable(),chain.getArgs());
+            Object result=chain.proceed();
+            if(relock)signal(1,"keyguard-exit-cancelled");
+            return result;
+        });
         final String[] last = {""};
         hook(module, loader, "com.android.systemui.statusbar.phone.ScrimController", "updateScrims", chain -> {
             Object result = chain.proceed();
@@ -195,23 +249,72 @@ public final class AliveHooks {
             }
             return result;
         });
-        hook(module, loader, "com.miui.aod.DozeHost", "disableShowWallpaper", chain -> {
+        boolean wallpaperHooks=AodWallpaperGuard.contracts(loader);
+        wallpaperHooks &= hook(module,loader,"com.miui.aod.DozeHost","showSecurityIdentityViewAt",chain->{
+            if(!aodGuardEnabled||Looper.myLooper()!=Looper.getMainLooper())return chain.proceed();
+            AodCreation previous=AOD_CREATION.get(),creation=new AodCreation(chain.getThisObject(),loader);
+            AOD_CREATION.set(creation);
+            try {
+                Object result=chain.proceed();
+                if(!creation.denied&&result instanceof android.view.View)
+                    AOD_WALLPAPER.created((android.view.View)result,creation.host,
+                        root->AodWallpaperEligibility.allowed(root.getContext(),loader));
+                worker().post(()->{readAt=-750;refreshFailures=0;refresh();});
+                return result;
+            }finally{if(previous==null)AOD_CREATION.remove();else AOD_CREATION.set(previous);}
+        });
+        for(String[] contract:new String[][]{
+            {"com.miui.aod.Utils","isUsingSuperWallpaperStyle"},
+            {"com.miui.aod.util.WallPaperUtils","isWallpaperSupportsAmbientMode"}})
+            wallpaperHooks &= hook(module,loader,contract[0],contract[1],chain->{
+                // Classification is local to the stock creation call. Its hardware/AOD gates still run.
+                AodCreation creation=AOD_CREATION.get();
+                if(aodGuardEnabled&&AodWallpaperEligibility.classify(creation!=null&&creation.eligible,cached.getBoolean("enabled",false))
+                        &&((Method)chain.getExecutable()).getReturnType()==boolean.class)return true;
+                return chain.proceed();
+            });
+        wallpaperHooks &= hook(module, loader, "com.miui.aod.DozeHost", "disableShowWallpaper", chain -> {
             // This ROM's method returns void and paints an opaque background. Suppress only
             // the normal-clock template's call when the system already permitted wallpaper.
-            if (chain.getThisObject()==NORMAL_PANEL_HOST.get()&&keepAodWallpaper(chain.getThisObject()) &&
-                ((Method) chain.getExecutable()).getReturnType() == void.class) return null;
+            if(aodGuardEnabled&&Looper.myLooper()==Looper.getMainLooper()) {
+                AodWallpaperGuard.Panel panel=NORMAL_PANEL.get();
+                if(panel==null||panel.host.get()!=chain.getThisObject()){
+                    AOD_WALLPAPER.revoke(chain.getThisObject());
+                    AodCreation creation=AOD_CREATION.get();
+                    if(creation!=null&&creation.host==chain.getThisObject())creation.denied=true;
+                }
+                else if(AOD_WALLPAPER.normalDisable(panel,chain.getThisObject(),cached.getBoolean("enabled",false)))return null;
+            }
             return chain.proceed();
         });
-        hook(module, loader, "com.miui.aod.AODView", "makeNormalPanel", chain -> {
-            Object host=field(chain.getThisObject(),"mHost"),previous=NORMAL_PANEL_HOST.get();
-            NORMAL_PANEL_HOST.set(host);
+        wallpaperHooks &= hook(module, loader, "com.miui.aod.AODView", "makeNormalPanel", chain -> {
+            if(!aodGuardEnabled||Looper.myLooper()!=Looper.getMainLooper()||!(chain.getThisObject() instanceof android.view.View))return chain.proceed();
+            AodWallpaperGuard.Panel panel=AOD_WALLPAPER.begin((android.view.View)chain.getThisObject()),previous=NORMAL_PANEL.get();
+            NORMAL_PANEL.set(panel);
             try{
                 Object result=chain.proceed();
-                if(keepAodWallpaper(host)&&chain.getThisObject() instanceof android.view.View)
-                    ((android.view.View)chain.getThisObject()).setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                AOD_WALLPAPER.finish(panel,cached.getBoolean("enabled",false));
+                worker().post(()->{readAt=-750;refreshFailures=0;refresh();});
                 return result;
-            }finally{if(previous==null)NORMAL_PANEL_HOST.remove();else NORMAL_PANEL_HOST.set(previous);}
+            }finally{if(previous==null)NORMAL_PANEL.remove();else NORMAL_PANEL.set(previous);}
         });
+        for(String method:new String[]{"onStopDoze","screenTurnOn","removeAODView"})
+            wallpaperHooks &= hook(module,loader,"com.miui.aod.DozeHost",method,chain->{
+                if(aodGuardEnabled&&Looper.myLooper()==Looper.getMainLooper())AOD_WALLPAPER.revoke(chain.getThisObject());
+                return chain.proceed();
+            });
+        wallpaperHooks &= hook(module,loader,"com.miui.aod.AODView","onDetachedFromWindow",chain->{
+            if(aodGuardEnabled&&chain.getThisObject() instanceof android.view.View)AOD_WALLPAPER.detach((android.view.View)chain.getThisObject());
+            return chain.proceed();
+        });
+        for(String method:new String[]{"setKeyguardOccluded","setAodVisibility","fireFingerprintPressed","onFingerprintPressed"})
+            wallpaperHooks &= hook(module,loader,"com.miui.aod.DozeHost",method,chain->{
+                Object result=chain.proceed();
+                MAIN.post(()->AOD_WALLPAPER.refresh(cached.getBoolean("enabled",false)));
+                return result;
+            });
+        aodGuardEnabled=wallpaperHooks;
+        log("Alive AOD wallpaper guard="+aodGuardEnabled);
         for (String name : new String[]{"com.miui.aod.AODView", "com.android.keyguard.widget.AodView",
                 "com.miui.aod.linkagestyle.LinkageStyleClockView", "com.android.keyguard.KeyguardStatusView",
                 "com.android.keyguard.clock.KeyguardClockContainer", "com.android.keyguard.KeyguardClockContainer"}) {
@@ -220,19 +323,14 @@ public final class AliveHooks {
                 if (chain.getThisObject() instanceof ViewGroup) {
                     ViewGroup root = (ViewGroup) chain.getThisObject();
                     observeClock(root);
-                    worker().post(() -> { refresh(); MAIN.post(() -> updateClock(root)); });
+                    worker().post(() -> { refresh(); MAIN.post(() -> {
+                        AOD_WALLPAPER.refresh(cached.getBoolean("enabled",false));
+                        updateClock(root);
+                    }); });
                 }
                 return result;
             });
         }
-    }
-
-    private static boolean keepAodWallpaper(Object host){
-        // Never enable an AOD session, modify its schedule, or hide a fingerprint/occlusion mask.
-        return host!=null&&cached.getBoolean("enabled",false)
-            &&Boolean.TRUE.equals(field(host,"mNeedShowWallpaper"))
-            &&Boolean.FALSE.equals(field(host,"mKeyguardOccluded"))
-            &&Boolean.FALSE.equals(field(host,"mFingerprintPressed"));
     }
 
     private static Object field(Object host, String... names) {
@@ -252,7 +350,7 @@ public final class AliveHooks {
         WeakReference<TextClock> reference = CLOCKS.get(root);
         TextClock clock = reference == null ? null : reference.get();
         Bundle config = cached;
-        if (!config.getBoolean("enabled", false) || !config.getBoolean("clock", false)) {
+        if (!config.getBoolean("enabled", false) || !config.getBoolean("clock", false) || config.getBoolean("ext_clock", false)) {
             if (clock != null) root.removeView(clock);
             CLOCKS.put(root, new WeakReference<>(null));
             return;

@@ -667,6 +667,15 @@ internal fun RasterWallpaperDetail(state: MaskUiState) {
         // 其余两项的「空间壁纸」字样都换成「光栅壁纸」。
         // ⚠️ 渲染链还没做 ⇒ 这三项目前只存值、不生效（落点见 `MaskPrefs.raster*`）。
         Card(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+            insideMargin = PaddingValues(0.dp),
+        ) {
+            LinkRow(title = "趣味光栅 · vivo 原版", summary = "三位置图片／视频与原版光栅效果；独立草稿，不改变当前搭配") {
+                MaskDetailActivity.start(ctx, DetailPage.VivoRasterWallpaper)
+            }
+        }
+        Spacer(Modifier.height(BLOCK_GAP))
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),

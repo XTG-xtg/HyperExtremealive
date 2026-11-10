@@ -21,8 +21,8 @@ class ModuleIdentityTest {
         val info = ctx.packageManager.getPackageInfo(ctx.packageName,
             PackageManager.GET_ACTIVITIES or PackageManager.GET_SERVICES or PackageManager.GET_PROVIDERS)
         assertEquals(ModuleIdentity.PACKAGE, info.packageName)
-        assertEquals(22L, info.longVersionCode)
-        assertEquals("0.5-alive.7-ui.7", info.versionName)
+        assertEquals(31L, info.longVersionCode)
+        assertEquals("0.5-alive.7-ui.16", info.versionName)
         val providers = info.providers.orEmpty().map { it.authority }.toSet()
         assertTrue(providers.containsAll(setOf(ModuleIdentity.CONFIG_AUTHORITY, ModuleIdentity.MASK_AUTHORITY,
             ModuleIdentity.XPOSED_AUTHORITY)))

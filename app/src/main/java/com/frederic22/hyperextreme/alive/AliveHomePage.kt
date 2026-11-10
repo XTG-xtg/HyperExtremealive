@@ -7,7 +7,10 @@ import android.os.Looper
 import android.util.LruCache
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,6 +50,18 @@ import com.frederic22.hyperextreme.data.WallpaperFeaturePolicy.Feature
 import com.frederic22.hyperextreme.ui.AppToast
 import com.frederic22.hyperextreme.ui.HyperTextStyles
 import com.frederic22.hyperextreme.ui.SwitchRow
+import com.frederic22.hyperextreme.ui.DetailTabHost
+import com.frederic22.hyperextreme.ui.CoverCarousel
+import com.frederic22.hyperextreme.ui.CoverItem
+import com.frederic22.hyperextreme.ui.BLOCK_GAP
+import com.frederic22.hyperextreme.ui.CARD_WIDTH_RATIO
+import com.frederic22.hyperextreme.ui.LocalTopBarHeight
+import com.frederic22.hyperextreme.ui.rememberPageScroll
+import com.frederic22.hyperextreme.ui.rememberScreenSizePx
+import com.frederic22.hyperextreme.ui.pagerVPadding
+import com.frederic22.hyperextreme.ui.LinkRow
+import androidx.compose.ui.platform.LocalDensity
+import top.yukonga.miuix.kmp.squircle.squircleClip
 import com.frederic22.hyperextreme.ui.ThemeMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -86,6 +101,8 @@ internal data class AliveHomeModel(
     val variant: Int = 1,
     val photoShapes: List<ImageBitmap> = emptyList(),
     val photoShapesError: String = "",
+    val presets: List<AlivePreset> = emptyList(),
+    val currentPreset: AlivePreset? = null,
 )
 
 internal object LayoutCache : LruCache<String, List<ImageBitmap>>(8 * 1024 * 1024) {
@@ -100,10 +117,14 @@ internal fun AliveDetail(onBack: () -> Unit) {
     val scope = rememberCoroutineScope()
     var diagnostics by rememberSaveable { mutableStateOf(false) }
     var revision by remember { mutableIntStateOf(0) }
-    var variant by remember { mutableIntStateOf(Config.variant(app)) }
+    var variant by remember { mutableIntStateOf(aliveHomeVariant(app)) }
     var model by remember { mutableStateOf(AliveHomeModel()) }
     var confirmation by remember { mutableStateOf<Boolean?>(null) }
     var switching by remember { mutableStateOf(false) }
+    var importing by remember { mutableStateOf(false) }
+    var newPhotoVariant by rememberSaveable { mutableIntStateOf(601) }
+    var pendingPhotoPreview by rememberSaveable { mutableStateOf<Intent?>(null) }
+    var deleting by remember { mutableStateOf<AlivePreset?>(null) }
     val configuration = androidx.compose.ui.platform.LocalConfiguration.current
     val width = configuration.screenWidthDp.coerceAtLeast(1)
     val height = configuration.screenHeightDp.coerceAtLeast(1)
@@ -115,17 +136,25 @@ internal fun AliveDetail(onBack: () -> Unit) {
         onDispose { owner.lifecycle.removeObserver(observer) }
     }
     LaunchedEffect(revision) {
-        val status = withContext(Dispatchers.IO) { runCatching { WallpaperFeatures.isBound(app, Feature.ALIVE) } }
-        variant = Config.variant(app)
-        val name = withContext(Dispatchers.IO) {
-            runCatching { AliveCatalog.load(app).firstOrNull { it.id == variant }?.name }.getOrNull() ?: "Alive"
+        try {
+            val status = withContext(Dispatchers.IO) { runCatching { WallpaperFeatures.isBound(app, Feature.ALIVE) && Config.variant(app) !in 701..703 } }
+            val current = withContext(Dispatchers.IO) { AlivePresets.current(app) }
+            variant = current.variant
+            val history = withContext(Dispatchers.IO) { AlivePresets.list(app) }.filter { it.variant < 701 && it.signature() != current.signature() }
+            val name = withContext(Dispatchers.IO) {
+                runCatching { AliveCatalog.load(app).firstOrNull { it.id == variant }?.name }.getOrNull() ?: "Alive"
+            }
+            model = model.copy(name = name, running = status.getOrDefault(model.running), busy = false,
+                frameworkConnected = ActivationState.frameworkConnected,
+                statusError = status.exceptionOrNull()?.message.orEmpty(), aspect = aspect, variant = variant,
+                currentPreset = current, presets = history)
+        } catch (e: kotlinx.coroutines.CancellationException) { throw e }
+        catch (e: Exception) {
+            model = model.copy(busy = false, statusError = "壁纸与预设读取失败：${e.message}；可刷新重试")
         }
-        model = model.copy(name = name, running = status.getOrDefault(model.running), busy = false,
-            frameworkConnected = ActivationState.frameworkConnected,
-            statusError = status.exceptionOrNull()?.message.orEmpty(), aspect = aspect, variant = variant)
     }
     val activePhoto = PhotoMedia.resolve(app, PhotoOptions.load(app, false), false, 0)
-    val layoutKey = "$variant:${Config.dark(app)}:${Config.prefs(app).getLong("revision", 0)}:" +
+    val layoutKey = "single-cover:${model.currentPreset?.signature()}:$variant:${Config.dark(app)}:${Config.prefs(app).getLong("revision", 0)}:" +
         "${activePhoto.lastModified()}:${activePhoto.length()}:$aspect"
     val tileOptions = remember(revision) { PhotoOptions.load(app, true) }
     val tileKey = PhotoStyleThumbnails.key(app, tileOptions)
@@ -151,7 +180,7 @@ internal fun AliveDetail(onBack: () -> Unit) {
         }
         onDispose { disposed=true;job?.close() }
     }
-    DisposableEffect(layoutKey, diagnostics) {
+    DisposableEffect(layoutKey, diagnostics, model.currentPreset?.signature()) {
         var disposed = false
         var worker: AliveLayoutFrames? = null
         if (!diagnostics) {
@@ -159,9 +188,12 @@ internal fun AliveDetail(onBack: () -> Unit) {
             if (cached != null) model = model.copy(frames = cached, previewError = "")
             else {
                 model = model.copy(frames = emptyList(), previewError = "")
-                worker = AliveLayoutFrames(app, variant, Config.dark(app), 288, (288 * aspect).roundToInt()) { bitmaps, error ->
+                val current = model.currentPreset
+                worker = AliveLayoutFrames(app, variant, current?.dark ?: Config.dark(app), 288, (288 * aspect).roundToInt(),
+                    current?.render ?: AliveRenderOptions.load(app), current?.photo ?: PhotoOptions.load(app,false), true) { bitmaps, error ->
                     Handler(Looper.getMainLooper()).post {
-                        if (!disposed) {
+                        if (disposed) bitmaps.forEach { it.recycle() }
+                        else {
                             val images = bitmaps.map { it.asImageBitmap() }
                             if (images.isNotEmpty()) LayoutCache.put(layoutKey, images)
                             model = model.copy(frames = images, previewError = error)
@@ -172,21 +204,65 @@ internal fun AliveDetail(onBack: () -> Unit) {
         }
         onDispose { disposed = true; worker?.close() }
     }
-    fun edit(id: Int, mode: Int = 0) {
+    fun openPreset(preset: AlivePreset) {
+        context.startActivity(Intent(context, AlivePreviewActivity::class.java).putExtra("variant",preset.variant)
+            .putExtra("name",preset.name).putExtra("mode",1).putExtra("preset",preset.json()))
+    }
+    fun edit(id: Int, mode: Int = 1) {
         val name = when (id) { 601 -> "圆景"; 602 -> "留光"; 603 -> "星月"; 604 -> "轻启·照片"; 605 -> "山脉"; 606 -> "银河"; else -> model.name }
         context.startActivity(Intent(context, AlivePreviewActivity::class.java)
             .putExtra("variant", id).putExtra("name", name).putExtra("mode", mode))
     }
-    BackHandler(enabled = diagnostics || switching) { if (!switching) diagnostics = false }
+    val newPhotoPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) scope.launch {
+            importing = true
+            try {
+                pendingPhotoPreview = withContext(Dispatchers.IO) { newAlivePhotoPreview(app, uri, newPhotoVariant) }
+            } catch (e: kotlinx.coroutines.CancellationException) { throw e }
+            catch (e: Exception) { AppToast.show(context, "照片导入失败：${e.message}", long = true) }
+            finally { importing = false }
+        }
+    }
+    ImportedWallpaperPreviewEffect(pendingPhotoPreview != null, importing) {
+        val preview = pendingPhotoPreview ?: return@ImportedWallpaperPreviewEffect
+        pendingPhotoPreview = null
+        context.startActivity(preview)
+    }
+    BackHandler(enabled = diagnostics || switching || importing) { if (!switching && !importing) diagnostics = false }
     if (diagnostics) {
         Scaffold(topBar = { SmallTopAppBar(title = "状态与诊断", navigationIcon = { AliveBackButton { diagnostics = false } }) }) { padding ->
             Box(Modifier.padding(padding)) { AliveDiagnostics() }
         }
     } else {
-        AliveHomeContent(model.copy(busy = model.busy || switching), onBack,
-            onDiagnostics = { diagnostics = true }, onMode = { edit(variant, it) },
+        AliveHomeContent(model.copy(busy = model.busy || switching || importing), onBack,
+            onDiagnostics = { diagnostics = true }, onMode = { model.currentPreset?.let(::openPreset) ?: edit(variant, 1) },
             onPhoto = { edit(it) }, onLibrary = { context.startActivity(Intent(context, AliveLibraryActivity::class.java)) },
-            onToggle = { confirmation = it }, onRetry = { revision++ })
+            onToggle = {
+                if (it && Config.variant(app) in 701..703) {
+                    edit(variant, 1)
+                    AppToast.show(context, "请预览并应用 Alive 壁纸，不会自动覆盖当前 vivo 壁纸")
+                } else confirmation = it
+            }, onRetry = { revision++ }, onNew = {
+                newPhotoVariant = variant.takeIf { it in 601..606 }
+                    ?: model.presets.firstOrNull { it.variant in 601..606 }?.variant ?: 601
+                newPhotoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            },
+            onPreset = ::openPreset, onDeletePreset = { deleting = it })
+    }
+    WindowDialog(show = importing, title = "正在导入照片", summary = "导入完成后进入预览，当前壁纸不会改变。",
+        onDismissRequest = {}) {}
+    WindowDialog(show = deleting != null, title = "删除这个预设？", summary = "只移除历史卡片，当前壁纸与共享照片保留。", onDismissRequest = { deleting = null }) {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            TextButton("取消", onClick = { deleting = null })
+            TextButton("删除预设", onClick = {
+                val item=deleting ?: return@TextButton;deleting=null
+                scope.launch {
+                    runCatching { withContext(Dispatchers.IO) { AlivePresets.delete(app,item.id) } }
+                        .onFailure { AppToast.show(context,"删除失败：${it.message}") }
+                    revision++
+                }
+            })
+        }
     }
     WindowDialog(show = confirmation != null,
         title = if (confirmation == false) "关闭 Alive 壁纸？" else "启用 Alive 壁纸？",
@@ -216,6 +292,10 @@ internal fun AliveDetail(onBack: () -> Unit) {
     }
 }
 
+internal fun aliveHomeVariant(context: android.content.Context): Int = Config.variant(context).let {
+    if (it in 701..703) Config.prefs(context).getInt("alive_last_variant", 1).takeIf { id -> id in 1..606 } ?: 1 else it
+}
+
 @Composable
 internal fun AliveBackButton(onBack: () -> Unit) {
     IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
@@ -234,110 +314,86 @@ internal fun AliveHomeContent(
     onLibrary: () -> Unit,
     onToggle: (Boolean) -> Unit,
     onRetry: () -> Unit,
+    onNew: () -> Unit,
+    onPreset: (AlivePreset) -> Unit = {},
+    onDeletePreset: (AlivePreset) -> Unit = {},
 ) {
-    val colors = aliveUiColors()
-    Scaffold(topBar = {
-        SmallTopAppBar(title = "", color = colors.page, navigationIcon = { AliveBackButton(onBack) }, actions = {
-            IconButton(onClick = onDiagnostics, enabled = !model.busy, modifier = Modifier.size(48.dp)) {
-                Icon(MiuixIcons.More, "管理与诊断", Modifier.size(24.dp), tint = colors.text)
+    val screen = rememberScreenSizePx()
+    val cardWidth = with(LocalDensity.current) { (screen.width * CARD_WIDTH_RATIO).toDp() }
+    var focused by remember { mutableIntStateOf(1) }
+    val focusPreset = model.presets.getOrNull(focused - 2)
+    val context = LocalContext.current
+    DetailTabHost(title = "Alive 壁纸", onBack = onBack, onRestartAod = null) {
+        Column(Modifier.fillMaxSize().testTag("alive-home-page").verticalScroll(rememberPageScroll())
+            .padding(top = LocalTopBarHeight.current, bottom = 32.dp)) {
+            Spacer(Modifier.height(BLOCK_GAP))
+            val cards = listOf(CoverItem("current", null, frame = model.frames.firstOrNull(), description = "当前壁纸封面")) +
+                model.presets.map { CoverItem(it.id, AlivePresets.cover(context,it.id), description = "已保存预设：${it.name}") }
+            CoverCarousel(cards, 1, "current", null, 0f, 0, 0, screen,
+                onFocus = { focused = it }, onNew = { if (!model.busy) onNew() },
+                onClick = { card -> if (!model.busy) {
+                    if(card.id == "current") onMode(1) else model.presets.firstOrNull { it.id==card.id }?.let(onPreset)
+                } }, onDelete = { card -> model.presets.firstOrNull { it.id==card.id }?.let(onDeletePreset) },
+                onDeleteSettled = {}, allowDelete = !model.busy)
+            Spacer(Modifier.height((BLOCK_GAP - pagerVPadding(cardWidth)).coerceAtLeast(0.dp)))
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Button(onClick = { if (focused == 0) onNew() else if(focusPreset != null) onPreset(focusPreset) else onMode(1) },
+                    enabled = !model.busy && focused >= 0,
+                    modifier = Modifier.widthIn(min = 160.dp).width(cardWidth * 5f / 6f),
+                    colors = ButtonDefaults.buttonColorsPrimary()) {
+                    Text(if (focused == 0) "新建壁纸" else "预览与应用")
+                }
             }
-        })
-    }) { insets ->
-        Box(Modifier.fillMaxSize().background(colors.page).padding(insets), contentAlignment = Alignment.TopCenter) {
-            Column(Modifier.widthIn(max = 600.dp).fillMaxWidth().verticalScroll(rememberScrollState())
-                .padding(start = 16.dp, end = 16.dp, bottom = 32.dp)) {
-                Text("Alive 壁纸", fontSize = 26.sp, fontWeight = FontWeight.Normal,
-                    color = colors.text, modifier = Modifier.padding(top = 8.dp, bottom = 10.dp))
-                FlowRow(Modifier.padding(start = 4.dp), horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    AliveStatusDot(if (model.frameworkConnected) "LSPosed 已连接" else "LSPosed 未连接", model.frameworkConnected)
-                    AliveStatusDot(when { model.busy -> "Alive 检测中"; model.statusError.isNotEmpty() -> "Alive 状态未知"
-                        model.running -> "Alive 已启用"; else -> "Alive 未启用" },
-                        if (model.busy || model.statusError.isNotEmpty()) null else model.running)
+            Text(when { focused == 0 -> "新建壁纸"; focusPreset != null -> "${focusPreset.name} · 已保存预设"
+                else -> "${model.name} · ${if(model.running) "正在使用" else "上次使用"}" },
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 12.dp, start = 16.dp, end = 16.dp),
+                style = MiuixTheme.textStyles.footnote1, color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
+            Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                VivoSettingsGroup("壁纸与预览") {
+                    LinkRow("动态壁纸", "浏览内置动态场景；照片样式在下方单独选择") { if (!model.busy) onLibrary() }
+                    BasicComponent(title = "草稿与预设", summary = "左侧新建，右侧为已保存预设。在预览编辑器点「保存预设」；切换壁纸后自动保留历史配置。")
+                    if (model.previewError.isNotEmpty()) LinkRow("预览未能生成，查看诊断", "不会影响已保存的壁纸与照片", onDiagnostics)
                 }
-                Row(Modifier.fillMaxWidth().padding(start = 14.dp, end = 4.dp, top = 24.dp, bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("布局", color = colors.group, fontSize = 13.sp)
-                    Text(model.name, color = colors.secondary, fontSize = 12.sp)
-                }
-                BoxWithConstraints(Modifier.fillMaxWidth()) {
-                    val previewHeight = (maxWidth - 20.dp) / 3 * model.aspect
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        listOf("息屏", "锁屏", "桌面").forEachIndexed { mode, name ->
-                            LayoutPreview(name, model.frames.getOrNull(mode), previewHeight,
-                                model.previewError.isNotEmpty(), !model.busy, model.variant) { onMode(mode) }
-                        }
-                    }
-                }
-                if (model.previewError.isNotEmpty()) TextButton(text = "预览未能生成，查看诊断", onClick = onDiagnostics)
-                if (model.statusError.isNotEmpty()) TextButton(text = "壁纸状态读取失败，点击重试", onClick = onRetry)
-                Spacer(Modifier.height(20.dp))
-                Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.card)
-                    .clickable(role = Role.Button, enabled = !model.busy, onClick = onLibrary)
-                    .heightIn(min = 62.dp).padding(horizontal = 18.dp, vertical = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    AliveToolGlyph(AliveToolIcon.PHOTO, Modifier.size(22.dp), colors.text)
-                    Spacer(Modifier.width(8.dp))
-                    Text("动态壁纸", color = colors.text, fontSize = 16.sp)
-                    Spacer(Modifier.width(30.dp))
-                }
-                Spacer(Modifier.height(12.dp))
-                Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.card)) {
+                VivoSettingsGroup("运行状态") {
                     SwitchRow(title = "启用 Alive 壁纸", checked = model.running,
-                        summary = if (model.busy) "正在读取或更新壁纸状态…" else "与空间壁纸、视差壁纸互斥",
+                        summary = when { model.busy -> "正在读取或更新壁纸状态…"
+                            model.statusError.isNotEmpty() -> "状态读取失败，请重试；不会改动当前壁纸"
+                            model.running -> "正在使用 · 与其他壁纸组件互斥"
+                            else -> "尚未启用 · 预览并确认应用后生效" },
                         enabled = !model.busy && model.statusError.isEmpty(), onCheckedChange = onToggle)
+                    if (model.statusError.isNotEmpty()) LinkRow("壁纸状态读取失败，点击重试", "保留现有设置", onRetry)
+                    LinkRow("管理与诊断", if (model.frameworkConnected) "LSPosed 已连接 · 查看运行状态与故障信息" else "LSPosed 未连接 · 查看配置说明", onDiagnostics)
                 }
-                Text("照片壁纸", fontSize = 13.sp, color = colors.group,
-                    modifier = Modifier.padding(start = 14.dp, top = 24.dp, bottom = 8.dp))
-                Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    PhotoStyleTile("圆景", "照片化作息屏圆球", model.photoShapes.getOrNull(0), !model.busy, Modifier.weight(1f).fillMaxHeight()) { onPhoto(601) }
-                    PhotoStyleTile("留光", "从息屏相框展开", model.photoShapes.getOrNull(1), !model.busy, Modifier.weight(1f).fillMaxHeight()) { onPhoto(602) }
-                }
-                listOf(listOf(603 to "星月", 604 to "轻启·照片"), listOf(605 to "山脉", 606 to "银河")).forEach { pair ->
-                    Spacer(Modifier.height(12.dp))
-                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        pair.forEach { (id, title) ->
-                            PhotoStyleTile(title, "照片三态动态效果", model.photoShapes.getOrNull(id-601), !model.busy, Modifier.weight(1f).fillMaxHeight()) { onPhoto(id) }
+                Column {
+                    SmallTitle("照片壁纸")
+                    listOf(listOf(601 to "圆景", 602 to "留光"), listOf(603 to "星月", 604 to "轻启·照片"),
+                        listOf(605 to "山脉", 606 to "银河")).forEachIndexed { row, pair ->
+                        if (row > 0) Spacer(Modifier.height(12.dp))
+                        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            pair.forEach { (id, title) ->
+                                val subtitle = when (id) { 601 -> "照片化作息屏圆球"; 602 -> "从息屏相框展开"; else -> "照片三态动态效果" }
+                                PhotoStyleTile(title, subtitle, model.photoShapes.getOrNull(id - 601), !model.busy,
+                                    Modifier.weight(1f).fillMaxHeight()) { onPhoto(id) }
+                            }
                         }
                     }
+                    if (model.photoShapesError.isNotEmpty()) TextButton("照片缩略图生成失败，点击重试", onClick = onRetry)
                 }
-                if(model.photoShapesError.isNotEmpty()) TextButton("照片缩略图生成失败，点击重试",onClick=onRetry)
+                VivoSettingsGroup("扩展功能") {
+                    LinkRow("时钟与通知 · 实验", "独立设置，不改变壁纸素材") {
+                        if (!model.busy) context.startActivity(Intent(context, AliveExtensionsActivity::class.java))
+                    }
+                    BasicComponent(title = "生效方式", summary = "需要 Root + LSPosed。液态、趣味光栅与闪卡已独立为同级入口；在这里开启 Alive 不会直接覆盖它们。")
+                }
             }
         }
-    }
-}
-
-@Composable
-private fun AliveStatusDot(label: String, active: Boolean?) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Box(Modifier.size(7.dp).background(if (active == true) Color(0xFF34C759) else Color(0xFF8E8E93), CircleShape))
-        Text(label, color = aliveUiColors().secondary, fontSize = 12.sp)
-    }
-}
-
-@Composable
-private fun RowScope.LayoutPreview(name: String, frame: ImageBitmap?, height: androidx.compose.ui.unit.Dp,
-    failed: Boolean, enabled: Boolean, variant: Int, onClick: () -> Unit) {
-    val colors = aliveUiColors()
-    Column(Modifier.weight(1f).clip(RoundedCornerShape(14.dp))
-        .clickable(role = Role.Button, enabled = enabled, onClick = onClick), horizontalAlignment = Alignment.CenterHorizontally) {
-        // Card and render canvas share the device aspect; crop also fills rounding differences.
-        Box(Modifier.fillMaxWidth().height(height).clip(RoundedCornerShape(14.dp))
-            .background(if (frame != null) Color.Black else colors.card).testTag("alive-layout-$name"),
-            contentAlignment = Alignment.Center) {
-            if (frame != null) Image(frame, contentDescription = "$name 壁纸预览", modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop)
-            else Text(if (failed) "预览不可用" else "准备预览", color = colors.secondary, fontSize = 12.sp,
-                textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 8.dp))
-        }
-        Text(name, color = colors.text, fontSize = 15.sp, modifier = Modifier.padding(top = 10.dp, bottom = 4.dp))
     }
 }
 
 @Composable
 private fun PhotoStyleTile(title: String, subtitle: String, shape: ImageBitmap?,
     enabled: Boolean, modifier: Modifier, onClick: () -> Unit) {
-    Box(modifier = modifier.clip(RoundedCornerShape(14.dp)).background(aliveUiColors().card)
+    Box(modifier = modifier.squircleClip(16.dp).background(MiuixTheme.colorScheme.surfaceContainer)
         .clickable(role = Role.Button, enabled = enabled, onClick = onClick)) {
         Column(Modifier.fillMaxHeight().padding(14.dp)) {
             PhotoShapePreview(title,shape,Modifier.fillMaxWidth().height(96.dp))

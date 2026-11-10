@@ -8,7 +8,8 @@ public final class AliveState {
     public boolean accept(int next, long atMs, String reason) {
         if (next < AOD || next > HOME || atMs < lastEventMs) return false;
         // A late wake/lock hint must not reverse an already authenticated unlock.
-        if (next == LOCK && atMs - homeConfirmedMs < 180 && !"screen-off".equals(reason)) return false;
+        if (next == LOCK && atMs - homeConfirmedMs < 180 && !"screen-off".equals(reason)
+                && !"keyguard-exit-cancelled".equals(reason)) return false;
         lastEventMs = atMs;
         if (next == HOME) homeConfirmedMs = atMs;
         if (next == AOD) homeConfirmedMs = -10000;

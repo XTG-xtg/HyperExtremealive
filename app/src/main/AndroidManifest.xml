@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!--
-      本工程的 minSdk 已经提到 33（与 miuix-blur 声明的下限一致），这行 overrideLibrary
-      现在其实已经没有实际作用，留着只是以防该库以后再把下限往上抬。
+      正式版本最低 API 33。legacyUiSmoke 调试构建仅用于 API 31 备用机的 UI 测试；
+      页面玻璃材质由 isRuntimeShaderSupported() 禁用，不声明整套系统功能兼容旧系统。
     -->
     <uses-sdk tools:overrideLibrary="top.yukonga.miuix.kmp.blur" />
 
@@ -71,6 +71,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name="com.frederic22.hyperextreme.alive.AlivePreviewActivity" android:exported="false" />
         <activity android:name="com.frederic22.hyperextreme.alive.AliveLibraryActivity" android:exported="false" />
+        <activity android:name="com.frederic22.hyperextreme.alive.AliveExtensionsActivity" android:exported="false" />
         <provider
             android:name="com.frederic22.hyperextreme.alive.ConfigProvider"
             android:authorities="${applicationId}.alive.config"

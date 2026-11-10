@@ -97,14 +97,17 @@ internal object AicrVision {
      */
     fun segment(ctx: Context, src: Bitmap): Result {
         val startAt = System.currentTimeMillis()
-        val input = File(ctx.cacheDir, "aicr_mask_in.png")
+        val input = File.createTempFile("aicr-mask-", ".png", ctx.cacheDir)
         val scaled = downscale(src, 1600)
-        runCatching {
-            input.outputStream().use { scaled.compress(Bitmap.CompressFormat.PNG, 100, it) }
-        }.onFailure { return fail(startAt, "写临时文件失败：$it") }
-        if (scaled !== src) scaled.recycle()
-        // 临时文件用完要删；原图不能删。
-        return runFd(ctx, input, startAt, deleteAfter = true)
+        try {
+            input.outputStream().use { check(scaled.compress(Bitmap.CompressFormat.PNG, 100, it)) }
+            return runFd(ctx, input, startAt, deleteAfter = false)
+        } catch (e: Exception) {
+            return fail(startAt, "写临时文件失败：$e")
+        } finally {
+            if (scaled !== src) scaled.recycle()
+            input.delete()
+        }
     }
 
     /**
@@ -218,6 +221,7 @@ internal object AicrVision {
         if (!bound) return null
         if (!latch.await(timeoutMs, TimeUnit.MILLISECONDS)) {
             Log.w(TAG, "bind 超时")
+            runCatching { ctx.unbindService(sc) }
             return null
         }
         return conn

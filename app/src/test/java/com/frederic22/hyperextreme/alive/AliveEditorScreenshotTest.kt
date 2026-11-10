@@ -54,13 +54,18 @@ class AliveEditorScreenshotTest {
             host.get().setContent {
                 MiuixTheme(controller=remember { ThemeController(ColorSchemeMode.Dark) },textStyles=HyperTextStyles) {
                     var options by remember { mutableStateOf(current) }
-                    Column(Modifier.fillMaxSize().background(Color.Black).verticalScroll(rememberScrollState()).padding(16.dp)) {
-                        VivoControls(options,onChange={options=it;current=it},onImport={imported=it},onSwap={_,_->},onMask={})
+                    top.yukonga.miuix.kmp.basic.Scaffold { padding ->
+                    Column(Modifier.fillMaxSize().background(Color.Black).verticalScroll(rememberScrollState()).padding(padding)) {
+                        VivoControls(options,onChange={options=it;current=it})
+                        VivoPhotoControls(options,onChange={options=it;current=it},onImport={imported=it},onSwap={_,_->},onCrop={})
+                    }
                     }
                 }
             }
-            compose.onNodeWithText("效果 3").performClick();assertEquals(3,current.style)
-            compose.onNodeWithText("光栅 2").performScrollTo().performClick()
+            compose.onNodeWithText("效果样式").performClick()
+            compose.onNodeWithText("原版效果 3").performClick();assertEquals(3,current.style)
+            compose.onNodeWithText("素材位置").performScrollTo().performClick()
+            compose.onNodeWithText("光栅 2").performClick()
             compose.onNodeWithText("选择视频").performScrollTo().performClick()
             assertEquals(VivoMediaSelection.SLOT_VIDEO+2,imported)
             compose.onNodeWithText("旋转 90°").performScrollTo().performClick()
@@ -196,8 +201,8 @@ class AliveEditorScreenshotTest {
             compose.onNodeWithTag("photo-aod-styles").assertExists()
             compose.onNodeWithText("动态壁纸").performClick()
             compose.onNodeWithTag("alive-picker-scene-601").assertDoesNotExist()
-            // All dynamic families, including each Vivo runtime, are selectable without navigation.
-            for((category,id) in listOf(1 to 1,2 to 301,3 to 201,4 to 401,5 to 501,6 to 701,6 to 702,6 to 703)) {
+            // Vivo families now have independent pages, never the dynamic library or its picker.
+            for((category,id) in listOf(1 to 1,2 to 301,3 to 201,4 to 401,5 to 501)) {
                 compose.onNodeWithTag("alive-picker-category-$category").performScrollTo().performClick()
                 val itemIndex=scenes.filter { it.group==aliveDynamicGroups[category] }.indexOfFirst { it.id==id }
                 compose.onNodeWithTag("alive-picker-grid").performScrollToIndex(itemIndex)
@@ -209,9 +214,10 @@ class AliveEditorScreenshotTest {
                 compose.onNodeWithTag("alive-tool-样式").performClick()
                 compose.onNodeWithTag("alive-segment-动态壁纸").assertIsSelected()
             }
-            compose.onNodeWithTag("alive-picker-category-6").performScrollTo().performClick()
-            compose.onNodeWithTag("alive-picker-grid").performScrollToIndex(2)
-            compose.onNodeWithTag("alive-picker-scene-703").assertIsSelected()
+            compose.onNodeWithTag("alive-picker-category-6").assertDoesNotExist()
+            for (id in 701..703) compose.onNodeWithTag("alive-picker-scene-$id").assertDoesNotExist()
+            compose.onNodeWithTag("alive-picker-category-5").performScrollTo().performClick()
+            compose.onNodeWithTag("alive-picker-scene-501").assertIsSelected()
             compose.onNodeWithText("照片壁纸").performClick()
             compose.onNodeWithTag("photo-aod-style-4").performScrollTo().performClick()
             assertEquals(605,variant);assertFalse(applied)

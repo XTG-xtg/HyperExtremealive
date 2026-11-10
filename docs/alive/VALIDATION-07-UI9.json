@@ -1,0 +1,71 @@
+{
+  "versionName": "0.5-alive.7-ui.9",
+  "versionCode": 24,
+  "productionMinSdk": 33,
+  "date": "2026-11-10",
+  "unitTests": {
+    "tests": 177,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "build": [
+    "testDebugUnitTest",
+    "assembleDebug",
+    "assembleRelease",
+    "lintVitalRelease"
+  ],
+  "apkSha256": "0f893940aac86ed154c9cde1ca18112696a695cfba4d7a625b00d50b00dd51f2",
+  "signerSha256": "52395a7301d94176099f0a1c610406bf0291abad9a2198858f32bc9b9f46942d",
+  "spareDevice": {
+    "model": "Redmi K30",
+    "os": "MIUI 14 / Android 12 / API 31",
+    "build": "0.5-alive.7-ui.9-ui-smoke-api31",
+    "scope": "UI, original-engine preview, preset persistence, local U2Net, system document export; not full ROM-hook compatibility",
+    "smokeApkSha256": "bfdc9b3425721661a2d585a1cb8b1d1b8bdbdfb8921a9f7191657255383c7134",
+    "savedStyles": [
+      2,
+      3
+    ],
+    "exports": [
+      {
+        "test": "exported-subject",
+        "size": [
+          1080,
+          2400
+        ],
+        "selectedPixels": 247543,
+        "sha256": "f3fb2327acff627f3e905faa9dff36daaf7fe62ae303dbf3296d5d9c3bc573ff"
+      },
+      {
+        "test": "exported-ai-subject",
+        "size": [
+          1080,
+          2400
+        ],
+        "selectedPixels": 213711,
+        "sha256": "979dcf9ff711071dc8de353c20ad4190632b833f15d0c44cf5b904b2a0e598df"
+      },
+      {
+        "test": "exported-paint",
+        "size": [
+          1080,
+          2400
+        ],
+        "selectedPixels": 44841,
+        "sha256": "35a8d21e9614a7ab1ed3f750bd985f54d5b73c9ebefebf58ca5b8c66554eb3bc"
+      }
+    ]
+  },
+  "evidenceLogs": {
+    "ui9-final-validation.log": "e00348c298567f9ee64ad995baf0018382525ce56ef47d62722113e7f2018614",
+    "vivo-touch/gesture-evidence.log": "a705e8f96cc225ec3092b698ba333484a3a5cab56527a02ae9d1c6f4a2e3728b",
+    "vivo-touch/flash-matrix-paced.log": "78bc0b36ea933306e94615ebe21116118047804868b7453b23356fb56b1b618c",
+    "vivo-touch/flash-covers.log": "bf961b0d6cfad5a8ee8886a8e46b7dc4570387959138ebefcdd17d2bc0f5a7c5"
+  },
+  "limitations": [
+    "Final release was not installed on the main device after offline-development request",
+    "API31 smoke is not production Android12 support",
+    "No overnight power test or full spare-device LSPosed/AOD validation"
+  ]
+}

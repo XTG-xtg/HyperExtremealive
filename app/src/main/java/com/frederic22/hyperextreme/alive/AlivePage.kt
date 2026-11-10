@@ -60,7 +60,7 @@ internal fun AliveLibrary(onBack: () -> Unit) {
     val labels = aliveDynamicLabels
     val colors = aliveUiColors()
     LaunchedEffect(Unit) {
-        val result = withContext(Dispatchers.IO) { runCatching { AliveCatalog.load(app).filter { it.group != 5 } } }
+        val result = withContext(Dispatchers.IO) { runCatching { AliveCatalog.load(app).filter(::isAliveDynamicScene) } }
         scenes = result.getOrDefault(emptyList())
         failure = result.exceptionOrNull()?.message.orEmpty()
         loading = false
@@ -98,7 +98,7 @@ internal fun AliveLibrary(onBack: () -> Unit) {
                             LazyVerticalGrid(columns = GridCells.Fixed(columns), modifier = Modifier.fillMaxSize().testTag("alive-library-grid"),
                                 contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 6.dp, bottom = 28.dp),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-                                items(scenes.filter { group == 0 || it.group == groups[group] }, key = { it.id }) { scene ->
+                                items(scenes.filter { group == 0 || it.group == groups.getOrElse(group) { -1 } }, key = { it.id }) { scene ->
                                     val selected = scene.id == applied && running
                                     Column(Modifier.clip(RoundedCornerShape(14.dp)).clickable(role = Role.Button) {
                                         context.startActivity(Intent(context, AlivePreviewActivity::class.java)
