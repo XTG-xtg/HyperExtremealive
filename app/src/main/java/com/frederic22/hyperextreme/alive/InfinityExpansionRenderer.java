@@ -148,7 +148,7 @@ final class InfinityExpansionRenderer implements WallpaperRenderer {
         Matrix.rotateM(model,0,g[InfinityGeometryMotion.ROTATE]+state.rotationY(),0,1,0);
         Matrix.rotateM(model,0,-motion.desktopY()*8,1,0,0);Matrix.multiplyMM(mvp,0,projection,0,model,0);
         InfinityParallax.foreground(mvp,motion);
-        float starGain=motion.aodStarGain()+.55f*motion.starEmphasis();
+        float starGain=motion.aodStarGain();
         drawPolygon(dot,stars,GLES30.GL_POINTS,g[InfinityGeometryMotion.STARS]*starGain,g[InfinityGeometryMotion.BRIGHT],state.groups);
         drawPolygon(dot,points,GLES30.GL_POINTS,Math.max(g[InfinityGeometryMotion.DOTS],state.pulseDots())*starGain,g[InfinityGeometryMotion.BRIGHT],state.groups);
         drawPolygon(line,lines,GLES30.GL_LINES,Math.max(g[InfinityGeometryMotion.LINES],state.pulseLines()),.1f,state.groups);

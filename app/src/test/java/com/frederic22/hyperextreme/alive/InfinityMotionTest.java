@@ -8,19 +8,24 @@ public class InfinityMotionTest {
         for(long t=start;t<end;t+=1_000_000_000L/fps)m.advance(t,1);
         m.advance(end,1);
     }
-    @Test public void homeSleepRevealsStarsBeforeDesktopDisappears(){
+    @Test public void homeSleepRevealsStarsWithoutOvershootingSettledBrightness(){
         for(int variant=801;variant<=820;variant++){
             InfinityMotion m=InfinityMotion.create(variant,2);
             m.advance(1_000_000_000L,1);float before=m.starAlpha(),angle=m.rotation();
             m.change(0,true);m.advance(1_000_000_000L,1);
             assertEquals(before,m.starAlpha(),0);assertEquals(angle,m.rotation(),0);
             frames(m,1_000_000_000L,1_550_000_000L,60);
-            assertTrue("Stars must stand out during sleep: "+variant,m.starAlpha()>1);
+            assertTrue("Stars brighten continuously: "+variant,m.starAlpha()>before);
             assertTrue("Keep desktop visible during the star reveal",m.values[InfinityMotion.HOME]>.3f);
             assertEquals(1,m.values[InfinityMotion.HOME]+m.values[InfinityMotion.AOD],.00001f);
             assertTrue(Math.abs(m.rotation()-angle)>10);
-            frames(m,1_550_000_000L,6_000_000_000L,60);
-            assertEquals(1.28f,m.starAlpha(),.00001f);assertEquals(0,m.starEmphasis(),0);
+            float previous=m.starAlpha();
+            for(long at=1_550_000_000L;at<=6_000_000_000L;at+=10_000_000L){
+                m.advance(at,1);
+                assertTrue("No bright pulse or fall after two seconds: "+variant,m.starAlpha()+.00001f>=previous);
+                assertTrue(m.starAlpha()<=1.28001f);previous=m.starAlpha();
+            }
+            assertEquals(1.28f,m.starAlpha(),.00001f);
             assertEquals(0,m.values[InfinityMotion.HOME],0);assertFalse(m.active());
         }
     }
@@ -32,14 +37,14 @@ public class InfinityMotionTest {
             session.visible(home,true);session.frame(0,2,0,start,()->{});
             session.frame(1,0,start,start,()->{});
             session.frame(1,0,start,start+550_000_000L,()->{});
-            float alpha=motion.starAlpha(),emphasis=motion.starEmphasis(),angle=motion.rotation();
+            float alpha=motion.starAlpha(),angle=motion.rotation();
             session.visible(lock,true);session.visible(home,false);
             session.frame(1,0,start,start+550_000_000L,()->{});
             assertEquals(alpha,motion.starAlpha(),0);assertEquals(angle,motion.rotation(),0);
             session.frame(2,2,start+550_000_000L,start+550_000_000L,()->{});
-            assertEquals(alpha,motion.starAlpha(),0);assertEquals(emphasis,motion.starEmphasis(),0);
+            assertEquals(alpha,motion.starAlpha(),0);
             session.frame(2,2,start+550_000_000L,start+800_000_000L,()->{});
-            assertTrue(motion.starEmphasis()<emphasis);
+            assertTrue(motion.starAlpha()<alpha);
             session.frame(3,0,start+800_000_000L,start+800_000_000L,()->{});
             session.visible(lock,false);
             session.frame(3,0,start+800_000_000L,start+15_000_000_000L,()->{});
@@ -50,9 +55,23 @@ public class InfinityMotionTest {
         for(int variant=801;variant<=820;variant++){
             InfinityMotion m=InfinityMotion.create(variant,2);
             m.advance(1_000_000_000L,1);m.change(0,false);
-            assertEquals(1.28f,m.starAlpha(),.00001f);assertEquals(0,m.starEmphasis(),0);
+            assertEquals(1.28f,m.starAlpha(),.00001f);
             m.change(1,false);m.change(0,true);frames(m,1_000_000_000L,1_550_000_000L,60);
-            assertTrue(m.starAlpha()>=.8f);assertEquals(0,m.starEmphasis(),0);
+            assertTrue(m.starAlpha()>=.8f);
+        }
+    }
+    @Test public void polygonLockToAodNeverResetsAlreadyVisibleStarGroups(){
+        for(int variant=811;variant<=820;variant++){
+            InfinityGeometryMotion m=new InfinityGeometryMotion(variant,0);
+            m.advance(1_000_000_000L,1);m.change(1,true);
+            frames(m,1_000_000_000L,1_300_000_000L,60);
+            float[] visible=m.groups.clone();
+            m.change(0,true);m.advance(1_300_000_000L,1);
+            assertArrayEquals("No black first frame for variant "+variant,visible,m.groups,0);
+            frames(m,1_300_000_000L,4_800_000_000L,60);
+            assertEquals(.4f,m.geometry[InfinityGeometryMotion.BRIGHT],.00001f);
+            frames(m,4_800_000_000L,7_000_000_000L,60);
+            assertEquals(.4f,m.geometry[InfinityGeometryMotion.BRIGHT],.00001f);
         }
     }
     @Test public void onlyAodGetsTheSustainedStarBrightnessBoost(){

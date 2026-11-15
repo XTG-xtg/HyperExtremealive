@@ -1,5 +1,7 @@
 # HyperExtreme Alive ui34
 
+> 已交付实机测试，未公开发布 Release；后续 Infinity 与 Doze 会话亮度调整并入 ui35。
+
 `0.5-alive.7-ui.34-aod-unmasked` · versionCode `49` · Android 13+ / ARM64。
 
 ## 主要更新

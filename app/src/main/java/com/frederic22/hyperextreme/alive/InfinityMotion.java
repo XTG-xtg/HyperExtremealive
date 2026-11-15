@@ -11,7 +11,6 @@ class InfinityMotion implements WallpaperMotion {
     private int scene;
     private float angle,fromAngle,targetAngle,gyro,gyroTarget,tilt;
     private float enterFrom=1,enterTarget=1,enter=1;
-    private float sleepEmphasis,fromSleepEmphasis;
     private boolean homeToAod;
     private boolean running;
     private float downX;
@@ -37,7 +36,7 @@ class InfinityMotion implements WallpaperMotion {
     private void settle(int next){
         targets(next);System.arraycopy(target,0,values,0,values.length);
         enter=enterFrom=enterTarget=1;
-        sleepEmphasis=fromSleepEmphasis=0;homeToAod=false;
+        homeToAod=false;
         java.util.Arrays.fill(reveal,1);java.util.Arrays.fill(shift,0);running=false;
     }
     public void change(int next,boolean animate){
@@ -47,7 +46,7 @@ class InfinityMotion implements WallpaperMotion {
         cancelTouch(null);desktop.scene(next==2,true);
         // Snapshot evaluated values so a sleep/wake reversal never jumps to a canned start frame.
         System.arraycopy(values,0,from,0,values.length);targets(next);
-        homeToAod=scene==2&&next==0;fromSleepEmphasis=sleepEmphasis;
+        homeToAod=scene==2&&next==0;
         if(next==1&&values[EXIT]>.999f){java.util.Arrays.fill(reveal,0);enter=0;}
         enterFrom=enter;enterTarget=1;
         fromAngle=angle;targetAngle=angle+(homeToAod?22:10)*direction;start=last;
@@ -68,11 +67,6 @@ class InfinityMotion implements WallpaperMotion {
                 float t=curve((float)(elapsed/duration),homeToAod&&i<=AOD||i==EXIT||i==AOD);
                 values[i]=from[i]+(target[i]-from[i])*t;
             }
-            float rise=curve((float)(elapsed/550),true);
-            float fall=curve((float)((elapsed-550)/1050),true);
-            // A single, bounded reveal; reversal carries the displayed brightness forward.
-            sleepEmphasis=homeToAod?fromSleepEmphasis*(1-rise)+rise*(1-fall)
-                :fromSleepEmphasis*(1-curve((float)(elapsed/450),true));
             angle=fromAngle+(targetAngle-fromAngle)*curve((float)(elapsed/(homeToAod?1600:2000)),false);
             enter=enterFrom+(enterTarget-enterFrom)*curve((float)(elapsed/650),true);
         }
@@ -119,9 +113,8 @@ class InfinityMotion implements WallpaperMotion {
     float desktopY(){return desktop.y();}
     float desktopRotation(){return desktopX()*12;}
     float rotation(){return gyro-angle+desktopRotation();}
-    float starAlpha(){return values[STAR]*aodStarGain()+.45f*sleepEmphasis;}
+    float starAlpha(){return values[STAR]*aodStarGain();}
     float aodStarGain(){return 1+.6f*values[AOD];}
-    float starEmphasis(){return sleepEmphasis;}
     float interaction(){return gyro;}
     float layerShift(int i){return shift[i]+(1-reveal[i])*direction*entranceShift;}
     public void follow(float x,float y){follow(x,y,Math.max(0,last));}
@@ -130,7 +123,7 @@ class InfinityMotion implements WallpaperMotion {
         if(scene==0||!Float.isFinite(distance)||Math.abs(distance)<.04f)return;
         System.arraycopy(values,0,from,0,6);targets(scene);fromAngle=angle;
         targetAngle=angle+Math.copySign(10,distance);enterFrom=enter;
-        fromSleepEmphasis=sleepEmphasis;homeToAod=false;start=last;running=true;
+        homeToAod=false;start=last;running=true;
     }
     void touch(Object owner,int action,float x,float y,long time){
         if(scene==0)return;

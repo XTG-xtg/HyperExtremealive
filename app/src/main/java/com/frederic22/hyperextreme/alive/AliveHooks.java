@@ -34,6 +34,7 @@ public final class AliveHooks {
     private static XposedModule logger;
     private static final ThreadLocal<AodWallpaperGuard.Panel> NORMAL_PANEL=new ThreadLocal<>();
     private static final AodWallpaperGuard AOD_WALLPAPER=new AodWallpaperGuard();
+    private static final AodSessionBrightness AOD_BRIGHTNESS=new AodSessionBrightness();
     private static final ThreadLocal<AodCreation> AOD_CREATION=new ThreadLocal<>();
     private static final class AodCreation {
         final Object host;final boolean eligible;boolean denied;
@@ -209,12 +210,38 @@ public final class AliveHooks {
         hook(module,loader,"com.android.keyguard.panel.KeyguardPanelViewController","doWallpaperBlackAnim",chain->{
             float brightness=aodBrightness();
             if(!SystemAodDimming.contract((Method)chain.getExecutable()))return chain.proceed();
-            Object[] args=SystemAodDimming.heldArguments(chain.getThisObject(),chain.getArgs(),brightness,
-                brightness>0&&SystemAodDimming.ownsFullAod(chain.getThisObject()));
+            boolean owned=brightness>0&&SystemAodDimming.ownsFullAod(chain.getThisObject());
+            AOD_BRIGHTNESS.wallpaper(chain.getThisObject(),chain.getArgs(),brightness,owned);
+            Object[] args=SystemAodDimming.heldArguments(chain.getThisObject(),chain.getArgs(),brightness,owned);
             if(args==null)return chain.proceed();
             log("AOD wallpaper mask="+chain.getArgs().get(1)+" -> "+args[1]+" brightness="+brightness);
             // Keep native animation, wake-lock cleanup, depth and wake restoration callbacks.
             return chain.proceed(args);
+        });
+        String dozeService="com.android.systemui.doze.DozeService";
+        hook(module,loader,dozeService,"setDozeScreenBrightness",chain->{
+            java.util.List<Object> args=chain.getArgs();
+            if(args.size()!=1||!(args.get(0) instanceof Float))return chain.proceed();
+            android.os.PowerManager power=((Context)chain.getThisObject()).getSystemService(android.os.PowerManager.class);
+            if(power==null||power.isInteractive()){AOD_BRIGHTNESS.clear();return chain.proceed();}
+            float original=(Float)args.get(0),held=AOD_BRIGHTNESS.panel(original,aodBrightness());
+            if(held==original)return chain.proceed();
+            log("AOD panel brightness="+original+" -> "+held);
+            return chain.proceed(new Object[]{held});
+        });
+        hook(module,loader,dozeService,"setDozeScreenState",chain->{
+            if(chain.getArgs().size()==1&&Integer.valueOf(android.view.Display.STATE_OFF).equals(chain.getArgs().get(0)))
+                AOD_BRIGHTNESS.clear();
+            return chain.proceed();
+        });
+        hook(module,loader,dozeService,"onDreamingStopped",chain->{AOD_BRIGHTNESS.clear();return chain.proceed();});
+        hook(module,loader,"com.android.systemui.statusbar.phone.DozeServiceHost","setAodDimmingScrim",chain->{
+            java.util.List<Object> args=chain.getArgs();
+            if(args.size()!=1||!(args.get(0) instanceof Float))return chain.proceed();
+            float original=(Float)args.get(0),scrim=AOD_BRIGHTNESS.scrim(original,aodBrightness());
+            if(scrim==original)return chain.proceed();
+            log("AOD ambient scrim="+original+" -> "+scrim);
+            return chain.proceed(new Object[]{scrim});
         });
         hook(module,loader,"miui.util.FeatureParser","getBoolean",chain->{
             if(chain.getArgs().size()==2 && chain.getArgs().get(0) instanceof String

@@ -5,6 +5,7 @@ final class InfinityGeometryMotion extends InfinityMotion {
     static final int SCALE=0,ROTATE=1,LOCK_BG=2,HOME_BG=3,FACES=4,DOTS=5,LINES=6,STARS=7,BRIGHT=8;
     final float[] geometry=new float[9];
     final float[] groups={1,1,1,1,1};
+    private final float[] fromGroups={1,1,1,1,1};
     private final float[] fromGeometry=new float[9],targetGeometry=new float[9];
     private final boolean starProfile;
     private int mode;
@@ -39,6 +40,8 @@ final class InfinityGeometryMotion extends InfinityMotion {
         int destination=mode(next);
         if(animate&&destination==mode&&next!=0)return;
         mode=destination;targets(mode);
+        boolean visibleStars=geometry[DOTS]>0||geometry[STARS]>0||geometry[LINES]>0;
+        for(int i=0;i<groups.length;i++)fromGroups[i]=visibleStars?groups[i]:0;
         System.arraycopy(geometry,0,fromGeometry,0,geometry.length);
         if(next==0){fromGeometry[ROTATE]=displayedRotation;if(animate)geometry[ROTATE]=displayedRotation;}
         moving=animate;start=-1;elapsed=0;
@@ -61,11 +64,10 @@ final class InfinityGeometryMotion extends InfinityMotion {
             if(i==FACES&&mode==2){delay=400;duration=1600;}
             else if(i==LOCK_BG||i==HOME_BG){delay=mode==3&&i==HOME_BG?133:0;duration=mode==3?900:1000;}
             else if((i==DOTS||i==STARS||i==LINES)&&mode==2){delay=750;duration=700;}
-            else if(i==BRIGHT&&mode==1){delay=3400;duration=600;}
             float t=curve((elapsed-delay)/duration,false);
             geometry[i]=fromGeometry[i]+(targetGeometry[i]-fromGeometry[i])*t;
         }
-        for(int i=0;i<5;i++)groups[i]=mode==1?curve((elapsed-(500+i*150))/2500,false):1;
+        for(int i=0;i<5;i++)groups[i]=mode==1?fromGroups[i]+(1-fromGroups[i])*curve((elapsed-(500+i*150))/2500,false):1;
         if(elapsed>=(mode==1?4000:mode==2?2100:1667)){
             moving=false;System.arraycopy(targetGeometry,0,geometry,0,geometry.length);java.util.Arrays.fill(groups,1);
         }
