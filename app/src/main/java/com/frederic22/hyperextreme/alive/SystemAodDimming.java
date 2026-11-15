@@ -60,19 +60,29 @@ final class SystemAodDimming {
             Context context=(Context)type.getField("context").get(panel);
             Object users=type.getField("selectedUserInteractor").get(panel);
             int user=(Integer)users.getClass().getMethod("getSelectedUserId").invoke(users);
-            UserHandle handle=(UserHandle)UserHandle.class.getMethod("of",int.class).invoke(null,user);
-            Context selected=(Context)Context.class.getMethod("createContextAsUser",UserHandle.class,int.class).invoke(context,handle,0);
-            WallpaperManager wallpapers=WallpaperManager.getInstance(selected);
-            WallpaperInfo lock=wallpapers.getWallpaperInfo(WallpaperManager.FLAG_LOCK);
-            if(lock!=null)return owns(lock.getComponent());
-            int lockId=wallpapers.getWallpaperId(WallpaperManager.FLAG_LOCK);
-            if(lockId!=-1)return false;
-            WallpaperInfo home=wallpapers.getWallpaperInfo(WallpaperManager.FLAG_SYSTEM);
-            return owns(lockBinding(home==null?null:home.getComponent(),null,lockId));
+            return ownsLock(context,user);
         }catch(ReflectiveOperationException|RuntimeException|LinkageError unavailable){
             // Unknown contracts/bindings preserve the system animation and its target.
             return false;
         }
+    }
+    static boolean ownsSelectedLock(Context context){
+        if(context==null||Build.VERSION.SDK_INT<34)return false;
+        try{
+            int user=(Integer)Class.forName("android.app.ActivityManager").getMethod("getCurrentUser").invoke(null);
+            return ownsLock(context,user);
+        }catch(ReflectiveOperationException|RuntimeException|LinkageError unavailable){return false;}
+    }
+    private static boolean ownsLock(Context context,int user) throws ReflectiveOperationException {
+        UserHandle handle=(UserHandle)UserHandle.class.getMethod("of",int.class).invoke(null,user);
+        Context selected=(Context)Context.class.getMethod("createContextAsUser",UserHandle.class,int.class).invoke(context,handle,0);
+        WallpaperManager wallpapers=WallpaperManager.getInstance(selected);
+        WallpaperInfo lock=wallpapers.getWallpaperInfo(WallpaperManager.FLAG_LOCK);
+        if(lock!=null)return owns(lock.getComponent());
+        int lockId=wallpapers.getWallpaperId(WallpaperManager.FLAG_LOCK);
+        if(lockId!=-1)return false;
+        WallpaperInfo home=wallpapers.getWallpaperInfo(WallpaperManager.FLAG_SYSTEM);
+        return owns(lockBinding(home==null?null:home.getComponent(),null,lockId));
     }
     static Object[] arguments(List<?> original,float brightness){
         Object[] args=original.toArray();

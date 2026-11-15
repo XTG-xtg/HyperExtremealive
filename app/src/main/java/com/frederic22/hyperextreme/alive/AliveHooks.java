@@ -35,6 +35,8 @@ public final class AliveHooks {
     private static final ThreadLocal<AodWallpaperGuard.Panel> NORMAL_PANEL=new ThreadLocal<>();
     private static final AodWallpaperGuard AOD_WALLPAPER=new AodWallpaperGuard();
     private static final AodSessionBrightness AOD_BRIGHTNESS=new AodSessionBrightness();
+    private static final MiuiAodPanelBrightness MIUI_AOD_PANEL=new MiuiAodPanelBrightness();
+    private static boolean systemAdapter;
     private static final ThreadLocal<AodCreation> AOD_CREATION=new ThreadLocal<>();
     private static final class AodCreation {
         final Object host;final boolean eligible;boolean denied;
@@ -101,6 +103,7 @@ public final class AliveHooks {
             }
             Bundle result = c.getContentResolver().call(Protocol.CONFIG, "getConfig", null, null);
             cached = result == null ? Bundle.EMPTY : result;
+            if(systemAdapter)MIUI_AOD_PANEL.refresh(c,worker());
             retry=result==null||cached.getBoolean("configured",false)&&!cached.getBoolean("enabled",false);
             LiquidKeyguardHooks.config(cached);
         } catch (RuntimeException error) {
@@ -169,6 +172,22 @@ public final class AliveHooks {
 
     public static void installSystem(XposedModule module, ClassLoader loader) {
         logger = module;
+        systemAdapter=true;
+        String dozeStrategy="com.android.server.display.brightness.strategy.DozeBrightnessStrategy";
+        hook(module,loader,dozeStrategy,"updateBrightness",chain->{
+            if(!MiuiAodPanelBrightness.contract((Method)chain.getExecutable()))return chain.proceed();
+            Object nativeState=chain.proceed();
+            return MIUI_AOD_PANEL.update(chain.getThisObject(),chain.getArgs().get(0),nativeState,aodBrightness(),AliveHooks::log);
+        });
+        hook(module,loader,dozeStrategy,"setDozeBrightnessState",chain->{
+            if(chain.getArgs().size()==2&&Boolean.FALSE.equals(chain.getArgs().get(0)))MIUI_AOD_PANEL.clear();
+            return chain.proceed();
+        });
+        hook(module,loader,"com.android.server.display.DisplayPowerController","requestPowerState",chain->{
+            if(chain.getArgs().size()==2)MIUI_AOD_PANEL.powerRequest(chain.getThisObject(),chain.getArgs().get(0));
+            return chain.proceed();
+        });
+        worker().post(AliveHooks::refresh);
         hook(module,loader,"android.hardware.display.AmbientDisplayConfiguration","alwaysOnAvailable",chain->{
             return ForcedAodSupport.active(context()) ? true : chain.proceed();
         });
@@ -189,6 +208,7 @@ public final class AliveHooks {
             for (String method : new String[]{"goToSleep", "goToSleepInternal", "goToSleepGroup", "wakeUp", "wakeUpInternal", "wakePowerGroup"}) {
                 hook(module, loader, type, method, chain -> {
                     boolean sleep = method.startsWith("goToSleep");
+                    MIUI_AOD_PANEL.clear();
                     boolean biometric = false;
                     for (Object arg : chain.getArgs()) {
                         if (arg instanceof String) {
