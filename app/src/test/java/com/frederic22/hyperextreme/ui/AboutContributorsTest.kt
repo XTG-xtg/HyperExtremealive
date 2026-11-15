@@ -152,13 +152,14 @@ class AboutContributorsTest {
         } finally { host.close() }
     }
 
-    @Test fun hyperAliveOnlyOffersCoolapkAsRequested() {
+    @Test fun hyperAliveOffersItsOpenSourceRepositoryAndCoolapk() {
         val contributor = AboutContributors.single { it.id == "hyperalive" }
-        assertEquals(listOf("打开酷安" to "https://www.coolapk.com/u/39588100"), contributor.platforms)
+        assertEquals(listOf("打开Github" to "https://github.com/Askt-clot/HyperAlive",
+            "打开酷安" to "https://www.coolapk.com/u/39588100"), contributor.platforms)
         val host = host()
         try {
             compose.onNodeWithTag("contributor-hyperalive").performClick()
-            compose.onNodeWithText("打开Github").assertDoesNotExist()
+            compose.onNodeWithText("打开Github").assertIsDisplayed()
             compose.onNodeWithText("打开酷安").assertIsDisplayed()
         } finally { host.close() }
     }

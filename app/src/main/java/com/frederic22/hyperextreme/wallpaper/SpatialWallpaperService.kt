@@ -89,6 +89,8 @@ class SpatialWallpaperService : WallpaperService() {
         private var uDepthCh = 0
         private var uDkTh = 0
         private var uDim = 0
+        private var uExposure = 0
+        private var brightness: WallpaperAodBrightness? = null
         // 显示区域（2026-11-05）：uv' = uv * uUvScale + uUvOffset
         private var uUvScale = 0
         private var uUvOffset = 0
@@ -140,6 +142,9 @@ class SpatialWallpaperService : WallpaperService() {
         // ─────────────────────────── 生命周期 ───────────────────────────
 
         override fun onCreate(holder: SurfaceHolder) {
+            brightness=WallpaperAodBrightness(this@SpatialWallpaperService,requireNotNull(gl)) {
+                if(surfaceReady && visible) runCatching { drawFrame() }
+            }
             log("Engine onCreate preview=$isPreview")
             if (android.os.Build.VERSION.SDK_INT >= 34) {
                 runCatching { log("wallpaperFlags=${wallpaperFlags}") }
@@ -189,7 +194,14 @@ class SpatialWallpaperService : WallpaperService() {
             }
         }
 
+        fun onAmbientModeChanged(ambient: Boolean, duration: Long) { brightness?.ambient(ambient) }
+        override fun onCommand(action: String?, x: Int, y: Int, z: Int, extras: android.os.Bundle?, resultRequested: Boolean): android.os.Bundle? {
+            if(action == "android.wallpaper.goingtosleep") brightness?.ambient(true)
+            if(action == "android.wallpaper.wakingup") brightness?.ambient(false)
+            return super.onCommand(action,x,y,z,extras,resultRequested)
+        }
         override fun onVisibilityChanged(visible: Boolean) {
+            brightness?.visible(visible)
             this.visible = visible
             log("可见性 -> $visible")
             if (visible) {
@@ -209,6 +221,7 @@ class SpatialWallpaperService : WallpaperService() {
         }
 
         override fun onDestroy() {
+            brightness?.close();brightness=null
             log("Engine onDestroy")
             destroyed = true
             visible = false
@@ -415,6 +428,7 @@ class SpatialWallpaperService : WallpaperService() {
             uDepthCh = GLES20.glGetUniformLocation(p, "uDepthCh")
             uDkTh = GLES20.glGetUniformLocation(p, "uDkTh")
             uDim = GLES20.glGetUniformLocation(p, "uDim")
+            uExposure = GLES20.glGetUniformLocation(p, "uExposure")
             uUvScale = GLES20.glGetUniformLocation(p, "uUvScale")
             uUvOffset = GLES20.glGetUniformLocation(p, "uUvOffset")
             val verts = floatArrayOf(
@@ -668,6 +682,7 @@ class SpatialWallpaperService : WallpaperService() {
             GLES20.glUniform1f(uDkTh, SpatialGlCore.DK_TH)
             // 系统壁纸服务链由**系统**做 AOD 压暗（setWallPaperAnimProcess），这里恒 1.0。
             GLES20.glUniform1f(uDim, 1f)
+            GLES20.glUniform1f(uExposure, brightness?.exposure ?: 1f)
 
             for (i in 0 until layerCount) {
                 GLES20.glUniform2f(uShift, nx * SpatialGlCore.PAN_RAD / g.spanX, np * SpatialGlCore.PAN_RAD / g.spanY)

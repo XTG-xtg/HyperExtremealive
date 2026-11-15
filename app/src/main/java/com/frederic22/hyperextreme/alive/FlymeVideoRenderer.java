@@ -46,7 +46,7 @@ final class FlymeVideoRenderer implements WallpaperRenderer {
             shader=new AssetGl(assets,BASE+"video_vertex.glsl",BASE+"video_runtime_frag.glsl");
             thumbnailShader=new AssetGl(assets,BASE+"video_vertex.glsl",BASE+"thumbnail_runtime_frag.glsl");
             String slug=index==1?"langliu":index==2?"shenqian":"lianyi";
-            try(InputStream in=assets.open(BASE+slug+".png")){
+            try(InputStream in=DynamicResources.open(assets,BASE+slug+".png")){
                 Bitmap bitmap=BitmapFactory.decodeStream(in);
                 if(bitmap==null)throw new IOException("Invalid Flyme video thumbnail: "+slug);
                 try{

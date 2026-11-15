@@ -96,7 +96,7 @@ internal object SpatialGlCore {
      * 两条场各管一层：`.r` = 背景场（主体区已被背景深度补全）、`.a` = 主体场（原始深度）。
      * 主体层是独立 alpha 层画在背景之上，轮廓由 alpha 决定、不由位移场决定。
      */
-    const val FRAG = """
+    val FRAG = """
         precision highp float;
         varying vec2 vNdc;
         uniform sampler2D uTex;
@@ -111,6 +111,8 @@ internal object SpatialGlCore {
         uniform float uDepthCh;     // 0 = 背景场(.r)，1 = 主体场(.a)
         uniform float uDkTh;        // 选择性融合的深度差阈值（|Δk|）
         uniform float uDim;         // AOD 压暗系数（1 = 原亮度，0 = 全黑）
+        uniform float uExposure;
+        ${com.frederic22.hyperextreme.alive.AodBrightness.GLSL}
         // 显示区域（2026-11-04）：uv' = uv * uUvScale + uUvOffset
         // scale = 1/zoom，offset = c − 0.5/zoom（见 `SpatialCrop`）。
         // ⚠️ 深度场与颜色**必须用同一套变换**，否则位移场和图像错位、主体会飘。
@@ -153,7 +155,8 @@ internal object SpatialGlCore {
             //
             // AOD 压暗在**绘制阶段**乘 uDim（系统壁纸服务链由系统自己压暗，传 1.0 即可）：
             // 合成阶段的 `Transaction#setColor` 在 HyperOS 上实测**仍会发白**（2 参 3 参都一样）。
-            gl_FragColor = vec4(c.rgb * uDim, mix(c.a, 1.0, uOpaque));
+            vec3 rgb = aodExpose(c.rgb / max(c.a, 0.00001) * uDim, uExposure) * c.a;
+            gl_FragColor = vec4(rgb, mix(c.a, 1.0, uOpaque));
         }
     """
 

@@ -7,7 +7,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'deliverables'
-NAME = 'HyperExtreme-Alive-0.5-alive.7-ui.7'
+NAME = 'HyperExtreme-Alive-0.5-alive.7-ui.17'
 ROOT_FILES = ['.gitignore', 'ALIVE-POWER-FIX.md', 'ALIVE-UI-NOTES.md', 'README.md',
               'LICENSE', 'MIT_License.md', 'build.gradle.kts', 'settings.gradle.kts',
               'gradle.properties', 'gradlew', 'gradlew.bat', 'keystore.properties.example']
@@ -24,8 +24,8 @@ def main():
         raise SystemExit('Build and verify :app:assembleRelease before packaging (not the debug APK).')
     metadata = json.loads((apk.parent / 'output-metadata.json').read_text(encoding='utf-8'))
     if (metadata['applicationId'] != 'com.xtg.hyperextremealive' or metadata['variantName'] != 'release'
-            or len(metadata['elements']) != 1 or metadata['elements'][0]['versionCode'] != 22
-            or metadata['elements'][0]['versionName'] != '0.5-alive.7-ui.7'):
+            or len(metadata['elements']) != 1 or metadata['elements'][0]['versionCode'] != 32
+            or metadata['elements'][0]['versionName'] != '0.5-alive.7-ui.17'):
         raise SystemExit('Release metadata does not match the candidate version.')
     mapping = ROOT / 'app/build/outputs/mapping/release/mapping.txt'
     if not mapping.is_file():
@@ -57,6 +57,7 @@ def main():
     output = [OUT / (NAME + '.apk'), OUT / (NAME + '-source.zip'), symbols]
     checksums = '\n'.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name for p in output) + '\n'
     (OUT / 'SHA256SUMS.txt').write_text(checksums, encoding='ascii')
+    (OUT / (NAME + '-SHA256SUMS.txt')).write_text(checksums, encoding='ascii')
     with zipfile.ZipFile(output[1]) as archive:
         if archive.testzip() is not None:
             raise ValueError('Source ZIP integrity check failed')

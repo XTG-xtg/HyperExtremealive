@@ -37,8 +37,13 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -74,6 +79,9 @@ internal data class CoverItem(
      * 只影响显示，不落盘。
      */
     val src: RectF? = null,
+    val frame: ImageBitmap? = null,
+    val description: String? = null,
+    val removable: Boolean = true,
 )
 
 // ------------------------------------------------------------------ 尺寸 / 节奏
@@ -309,6 +317,7 @@ internal fun CoverCarousel(
         LazyRow(
             state = listState,
             modifier = Modifier
+                .testTag("wallpaper-cover-carousel")
                 .fillMaxWidth()
                 .height(cardH + pagerPadding * 2),
             // 上下留动态余量：删除钮圆顶探出卡片，尺寸等于卡片高度时会被裁掉。
@@ -349,7 +358,7 @@ internal fun CoverCarousel(
                     // 只有**居中且吸附到位**的卡能点（2026-11-05 用户要求）。
                     // 滚动中 `settledPage` 是 -1 ⇒ 一律不可点，避免滑动误触。
                     clickable = settled,
-                    showDelete = allowDelete && settled && item.id != activeId,
+                    showDelete = allowDelete && item.removable && settled && item.id != activeId,
                     // 确认删除后：卡片与删除钮一起缩小 + 淡出。
                     removing = item.id == deletingId,
                     modifier = itemTransform(page),
@@ -407,13 +416,14 @@ private fun CoverCard(
                 .squircleClip(radius)
                 .background(MiuixTheme.colorScheme.surfaceContainerHigh)
                 .squircleStroke({ CARD_STROKE_WIDTH }, { CARD_STROKE }, radius)
+                .semantics { item.description?.let { contentDescription = it } }
                 // `enabled = false` 时不消费触摸：侧卡点击完全无响应，也不会抢走
                 // LazyRow 的拖动（2026-11-05 用户要求）。
                 .clickable(enabled = clickable, onClick = onClick),
             contentAlignment = Alignment.Center,
         ) {
             // 封面（带 0.15s 渐显）；没加载出来 / 空内容时**只留底色**。
-            CardImage(cover, Modifier.fillMaxSize())
+            CardImage(item.frame?.asAndroidBitmap() ?: cover, Modifier.fillMaxSize())
         }
         if (deleteAnim > 0f) {
             // 红色圆 + 白色横杠，**圆心刚好落在卡片右上角的角点上**（用户 2026-11-03 定的位置）。

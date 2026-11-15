@@ -32,6 +32,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.frederic22.hyperextreme.applyAppSystemBars
 import com.frederic22.hyperextreme.alive.AliveDetail
+import com.frederic22.hyperextreme.alive.VivoWallpaperDetail
 import com.frederic22.hyperextreme.data.MaskPrefs
 import com.frederic22.hyperextreme.data.MaskRole
 import com.frederic22.hyperextreme.data.MaskStore
@@ -142,8 +143,8 @@ class MaskDetailActivity : ComponentActivity() {
 @Composable
 internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
     // Alive owns its drafts; opening it must not start the mask import/replace workflow.
-    if (page == DetailPage.Alive) {
-        AliveDetail(onBack = onClose)
+    if (page == DetailPage.Alive || page == DetailPage.InfinityWallpaper) {
+        AliveDetail(onBack = onClose, infinity = page == DetailPage.InfinityWallpaper)
         return
     }
     val context = LocalContext.current
@@ -282,7 +283,11 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
                 DetailPage.ParallaxBg -> "视差壁纸"
                 DetailPage.SpatialWallpaper -> "空间壁纸"
                 DetailPage.Alive -> "Alive 动态壁纸"
+                DetailPage.InfinityWallpaper -> "Infinity 壁纸"
                 DetailPage.RasterWallpaper -> "光栅壁纸"
+                DetailPage.LiquidWallpaper -> "液态壁纸"
+                DetailPage.FlashWallpaper -> "闪卡壁纸"
+                DetailPage.VivoRasterWallpaper -> "趣味光栅"
                 DetailPage.SystemUi -> "系统界面"
                 DetailPage.Desktop -> "系统桌面"
             },
@@ -294,9 +299,12 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
                 DetailPage.ParallaxBg -> ParallaxBgDetail(state = state, onPick = pickParallaxBg)
                 // 「空间壁纸」：**独立链**，暂不接收选图回调（深度模型流程还没接）。
                 DetailPage.SpatialWallpaper -> SpatialWallpaperDetail(state)
-                DetailPage.Alive -> Unit // Handled by the independent gallery above.
+                DetailPage.Alive, DetailPage.InfinityWallpaper -> Unit // Handled by the independent gallery above.
                 // 「光栅壁纸」（2026-11-03）：目前只是**主体验证页**，渲染链还没接。
                 DetailPage.RasterWallpaper -> RasterWallpaperDetail(state)
+                DetailPage.LiquidWallpaper -> VivoWallpaperDetail(701)
+                DetailPage.FlashWallpaper -> VivoWallpaperDetail(703)
+                DetailPage.VivoRasterWallpaper -> VivoWallpaperDetail(702)
                 DetailPage.SystemUi -> SystemUiDetail(state)
                 DetailPage.Desktop -> DesktopDetail(state)
             }

@@ -40,6 +40,9 @@ def main():
                 raise ValueError('R8 entry no longer available; update probe without changing release keeps: ' + key)
     out = root / 'build/alive-release-device'
     out.mkdir(parents=True, exist_ok=True)
+    # A failed new probe must never leave a previous APK/device's successful result visible.
+    (out / 'result.json').write_text(json.dumps({'passed': False, 'status': 'running',
+        'apk_sha256': hashlib.sha256(apk.read_bytes()).hexdigest(), 'serial': args.serial}, indent=2), encoding='utf-8')
     (out / 'names.json').write_text(json.dumps(names, indent=2), encoding='utf-8')
     sdk, java = Path(args.sdk), Path(args.java_home) / 'bin'
     ext = '.exe' if os.name == 'nt' else ''

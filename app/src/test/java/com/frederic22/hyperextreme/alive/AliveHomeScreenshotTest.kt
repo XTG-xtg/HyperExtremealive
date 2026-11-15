@@ -59,26 +59,26 @@ class AliveHomeScreenshotTest {
                 val controller = remember { ThemeController(if (dark) ColorSchemeMode.Dark else ColorSchemeMode.Light) }
                 MiuixTheme(controller = controller, textStyles = HyperTextStyles) {
                     AliveHomeContent(AliveHomeModel(name = "星云绿", running = false, busy = false, frameworkConnected = true,
-                        frames = if (error) emptyList() else frames, photoShapes = shapes,
+                        frames = if (error) emptyList() else listOf(frames[1]), photoShapes = shapes,
                         previewError = if (error) "Test unavailable renderer" else ""),
                         onBack = {}, onDiagnostics = {}, onMode = { selected = it }, onPhoto = { selected = it },
-                        onLibrary = { library = true }, onToggle = { toggle = it }, onRetry = {})
+                        onLibrary = { library = true }, onToggle = { toggle = it }, onRetry = {}, onNew = {})
                 }
             }
             compose.waitForIdle()
-            val heights = listOf("息屏", "锁屏", "桌面").map {
-                compose.onNodeWithTag("alive-layout-$it", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot.height
-            }
-            org.junit.Assert.assertEquals(heights[0], heights[1], .1f)
-            org.junit.Assert.assertEquals(heights[1], heights[2], .1f)
+            compose.onNodeWithContentDescription("当前壁纸封面").assertIsDisplayed()
+            compose.onNodeWithText("预览与应用").assertIsEnabled().performClick()
+            org.junit.Assert.assertEquals(1, selected)
             val directory = File("build/reports/alive-ui").apply { mkdirs() }
             compose.onRoot().captureToImage().asAndroidBitmap().let { bitmap ->
                 File(directory, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
             }
-            compose.onNodeWithText("锁屏").performClick()
-            org.junit.Assert.assertEquals(1, selected)
+            compose.onNodeWithText("息屏").assertDoesNotExist()
+            compose.onNodeWithText("锁屏").assertDoesNotExist()
+            compose.onNodeWithText("桌面").assertDoesNotExist()
             compose.onNodeWithText("动态壁纸").performScrollTo().performClick()
             org.junit.Assert.assertTrue(library)
+            compose.onNodeWithText("时钟与通知 · 实验").assertDoesNotExist()
             compose.onNodeWithText("启用 Alive 壁纸").performScrollTo().performClick()
             org.junit.Assert.assertEquals(true, toggle)
             compose.onNodeWithText("圆景").performScrollTo().performClick()
@@ -103,10 +103,45 @@ class AliveHomeScreenshotTest {
     @Test fun unavailablePreview() = capture("alive-home-error", true, true)
     @Test fun largeText() = capture("alive-home-large-text", false, fontScale = 1.4f)
 
+    @Test fun homeCarouselHasNewCurrentAndSavedPresetNotThreeStates() {
+        val host=Robolectric.buildActivity(ComponentActivity::class.java).setup()
+        try {
+            val app=host.get()
+            val saved=AlivePresets.snapshot(app,"已保存星云",1,false,false,PhotoOptions.defaults(),AliveRenderOptions.load(app),true)
+            val image=Bitmap.createBitmap(100,220,Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.BLUE) }
+            AlivePresets.write(app,saved,image);image.recycle()
+            var opened="";var newCount=0;var libraryCount=0
+            app.setContent {
+                MiuixTheme(controller=remember { ThemeController(ColorSchemeMode.Light) }) {
+                    AliveHomeContent(AliveHomeModel(busy=false,presets=listOf(saved)),{},{},{},{},{libraryCount++},{},{},
+                        onNew={newCount++},onPreset={opened=it.id})
+                }
+            }
+            compose.onNodeWithContentDescription("当前壁纸封面").assertIsDisplayed()
+            compose.onNodeWithText("息屏").assertDoesNotExist();compose.onNodeWithText("桌面").assertDoesNotExist()
+            compose.onNodeWithTag("wallpaper-cover-carousel").performScrollToIndex(2)
+            compose.waitForIdle()
+            compose.onNodeWithContentDescription("已保存预设：已保存星云").performClick()
+            org.junit.Assert.assertEquals(saved.id,opened)
+            compose.onNodeWithTag("wallpaper-cover-carousel").performScrollToIndex(0)
+            compose.waitForIdle()
+            compose.onNode(hasText("新建壁纸") and hasClickAction()).performClick()
+            org.junit.Assert.assertEquals(1,newCount)
+            org.junit.Assert.assertEquals(0,libraryCount)
+            compose.onNodeWithContentDescription("新建").performClick()
+            org.junit.Assert.assertEquals(2,newCount)
+            org.junit.Assert.assertEquals(0,libraryCount)
+            compose.onNodeWithText("动态壁纸").performScrollTo().performClick()
+            org.junit.Assert.assertEquals(1,libraryCount)
+            org.junit.Assert.assertEquals(2,newCount)
+        } finally {host.pause().stop().destroy()}
+    }
+
     @Test fun dynamicLibraryContainsOnlyPresetScenesAndOpensTheirEditor() {
         val host = Robolectric.buildActivity(ComponentActivity::class.java).setup()
         try {
             val activity = host.get()
+            DynamicPackFixture.install(activity)
             activity.setContent {
                 val controller = remember { ThemeController(ColorSchemeMode.Dark) }
                 MiuixTheme(controller = controller, textStyles = HyperTextStyles) { AliveLibrary {} }

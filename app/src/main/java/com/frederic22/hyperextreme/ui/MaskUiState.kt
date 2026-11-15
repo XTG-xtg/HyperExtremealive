@@ -566,7 +566,7 @@ class MaskUiState(
      * 等回执，超时则回滚成"未开启" —— 界面状态必须与真实情况一致
      * （超时通常意味着 SystemUI 没重启过 / hook 还没装上，提示重启后重试）。
      */
-    fun enableParallax() {
+    fun enableParallax(brightness: Float? = null) {
         if (busy) return
         if (!MaskStore.parallaxExists(context)) {
             toast("还没有选择背景图片")
@@ -595,6 +595,7 @@ class MaskUiState(
                         }
                     }
                 } }
+                if(result.isSuccess) brightness?.let { com.frederic22.hyperextreme.alive.AodBrightness.save(context, it) }
                 toast(result.exceptionOrNull()?.message ?: "视差壁纸已开启", long = result.isFailure)
             } finally {
                 busy = false

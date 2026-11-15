@@ -13,6 +13,15 @@ plugins {
 val keystoreProps = rootProject.file("keystore.properties").takeIf { it.exists() }?.let { f ->
     JavaProperties().apply { f.inputStream().use(::load) }
 }
+// Explicit spare-device UI probe only; production support remains Android 13+.
+val legacyUiSmoke = providers.gradleProperty("legacyUiSmoke").orNull == "true"
+if (legacyUiSmoke && gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) })
+    error("legacyUiSmoke is a debug-only UI probe, not a supported release")
+if (legacyUiSmoke) gradle.taskGraph.whenReady {
+    check(allTasks.none { it.project == project && it.name.contains("release", ignoreCase = true) }) {
+        "legacyUiSmoke cannot build release tasks, including through aggregate tasks"
+    }
+}
 
 android {
     namespace = "com.frederic22.hyperextreme"
@@ -31,10 +40,10 @@ android {
 
     defaultConfig {
         applicationId = "com.xtg.hyperextremealive"
-        minSdk = 33
+        minSdk = if (legacyUiSmoke) 31 else 33
         targetSdk = 37
-        versionCode = 22
-        versionName = "0.5-alive.7-ui.7"
+        versionCode = 47
+        versionName = "0.5-alive.7-ui.32-aod-slider" + if (legacyUiSmoke) "-ui-smoke-api31" else ""
 
         ndk {
             abiFilters += "arm64-v8a"
@@ -94,17 +103,27 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     testOptions {
         unitTests.isIncludeAndroidResources = true
+        // Host JVM access for the ART capability-field regression. Android uses its own runtime.
+        unitTests.all { it.jvmArgs("--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED") }
     }
 
+    // Only the generated tree is packaged: never include both original and compressed resources.
+    sourceSets.getByName("main").assets.setSrcDirs(listOf(layout.buildDirectory.dir("generated/packedAliveAssets").get().asFile))
     sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/aliveAssets").get().asFile)
     sourceSets.getByName("main").jniLibs.srcDir(layout.buildDirectory.dir("generated/aliveJni").get().asFile)
-    androidResources { noCompress += listOf("mp4", "dex") }
+    // Videos require openFd; gzip streams must not be compressed a second time.
+    // Do not exempt "dex": that also disables compression of the top-level classes.dex.
+    // LSPosed searches the module APK directly for its native entry; keep this small bridge mmap-ready.
+    androidResources { noCompress += listOf("mp4", "agz", "libhome_bridge.so") }
 
     packaging {
+        // Let PackageInstaller extract native libraries once, instead of shipping mmap-ready ELF.
+        jniLibs { useLegacyPackaging = true }
         // dex 压缩进 APK（minSdk >= 28 时 AGP 默认是不压缩、安装时直接 mmap，
         // 体积会大 20MB 左右）。这里要的是包小，所以打开 legacy 打包。
         dex {
@@ -115,6 +134,17 @@ android {
         }
     }
 }
+
+val preparePackedAliveAssets by tasks.registering(Exec::class) {
+    inputs.dir(rootProject.file("app/src/main/assets"))
+    inputs.file(rootProject.file("tools/pack_alive_assets.py"))
+    inputs.file(rootProject.file("tools/dynamic_resource_pack.py"))
+    outputs.dir(rootProject.layout.buildDirectory.dir("dynamic-wallpapers"))
+    outputs.dir(layout.buildDirectory.dir("generated/packedAliveAssets"))
+    workingDir(rootProject.projectDir)
+    commandLine(System.getenv("PYTHON") ?: "python", "tools/pack_alive_assets.py")
+}
+tasks.named("preBuild") { dependsOn(preparePackedAliveAssets) }
 
 kotlin {
     compilerOptions {
@@ -129,6 +159,7 @@ dependencies {
     // libxposed API 102（由 io.github.libxposed:api:102.0.0 的 AAR 解出的 classes.jar）。
     // 只参与编译，运行时由框架提供，绝不打包进 APK。
     compileOnly(files("libs/libxposed-api-102.jar"))
+    testImplementation(files("libs/libxposed-api-102.jar"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.jetbrains.compose.foundation)
@@ -150,6 +181,7 @@ dependencies {
 val prepareAliveHelper by tasks.registering(Exec::class) {
     inputs.dir(rootProject.file("alive-root/src"))
     inputs.file(rootProject.file("app/src/main/java/com/frederic22/hyperextreme/alive/core/ModuleIdentity.java"))
+    inputs.file(rootProject.file("app/src/main/java/com/frederic22/hyperextreme/alive/core/MusicLockRecovery.java"))
     inputs.file(rootProject.file("tools/build_alive_helper.py"))
     outputs.dir(layout.buildDirectory.dir("generated/aliveAssets"))
     workingDir(rootProject.projectDir)
@@ -174,3 +206,34 @@ val prepareAlivePhoto by tasks.registering(Exec::class) {
     )
 }
 tasks.named("preBuild") { dependsOn(prepareAlivePhoto) }
+
+
+
+// AGP's legacy JNI mode compresses libraries but aligns explicitly stored ones to only 4 bytes.
+// Realign the tiny LSPosed entry and sign again with the SAME variant key, before any APK consumer.
+android.applicationVariants.all {
+    val variant = this
+    val signing = requireNotNull(signingConfig)
+    packageApplicationProvider.configure {
+        inputs.file(rootProject.file("tools/finalize_packed_apk.py"))
+        doLast {
+            variant.outputs.forEach { output ->
+                val process = ProcessBuilder(
+                    System.getenv("PYTHON") ?: "python", "tools/finalize_packed_apk.py",
+                    "--apk", output.outputFile.absolutePath,
+                    "--sdk", android.sdkDirectory.absolutePath,
+                    "--build-tools", android.buildToolsVersion,
+                    "--java-home", System.getProperty("java.home"),
+                    "--keystore", requireNotNull(signing.storeFile).absolutePath,
+                    "--alias", requireNotNull(signing.keyAlias),
+                    "--min-sdk", if (legacyUiSmoke) "31" else "33",
+                ).directory(rootProject.projectDir).redirectErrorStream(true)
+                process.environment()["ALIVE_STORE_PASSWORD"] = requireNotNull(signing.storePassword)
+                process.environment()["ALIVE_KEY_PASSWORD"] = signing.keyPassword ?: requireNotNull(signing.storePassword)
+                val running = process.start()
+                running.inputStream.bufferedReader().useLines { lines -> lines.forEach { logger.lifecycle(it) } }
+                check(running.waitFor() == 0) { "APK alignment/signature verification failed" }
+            }
+        }
+    }
+}

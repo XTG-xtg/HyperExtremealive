@@ -69,6 +69,16 @@ public final class WallpaperFeatures {
         return WallpaperFeaturePolicy.ownedSlots(feature, slots[0], slots[1]) != 0;
     }
 
+    public static boolean isBoundSlot(Context context, Feature feature, int which) {
+        String[] slots = components(context);
+        if (which == WallpaperManager.FLAG_SYSTEM) return WallpaperFeaturePolicy.owns(feature, slots[0]);
+        if (which == WallpaperManager.FLAG_LOCK) {
+            if (Build.VERSION.SDK_INT < 34) return WallpaperFeaturePolicy.owns(feature, slots[0]);
+            return WallpaperFeaturePolicy.owns(feature, slots[1]);
+        }
+        return false;
+    }
+
     /** Recheck under the activation lock: another Activity may have applied while stop was pending. */
     public static <T> T removeInactiveCaches(Context context, Feature feature, Callable<T> action) throws Exception {
         if (feature != Feature.SPATIAL && feature != Feature.RASTER) throw new IllegalArgumentException("Unsupported cache owner");

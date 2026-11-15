@@ -39,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.frederic22.hyperextreme.data.RasterStore
@@ -299,7 +300,7 @@ internal fun CardImage(bitmap: Bitmap?, modifier: Modifier = Modifier) {
             bitmap = bitmap.asImageBitmap(),
             contentDescription = null,
             // alpha 用 graphicsLayer 施加在**画出来的结果**上，不动布局与裁切。
-            modifier = modifier.graphicsLayer { alpha = a },
+            modifier = modifier.testTag("wallpaper-cover-image").graphicsLayer { alpha = a },
             contentScale = ContentScale.Crop,
         )
     }

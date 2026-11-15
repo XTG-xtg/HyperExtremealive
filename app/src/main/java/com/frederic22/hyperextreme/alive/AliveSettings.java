@@ -32,18 +32,33 @@ public final class AliveSettings {
         return apply(c,variant,dark,clock,AliveRenderOptions.load(c));
     }
     static synchronized RootBridge.Result apply(Context c,int variant,boolean dark,boolean clock,AliveRenderOptions options)throws Exception {
+        DynamicResources.require(c,variant);
         recoverPendingApply(c);
         return WallpaperFeatures.activate(c, Feature.ALIVE, () -> applyChecked(c, variant, dark, clock,options));
     }
 
     public static synchronized void disable(Context c) throws Exception { setEnabled(c, false); }
 
+    static synchronized void disableVariant(Context c, int variant) throws Exception {
+        if (Config.variant(c) != variant) throw new IllegalStateException("当前已切换到其他壁纸，请刷新后重试");
+        setEnabled(c, false);
+    }
+
+    static synchronized RootBridge.Result setFamilyEnabled(Context c, boolean enabled, boolean infinity) throws Exception {
+        int variant = Config.variant(c);
+        if (infinity ? !InfinityTheme.supports(variant) : variant < 1 || variant > 606)
+            throw new IllegalStateException("当前已切换到其他壁纸，请刷新后重试");
+        return setEnabled(c, enabled);
+    }
+
     static synchronized RootBridge.Result setEnabled(Context c, boolean enabled) throws Exception {
+        if(enabled)DynamicResources.require(c,Config.variant(c));
         recoverPendingApply(c);
         if (!enabled) {
-            WallpaperFeatures.clearOwned(c, Feature.ALIVE);
+            // Drop the enabled bit first so music restore cannot re-apply during clear.
             Config.prefs(c).edit().putBoolean("enabled", false).commit();
             Config.changed(c);
+            WallpaperFeatures.clearOwned(c, Feature.ALIVE);
             RootBridge.Result result = new RootBridge.Result(0, "ALIVE_STOP_VERIFIED: 已关闭 Alive，照片与设置已保留");
             RootBridge.record(c, "disable", result);
             return result;
@@ -73,11 +88,16 @@ public final class AliveSettings {
                 PhotoMedia.freezeLegacy(c,photo,true).save(c,false);
             }
             android.content.SharedPreferences.Editor editor=Config.prefs(c).edit();
+            int previousVariant=Config.variant(c);
+            if(previousVariant<701)editor.putInt("alive_last_variant",previousVariant);
+            if(variant<701)editor.putInt("alive_last_variant",variant);
+            if(InfinityTheme.supports(previousVariant))editor.putInt("infinity_last_variant",previousVariant);
+            if(InfinityTheme.supports(variant))editor.putInt("infinity_last_variant",variant);
             if(variant>=701&&variant<=703){
                 VivoOptions vivo=VivoOptions.load(c,variant,true);vivo.validateFiles(c);editor.putString("vivo_options",vivo.json());
             }
             if (!options.write(editor).putInt("variant", variant).putBoolean("dark", dark)
-                    .putBoolean("clock", clock).commit()) throw new IOException("无法保存 Alive 配置");
+                    .putBoolean("clock", false).commit()) throw new IOException("无法保存 Alive 配置");
             RootBridge.Result result=RootBridge.wallpaper(c,true);
             if(result.ok())backup.accept();
             return result;

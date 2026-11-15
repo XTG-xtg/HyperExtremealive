@@ -27,19 +27,18 @@ import java.security.MessageDigest
  *                                          "sha1": "...", "cropSubject": "..." } } }
  * ```
  *
- * * **主判据 `tpl:`**：上面前几个字段拼起来算摘要。换一张图 → 字段必变；只是重新点一次应用
- *   （哪怕重新抠了主体、挪了位置）→ `subject` / `cropSubject` / `cropSource` 这些**不参与**，
- *   所以判据不变。这也是为什么这里不把 `cropSource` 算进去：拖一下位置它就可能变，但壁纸没换。
- * * **兜底 `files:`**：读不到配置（或字段全空）时，退回"把所有能找到的壁纸文件一起算摘要"。
- *   只有 hook 进程（com.miui.aod）读得到那些文件，模块 app 读不到，所以这条在主进程里通常算不出来。
+ * * **主判据 `tpl2:content:`**：有效 SHA-1 + 视频身份；同图复制到新路径不变。
+ *   没有有效 SHA-1 时使用 `tpl2:fields:` 路径等字段。时钟、主体、裁切不参与。
+ * * **兜底 `files2:original:`**：优先摘要当前原图；没有原图时才使用 `files2:lock:`
+ *   已应用锁屏文件。不把桌面图、裁切预览或重复文件加入同一个摘要。
  * * **都算不出来**：返回空值，调用方写 [MaskPrefs.FINGERPRINT_WEAK]。
  *
- * 判据里带 `tpl:` / `files:` 前缀，就是为了让"判据种类变了"和"壁纸变了"能分开 ——
+ * 判据里带版本与来源前缀，就是为了让"判据种类变了"和"壁纸变了"能分开 ——
  * 前者只更新指纹，不解除保护。
  */
 object WallpaperVersion {
 
-    /** 换成一张图时**一定**会变的字段。 */
+    /** 缺少内容摘要时使用的身份字段。路径重拷贝仍可能变化，诊断时须核对。 */
     private val IDENTITY_KEYS = listOf(
         "source",
         "imagePath",
@@ -61,8 +60,11 @@ object WallpaperVersion {
 
     const val TEMPLATE_KEY = "constant_template_editor_info"
 
-    const val PREFIX_TEMPLATE = "tpl:"
-    const val PREFIX_FILES = "files:"
+    // New prefixes migrate old baselines without treating a new comparison rule as a wallpaper change.
+    const val PREFIX_TEMPLATE = "tpl2:fields:"
+    const val PREFIX_CONTENT = "tpl2:content:"
+    const val PREFIX_FILES = "files2:original:"
+    const val PREFIX_LOCK_FILE = "files2:lock:"
 
     const val DETAIL_TEMPLATE = "编辑器模板配置"
     const val DETAIL_FILES = "壁纸文件"
@@ -70,8 +72,6 @@ object WallpaperVersion {
 
     /** 小于这个的多半是缩略图 / 配置文件，不是壁纸。与 [WallpaperSource] 保持一致。 */
     private const val MIN_BYTES = 50_000L
-
-    private const val MAX_FILES = 8
 
     data class Version(
         /** 存进 prefs 的指纹值；空串 = 这次算不出来。 */
@@ -86,8 +86,12 @@ object WallpaperVersion {
 
     /** 判据种类（前缀）。种类不同不能直接比大小 —— 那只是"换了尺子"，不是"壁纸变了"。 */
     fun kindOf(fingerprint: String): String = when {
+        fingerprint.startsWith(PREFIX_CONTENT) -> PREFIX_CONTENT
         fingerprint.startsWith(PREFIX_TEMPLATE) -> PREFIX_TEMPLATE
         fingerprint.startsWith(PREFIX_FILES) -> PREFIX_FILES
+        fingerprint.startsWith(PREFIX_LOCK_FILE) -> PREFIX_LOCK_FILE
+        fingerprint.startsWith("tpl:") -> "tpl:"
+        fingerprint.startsWith("files:") -> "files:"
         else -> ""
     }
 
@@ -106,8 +110,15 @@ object WallpaperVersion {
         val root = runCatching { JSONObject(templateInfo) }.getOrNull() ?: return ""
         val lock = root.optJSONObject("lockscreenInfo") ?: root
         val wallpaper = lock.optJSONObject("wallpaperInfo") ?: lock
+        val contentHash = wallpaper.optString("sha1", "").trim().lowercase(java.util.Locale.ROOT)
+        if (contentHash.matches(Regex("[a-f0-9]{40}"))) {
+            // The editor copies the same artwork between gallery and templates/current.
+            // A valid content hash survives those path changes. Keep video identity separate.
+            return listOf("sha1=$contentHash", "videoName=${wallpaper.optString("videoName", "")}")
+                .joinToString("|")
+        }
         return IDENTITY_KEYS.mapNotNull { key ->
-            wallpaper.optString(key, "").takeIf { it.isNotBlank() }?.let { "$key=$it" }
+            wallpaper.optString(key, "").takeIf { it.isNotBlank() && it != "null" }?.let { "$key=$it" }
         }.joinToString("|")
     }
 
@@ -174,11 +185,13 @@ object WallpaperVersion {
     fun computeFrom(context: Context, templateInfo: String?): Version {
         val identity = identityOf(templateInfo)
         if (identity.isNotEmpty()) {
-            return Version(PREFIX_TEMPLATE + sha1(identity), DETAIL_TEMPLATE, identity)
+            val prefix = if (identity.startsWith("sha1=") && identity.substringAfter("sha1=").substringBefore('|')
+                    .matches(Regex("[a-f0-9]{40}"))) PREFIX_CONTENT else PREFIX_TEMPLATE
+            return Version(prefix + sha1(identity), DETAIL_TEMPLATE, identity)
         }
         val files = filesDigest(context)
         if (files != null) {
-            return Version(PREFIX_FILES + files.digest, DETAIL_FILES, files.detail)
+            return Version(files.prefix + files.digest, DETAIL_FILES, files.detail)
         }
         return Version("", DETAIL_NONE, "")
     }
@@ -189,28 +202,26 @@ object WallpaperVersion {
 
     // ---------------------------------------------------------------- 兜底判据
 
-    private data class FilesDigest(val digest: String, val detail: String)
+    private data class FilesDigest(val prefix: String, val digest: String, val detail: String)
 
     /**
-     * 把所有"可能是当前壁纸"的文件一起算摘要。
-     *
-     * 顺序固定（按路径排序）所以结果稳定；只要其中任何一份内容变了（换图会重新生成它们），摘要就变。
+     * 优先摘要一份原图，缺失时再摘要已应用锁屏。来源切换只迁移基准。
      */
     private fun filesDigest(context: Context): FilesDigest? {
-        val candidates = buildList {
-            WallpaperSource.sourceCandidates(context).forEach { add(it.file) }
-            WallpaperSource.displayCandidates(context).forEach { add(it.file) }
-        }
-        val parts = mutableListOf<String>()
-        candidates
-            .filter { runCatching { it.isFile && it.length() >= MIN_BYTES }.getOrDefault(false) }
-            .sortedBy { it.absolutePath }
-            .take(MAX_FILES)
-            .forEach { file ->
-                parts += "${file.name}:${file.length()}:${md5Of(file) ?: return@forEach}"
+        fun digestFirst(files: List<File>, prefix: String): FilesDigest? {
+            for (file in files) {
+                if (!runCatching { file.isFile && file.length() >= MIN_BYTES }.getOrDefault(false)) continue
+                val digest = md5Of(file) ?: continue
+                return FilesDigest(prefix, digest, file.name)
             }
-        if (parts.isEmpty()) return null
-        return FilesDigest(sha1(parts.joinToString("\n")), "${parts.size} 个壁纸文件")
+            return null
+        }
+        // Cropped previews and HOME files change when editing position/clock/follow status.
+        // They must not invalidate a lock wallpaper's original identity.
+        return digestFirst(WallpaperSource.sourceCandidates(context).map { it.file }, PREFIX_FILES)
+            ?: digestFirst(WallpaperSource.displayPaths(WallpaperSource.currentUserId())
+                .filter { it.contains("lock_wallpaper.") || it.endsWith("wallpaper_lock_orig") || it.endsWith("wallpaper_lock") }
+                .map(::File), PREFIX_LOCK_FILE)
     }
 
     private fun md5Of(file: File): String? = runCatching {

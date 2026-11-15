@@ -62,9 +62,9 @@ final class FrameMotion {
         // A paired photo has the same full-screen endpoint on lock and home.
         // Fingerprint KEYGUARD -> UNLOCK must not restart an in-flight expansion.
         if(paired&&mode!=0&&next!=0){mode=next;return;}
-        boolean interrupted=active();int previous=mode;
         AnimatorSet a=prepare(next,common.blendDuration(SceneMotion.transition(mode,next)));
-        if(previous==0&&!interrupted)a.setStartDelay(150);timeline.start(a);
+        // Start with the common scene; retain the effect's authored per-track offsets.
+        timeline.start(a);
     }
     void advance(long frameNanos){timeline.advance(frameNanos);}
     void finish(){if(animation!=null)animation.end();}

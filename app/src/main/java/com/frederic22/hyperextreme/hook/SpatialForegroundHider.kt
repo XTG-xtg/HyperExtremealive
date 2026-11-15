@@ -132,9 +132,20 @@ internal object SpatialForegroundHider {
             log("挂 $METHOD 失败：$it")
             false
         }
-        if (ok) log("已挂上（锁屏/全局档时接管 keyguard_foreground_layer）")
+        if (ok) {
+            log("已挂上（锁屏/全局档时接管 keyguard_foreground_layer）")
+            Coexist.onChanged = {
+                mainHandler.post {
+                    val panel = lastPanel?.get() ?: return@post
+                    runCatching { handle(panel) }
+                        .onFailure { log("音乐屏重算前景层失败：${it.javaClass.simpleName}: ${it.message}") }
+                }
+            }
+        }
         return ok
     }
+
+    private var lastPanel: java.lang.ref.WeakReference<Any>? = null
 
     /**
      * 处理前景层：**两种模式**（2026-10-29）。
@@ -151,9 +162,17 @@ internal object SpatialForegroundHider {
         // **先同步 AOD 模式**（2026-10-30，v1.5.78）：只有「与锁屏一致」模式下系统才会
         // 把壁纸 leash 预放大到 1.05，AGSL 主体要跟着；自定义模式下 leash 是 1.0。
         // 放在 visibility 检查之前 —— 层不可见时也要把模式记下来。
+        lastPanel = java.lang.ref.WeakReference(self)
         runCatching { syncLeashScale(self) }
         val field = self.javaClass.getDeclaredField(FIELD_FOREGROUND).apply { isAccessible = true }
         val layer = field.get(self) as? android.view.ViewGroup ?: return
+        if (Coexist.mcMusicScreen) {
+            SpatialOverlay.onDisabled()
+            RasterOverlay.onDisabled()
+            if (layer.visibility != View.VISIBLE) layer.visibility = View.VISIBLE
+            logOnceMusic()
+            return
+        }
         if (layer.visibility != View.VISIBLE) return
 
         if (SpatialOverlay.active() || RasterOverlay.active()) {
@@ -198,6 +217,12 @@ internal object SpatialForegroundHider {
     private fun logOnce() {
         if (logged.putIfAbsent("hidden", true) == null) {
             log("锁屏景深关：景深前景层已撤（keyguard_foreground_layer → INVISIBLE）")
+        }
+    }
+
+    private fun logOnceMusic() {
+        if (logged.putIfAbsent("music", true) == null) {
+            log("MC 音乐屏在显示：前景层保持 VISIBLE（不压歌词）")
         }
     }
 

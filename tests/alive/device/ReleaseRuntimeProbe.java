@@ -99,9 +99,9 @@ public final class ReleaseRuntimeProbe {
                 assets,photo,photo,photo,W,H,mode,variant,options,invalidate);
         } else if (variant >= 701) {
             Object options = method("VivoOptions","load",Context.class,int.class,boolean.class).invoke(null,context,variant,true);
-            // R8 removes the unused preview argument; dark remains in the residual signature.
-            renderer = construct("VivoRenderer",new Class<?>[]{Context.class,type("VivoOptions"),int.class,int.class,int.class,boolean.class,Runnable.class},
-                context,options,W,H,mode,false,invalidate);
+            // The candidate's R8 residual signature retains both preview and dark arguments.
+            renderer = construct("VivoRenderer",new Class<?>[]{Context.class,type("VivoOptions"),int.class,int.class,int.class,boolean.class,boolean.class,Runnable.class},
+                context,options,W,H,mode,true,false,invalidate);
         } else {
             renderer = method("WallpaperRenderer","create",AssetManager.class,int.class,boolean.class,int.class,int.class,int.class,boolean.class,Runnable.class)
                 .invoke(null,assets,variant,false,W,H,mode,false,invalidate);

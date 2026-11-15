@@ -97,7 +97,7 @@ final class VivoEngineRuntime extends ContextWrapper {
         File temporary = File.createTempFile("vivo-", ".tmp", directory);
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            try (InputStream input = host.getAssets().open(PREFIX + name);
+            try (InputStream input = PackedAssets.open(host.getAssets(), PREFIX + name);
                  FileOutputStream output = new FileOutputStream(temporary)) {
                 // Android requires dynamically loaded code to be read-only before it is populated.
                 if (!temporary.setReadOnly()) throw new IOException("Cannot protect Vivo renderer code");

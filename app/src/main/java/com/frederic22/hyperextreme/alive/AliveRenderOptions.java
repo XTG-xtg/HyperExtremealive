@@ -21,7 +21,7 @@ final class AliveRenderOptions {
         this.keepLock=keepLock; this.continuousAod=continuousAod; this.continuousHome=continuousHome;
         this.followClock=followClock; this.burnIn=burnIn; this.stereoAod=stereoAod;
         this.sensitivity=Math.max(-50,Math.min(50,sensitivity));
-        this.brightness=Float.isFinite(brightness)?Math.max(.25f,Math.min(3f,brightness)):1.3f;
+        this.brightness=AodBrightness.normalize(brightness);
         this.aodOffsetX=offset(aodOffsetX);this.aodOffsetY=offset(aodOffsetY);
     }
     private static float offset(float value){return Float.isFinite(value)?Math.max(-.45f,Math.min(.45f,value)):0;}
@@ -35,7 +35,7 @@ final class AliveRenderOptions {
         if(draft&&!p.contains("aod_brightness"))return load(c,false);
         return new AliveRenderOptions(p.getBoolean("keep_lock",false),p.getBoolean("continuous_aod",true),
             p.getBoolean("continuous_home",true),p.getBoolean("follow_clock",true),p.getBoolean("burn_in",true),
-            p.getBoolean("stereo_aod",true),p.getInt("sensitivity",0),p.getFloat("aod_brightness",1.3f),
+            p.getBoolean("stereo_aod",true),p.getInt("sensitivity",0),p.getFloat("aod_brightness",AodBrightness.DEFAULT),
             p.getFloat("dynamic_aod_x",0),p.getFloat("dynamic_aod_y",0));
     }
     void saveDraft(Context c){write(c.getSharedPreferences("alive_render_draft",0).edit()).apply();}

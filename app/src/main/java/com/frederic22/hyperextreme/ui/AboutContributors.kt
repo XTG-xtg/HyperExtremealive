@@ -75,7 +75,10 @@ internal val AboutContributors = listOf(
         project = "HyperAlive",
         role = "HyperAlive",
         avatar = R.drawable.contributor_hyperalive,
-        platforms = listOf("打开酷安" to "https://www.coolapk.com/u/39588100"),
+        platforms = listOf(
+            "打开Github" to "https://github.com/Askt-clot/HyperAlive",
+            "打开酷安" to "https://www.coolapk.com/u/39588100",
+        ),
     ),
     AboutContributor(
         id = "openalive",

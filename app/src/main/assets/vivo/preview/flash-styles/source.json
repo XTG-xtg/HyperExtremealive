@@ -1,0 +1,40 @@
+{
+  "source": "Vivo LiveWallpaperBox 7.0.1.02 original GL renderer",
+  "engine_sha256": "0dc2bce2c161457c2770af38111dfd74b3971bbd470447a51363a168ac1170e4",
+  "fixture": "tests/alive/device/VivoPipelineProbe.java: flash-covers",
+  "photo": "factory aurora wallpaper; no user photo",
+  "effect_area": 4,
+  "capture_size": [
+    360,
+    800
+  ],
+  "processing": "Unmodified GPU readback; no brightness boost, illustration or synthetic effect overlay",
+  "styles": [
+    {
+      "style": 1,
+      "file": "1.png",
+      "sha256": "4d922f1b567bc42a4fbb78f6c660f223baeedb76c57a59942425de247fca32a1"
+    },
+    {
+      "style": 2,
+      "file": "2.png",
+      "sha256": "b490dbcb7dbc9c6155980dc6f0f0d8baef63a8f5592dc70d8220144ce9c83baf"
+    },
+    {
+      "style": 3,
+      "file": "3.png",
+      "sha256": "b462a706202ec2599855a3fbe4d885ab9ea1cedcd9db52980859ba49210ef090"
+    },
+    {
+      "style": 4,
+      "file": "4.png",
+      "sha256": "83f6aae83373f4b3986d8ad755924fda62dbca6c250337738b5da4a0b43cb6f5"
+    },
+    {
+      "style": 5,
+      "file": "5.png",
+      "sha256": "9b6ef2c75a84d8546e380efd0827f2a9b49b424b94f33e79f4183f5dd574b9f6"
+    }
+  ],
+  "rights": "Original Vivo resources retain their original rights; see docs/alive/OPENALIVE_THIRD_PARTY.md"
+}

@@ -80,7 +80,7 @@ internal object RasterOverlay {
      * `uScale = 主体位图尺寸 / View 尺寸`：正常情况下是 1（两边都是屏幕尺寸），
      * 留它是为了防止 View 与位图尺寸不一致时（系统改了前景层大小）出现错位。
      */
-    private const val AGSL = """
+    private val AGSL = """
         uniform shader uFrom;
         uniform shader uTo;
         uniform float2 uViewSize;
@@ -89,6 +89,8 @@ internal object RasterOverlay {
         uniform float uDir;
         uniform float uBand;
         uniform float uDim;
+        uniform float uExposure;
+        ${com.frederic22.hyperextreme.alive.AodBrightness.AGSL}
 
         half4 main(float2 coord) {
             float2 uv = coord / uViewSize;
@@ -102,7 +104,7 @@ internal object RasterOverlay {
             half4 ct = uTo.eval(p);
             half4 c = mix(cf, ct, half(a));
             // AOD 压暗：与 GL 同一个值（那边乘在片元里）；只乘 RGB，压暗 ≠ 变透明。
-            return half4(c.rgb * half(uDim), c.a);
+            return half4(aodExpose(float3(c.rgb) / max(float(c.a), 0.00001) * uDim, uExposure) * float(c.a), c.a);
         }
     """
 
@@ -534,6 +536,7 @@ internal object RasterOverlay {
                 s.setFloatUniform("uDir", sceneDir)
                 s.setFloatUniform("uBand", RasterGlCore.BAND)
                 s.setFloatUniform("uDim", RasterRenderer.aodDimValue())
+                s.setFloatUniform("uExposure", RasterRenderer.aodExposureValue())
                 paint.shader = s
                 canvas.drawRect(0f, 0f, w, h, paint)
 

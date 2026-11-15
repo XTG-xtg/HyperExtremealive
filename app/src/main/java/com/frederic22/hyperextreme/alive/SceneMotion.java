@@ -186,7 +186,6 @@ final class SceneMotion {
     // Also used by the on-device differential test to seek the real Android animators.
     AnimatorSet prepare(int next) {
         if(next<0||next>2)throw new IllegalArgumentException("scene "+next);
-        boolean interrupted=animation!=null&&animation.isStarted();
         if(!active())lastFrame=0;
         if(animation!=null)animation.cancel();
         int previous=mode,tr=transition(previous,next);
@@ -199,7 +198,8 @@ final class SceneMotion {
         blend.addUpdateListener(a->{float t=(float)a.getAnimatedValue();for(int i=0;i<3;i++)values[i]=source[i]+((next==i?1:0)-source[i])*t;});
         tracks.add(blend);
         animation=new AnimatorSet();animation.playTogether(tracks);
-        if(previous==0&&!interrupted)animation.setStartDelay(150);
+        // The registry already supplies the accepted wake/unlock time. A second 150ms
+        // hold here leaves the collapsed photo visible while the launcher is entering.
         mode=next;return animation;
     }
     void change(int next){if(mode!=next)timeline.start(prepare(next));}

@@ -62,9 +62,9 @@ public class AliveIntegrationTest {
         Bundle b=new Bundle();b.putInt("width",1080);b.putInt("height",2400);b.putInt("right",200);b.putInt("bottom",200);
         b.putLong("at",SystemClock.uptimeMillis()-6000);
         assertThrows(IllegalArgumentException.class,()->new ClockSnapshot(b));
-        assertEquals(1.3f,new AliveRenderOptions(false,true,true,true,true,true,0,Float.NaN).brightness,0);
-        assertEquals(3f,new AliveRenderOptions(false,true,true,true,true,true,100,100).brightness,0);
-        assertEquals(.25f,new AliveRenderOptions(false,true,true,true,true,true,0,-1).brightness,0);
+        assertEquals(0f,new AliveRenderOptions(false,true,true,true,true,true,0,Float.NaN).brightness,0);
+        assertEquals(5f,new AliveRenderOptions(false,true,true,true,true,true,100,100).brightness,0);
+        assertEquals(0f,new AliveRenderOptions(false,true,true,true,true,true,0,-1).brightness,0);
         assertEquals(50,new AliveRenderOptions(false,true,true,true,true,true,100,1).sensitivity);
     }
     @Test public void everyPhotoStyleHasFullMaskEndpoints()throws Exception{

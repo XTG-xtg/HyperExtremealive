@@ -220,9 +220,9 @@ internal object HookRuntime {
     }
 
     /** 取配置；配置一变就顺手把文件同步到磁盘上。 */
-    fun config(context: Context): HookConfig? {
+    fun config(context: Context, applySideEffects: Boolean = true): HookConfig? {
         val now = SystemClock.elapsedRealtime()
-        configValue?.let { if (now - configAt < CONFIG_TTL_MS) return it }
+        configValue?.let { if (applySideEffects && now - configAt < CONFIG_TTL_MS) return it }
 
         val snapshot = runCatching {
             context.contentResolver.call(
@@ -256,7 +256,7 @@ internal object HookRuntime {
         configAt = now
         configValue = parsed
 
-        if (parsed != null) {
+        if (parsed != null && applySideEffects) {
             runCatching { syncFiles(context, parsed) }
                 .onFailure { error -> log("同步文件失败：$error") }
             checkWallpaperChanged(context, parsed)
@@ -509,12 +509,14 @@ internal object HookRuntime {
     /**
      * 事件钩子：编辑器每写一次 `constant_template_editor_info` 都会进来。
      *
-     * 这是"用户点了应用"的唯一咽喉（`TemplateApiImpl.writeTemplateInfo`），拿它的入参直接算判据，
-     * 比定期回读 Settings 更快也更准。同一个壁纸重新应用时判据不变，不会误动作。
+     * 此方法也会在编辑器初始化、时钟配置更新时写入，不能把每次调用当成换图。
+     * 拿已经写入的配置算身份；关闭前 provider 再核对基准与当前配置。
      */
     fun onTemplateInfoWritten(templateInfo: String?) {
         val context = appContext() ?: return
-        val config = config(context) ?: return
+        // This event already supplies the committed template. Do not run a second,
+        // cached Settings comparison or file replacement before processing it.
+        val config = config(context, applySideEffects = false) ?: return
         val replaceWatch = replaceWatchOf(config)
         val parallaxWatch = parallaxWatchOf(config)
         val spatialWatch = spatialWatchOf(config)
@@ -592,7 +594,7 @@ internal object HookRuntime {
             return
         }
         log("视差壁纸：壁纸已变化（${version.detail}），自动关闭替换")
-        parallaxAutoOffFromWallpaper(context, version.detail)
+        parallaxAutoOffFromWallpaper(context, version.detail, base, version.value)
     }
 
     /** 指纹变了但壁纸没变（判据升级 / weak 占位被真判据替换）时，只更新替换链指纹。 */
@@ -650,8 +652,8 @@ internal object HookRuntime {
             updateSpatialFingerprint(context, version)
             return
         }
-        log("空间壁纸：壁纸已变化（${version.detail}），自动关闭")
-        spatialAutoOffFromWallpaper(context, version.detail)
+        log("空间壁纸：壁纸已变化（${version.detail}），自动关闭 old=$base new=${version.value} identity=${version.identity.take(240)}")
+        spatialAutoOffFromWallpaper(context, version.detail, base, version.value)
     }
 
     /** 更新「空间壁纸基准」指纹（惰性补记 / 判据升级时用；不碰开关与指令号）。 */
@@ -689,7 +691,7 @@ internal object HookRuntime {
             return
         }
         log("光栅壁纸：壁纸已变化（${version.detail}），自动关闭")
-        rasterAutoOffFromWallpaper(context, version.detail)
+        rasterAutoOffFromWallpaper(context, version.detail, base, version.value)
     }
 
     /** 更新「光栅壁纸基准」指纹（惰性补记 / 判据升级时用；不碰开关与指令号）。 */
@@ -713,13 +715,18 @@ internal object HookRuntime {
      * 全部动作在 **provider 进程**里完成（改 prefs → 推系统属性 → toast → 延迟重启壁纸进程），
      * 与 App 手动关「关闭替换」共用 `SpatialControl.disable` —— 本进程只负责发起 + 失效 config 缓存。
      */
-    private fun spatialAutoOffFromWallpaper(context: Context, detail: String) {
+    private fun changeEvidence(base: String, observed: String) = Bundle().apply {
+        putString(MaskProvider.KEY_EXPECTED_WALLPAPER_FP, base)
+        putString(MaskProvider.KEY_OBSERVED_WALLPAPER_FP, observed)
+    }
+
+    private fun spatialAutoOffFromWallpaper(context: Context, detail: String, base: String, observed: String) {
         runCatching {
             context.contentResolver.call(
                 MaskProvider.configUri(),
                 MaskProvider.METHOD_SPATIAL_AUTO_OFF,
                 detail,
-                null,
+                changeEvidence(base, observed),
             )
             configAt = 0L
             configValue = null
@@ -734,13 +741,13 @@ internal object HookRuntime {
      * 全部动作在 **provider 进程**里完成（改 prefs → 推系统属性 → toast），
      * 与 App 手动「取消应用」共用 `RasterControl.disable` —— 本进程只负责发起 + 失效 config 缓存。
      */
-    private fun rasterAutoOffFromWallpaper(context: Context, detail: String) {
+    private fun rasterAutoOffFromWallpaper(context: Context, detail: String, base: String, observed: String) {
         runCatching {
             context.contentResolver.call(
                 MaskProvider.configUri(),
                 MaskProvider.METHOD_RASTER_AUTO_OFF,
                 detail,
-                null,
+                changeEvidence(base, observed),
             )
             configAt = 0L
             configValue = null
@@ -755,13 +762,13 @@ internal object HookRuntime {
      * SystemUI 侧以 config 为准、广播只是触发。广播发失败也没关系：SystemUI 自愈
      * （入窗 / 对账时读 config）会兜底移除背景层。
      */
-    private fun parallaxAutoOffFromWallpaper(context: Context, detail: String) {
+    private fun parallaxAutoOffFromWallpaper(context: Context, detail: String, base: String, observed: String) {
         runCatching {
             val result = context.contentResolver.call(
                 MaskProvider.configUri(),
                 MaskProvider.METHOD_PARALLAX_AUTO_OFF,
                 detail,
-                null,
+                changeEvidence(base, observed),
             )
             val token = result?.getLong(MaskProvider.KEY_PARALLAX_TOKEN, 0L) ?: 0L
             if (token > 0L) {

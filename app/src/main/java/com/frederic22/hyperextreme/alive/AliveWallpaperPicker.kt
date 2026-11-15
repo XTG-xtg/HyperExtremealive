@@ -33,11 +33,16 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
-internal val aliveDynamicGroups = listOf(-1, 0, 2, 1, 3, 4, 6)
-internal val aliveDynamicLabels = listOf("全部", "启航", "流光", "轻启", "视频", "立体", "Vivo")
+internal val aliveDynamicGroups = listOf(-1, 0, 2, 1, 3, 4)
+internal val aliveDynamicLabels = listOf("全部", "启航", "流光", "轻启", "视频", "立体")
+internal fun isAliveDynamicScene(scene: AliveCatalog.Scene) = scene.group in 0..4
+internal fun isWallpaperLibraryScene(scene: AliveCatalog.Scene, infinity: Boolean) =
+    if(infinity) InfinityTheme.supports(scene.id) else isAliveDynamicScene(scene)
 
 internal fun previewVivoSceneKey(options: VivoOptions): String = VivoOptions.parse(options.json()).apply {
     sensitivity = 0; wallpaperZoom = true; aodAnimation = true
+    autoSubject = true; subjectEngine = 0; subjectSource = ""; subjectDetail = ""
+    if (family != VivoOptions.RASTER) { x = .5f; y = .5f; zoom = 1f }
 }.json()
 
 /** Saves only drafts; never changes the applied variant or publishes a wallpaper. */
@@ -56,15 +61,17 @@ internal fun AliveWallpaperPicker(variant: Int, photo: PhotoOptions, enabled: Bo
     var error by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(true) }
     var retry by remember { mutableIntStateOf(0) }
+    var packReady by remember { mutableStateOf(false) }
     LaunchedEffect(retry) {
         loading = true; error = ""
         val result = withContext(Dispatchers.IO) { runCatching { AliveCatalog.load(app) } }
+        packReady = withContext(Dispatchers.IO) { DynamicResources.installed(app) }
         scenes = result.getOrDefault(emptyList()); error = result.exceptionOrNull()?.message.orEmpty(); loading = false
     }
     when {
         loading -> Text("正在加载壁纸…", modifier = Modifier.padding(20.dp))
         error.isNotEmpty() || scenes.isEmpty() -> TextButton("壁纸加载失败，点击重试", onClick = { retry++ })
-        else -> AliveWallpaperPickerContent(variant, scenes, enabled, onSelect) {
+        else -> AliveWallpaperPickerContent(variant, scenes, enabled, onSelect,packReady) {
             PhotoAodStylesPanel(variant, photo, enabled) { id -> scenes.firstOrNull { it.id == id }?.let(onSelect) }
         }
     }
@@ -73,13 +80,15 @@ internal fun AliveWallpaperPicker(variant: Int, photo: PhotoOptions, enabled: Bo
 /** Reuses library thumbnails; a bounded grid owns scrolling inside the existing Miuix sheet. */
 @Composable
 internal fun AliveWallpaperPickerContent(variant: Int, scenes: List<AliveCatalog.Scene>, enabled: Boolean,
-    onSelect: (AliveCatalog.Scene) -> Unit, photos: @Composable () -> Unit) {
+    onSelect: (AliveCatalog.Scene) -> Unit, resourcesAvailable: Boolean = true, photos: @Composable () -> Unit) {
+    val infinity = InfinityTheme.supports(variant)
+    var imported by remember(resourcesAvailable) { mutableStateOf(resourcesAvailable) }
     var section by rememberSaveable { mutableIntStateOf(if(variant in 601..606) 0 else 1) }
     var group by rememberSaveable { mutableIntStateOf(0) }
     val fontScale = LocalDensity.current.fontScale
     Column(Modifier.fillMaxWidth().heightIn(max = 440.dp).testTag("alive-wallpaper-picker"),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        AliveSegments(listOf("照片壁纸", "动态壁纸"), section) { section = it }
+        if(!infinity) AliveSegments(listOf("照片壁纸", "动态壁纸"), section) { section = it }
         AnimatedContent(targetState = section, modifier = Modifier.fillMaxWidth().weight(1f, fill = false),
             transitionSpec = {
                 val direction = if(targetState > initialState) 1 else -1
@@ -88,8 +97,13 @@ internal fun AliveWallpaperPickerContent(variant: Int, scenes: List<AliveCatalog
                     .using(SizeTransform(clip = true) { _, _ -> tween(280, easing = FastOutSlowInEasing) })
             }, label = "wallpaper-picker-section") { selectedSection ->
         if(selectedSection == 0) Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) { photos() }
+        else if(!infinity && !imported) Box(Modifier.fillMaxWidth().height(360.dp),contentAlignment=Alignment.Center) {
+            Column(Modifier.widthIn(max=340.dp).fillMaxWidth().padding(horizontal=20.dp)) {
+                DynamicPackControls { imported=it }
+            }
+        }
         else Column(Modifier.fillMaxWidth().height(360.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).selectableGroup(),
+            if(!infinity) Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).selectableGroup(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 aliveDynamicLabels.forEachIndexed { index, label ->
                     Box(Modifier.clip(RoundedCornerShape(24.dp))
@@ -107,7 +121,7 @@ internal fun AliveWallpaperPickerContent(variant: Int, scenes: List<AliveCatalog
                     LazyVerticalGrid(GridCells.Fixed(columns), modifier = Modifier.fillMaxSize().testTag("alive-picker-grid"),
                         contentPadding = PaddingValues(bottom = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        items(scenes.filter { it.group != 5 && (group == 0 || it.group == aliveDynamicGroups[group]) }, key = { it.id }) { scene ->
+                        items(scenes.filter { isWallpaperLibraryScene(it, infinity) && (infinity || group == 0 || it.group == aliveDynamicGroups.getOrElse(group) { -1 }) }, key = { it.id }) { scene ->
                             Column(Modifier.clip(RoundedCornerShape(12.dp))
                                 .selectable(selected = scene.id == variant, enabled = enabled, role = Role.Tab, onClick = { onSelect(scene) })
                                 .testTag("alive-picker-scene-${scene.id}"), horizontalAlignment = Alignment.CenterHorizontally) {

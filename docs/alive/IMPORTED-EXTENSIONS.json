@@ -1,0 +1,600 @@
+{
+  "upstream": "OpenAlive 2d54c72a573b2f66e20b558283bef58cdb0ada60",
+  "codeLicense": "MIT",
+  "assetRights": "Official code, layouts, fonts and SVGA artwork retain original rights; MIT does not grant asset redistribution rights. No Xiaomi wallpaper packs are imported.",
+  "files": [
+    {
+      "source": "app/java/org/aliveclean/NativeHyperOsStyles.java",
+      "sha256": "bc679910b2b0f4788c1aadd6407af50efdb80dca595cba0c158256590a8bda1c",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/NativeHyperOsStyles.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/NativeHyperOsFace.java",
+      "sha256": "ae52ec6f9e8e8bf1ca7d8bf65a39048dd8c57a10f0afe873132355a7af466633",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/NativeHyperOsFace.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/OfficialHyperOsClockFace.java",
+      "sha256": "f69fa03ab8fa6ed5b7b9fd28b2f324621c515b6fa7b832bf7b303e2bbcb6c98d",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/OfficialHyperOsClockFace.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/OfficialHyperOsUi.java",
+      "sha256": "3f38d7de28de935d20dae13335a3fa57dbc4f2e1d542eef7dfba26bb564727c0",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/OfficialHyperOsUi.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/NativeVivoClockStyles.java",
+      "sha256": "49eb75ecf1fd300f4e2723dd0fc15efb9848c9884d4f1bb2db800f56f17acc69",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/NativeVivoClockStyles.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/NativeVivoClockFace.java",
+      "sha256": "390b6f27706a9e67142f25b59b047ae85227f4d43be92d93300c8f5bb1865dfd",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/NativeVivoClockFace.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/OfficialVivoClockUi.java",
+      "sha256": "f07c35ce2ee4a1c85af541b0c36681be71f3cf6df29d0c5e373711d4d08ff1ca",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/OfficialVivoClockUi.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/OfficialClockFace.java",
+      "sha256": "493ca691d598be15092b9f40c75e80e6c31c10f4e161e3abf12667d5a004f61c",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/OfficialClockFace.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/OfficialUi.java",
+      "sha256": "9097506cb0d8de76750c901f9edc4b718246ed312ec666883c3281c2c253fae7",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/OfficialUi.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/ClockUpdates.java",
+      "sha256": "05106042ff1696302f7cb08fb221b95b3d9cf1087a883c2dec1f9278fb7c121d",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/ClockUpdates.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/NativeClockDigitMetrics.java",
+      "sha256": "d3042e56c4f27db1ed33006e7f7cc46bc789d7e121c9567d9846c62c7927c3e4",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/NativeClockDigitMetrics.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/FlymeNotificationLight.java",
+      "sha256": "991032836d43d09baff447becc310e23f0f43967206fe31a4c6a7e086da37e88",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/FlymeNotificationLight.java"
+    },
+    {
+      "source": "app/java/org/aliveclean/CameraHoleGeometry.java",
+      "sha256": "3ebb29a80ab72a31d441f5cb3bf03e2461e13191bb17dbd772bf29bc919fc6b8",
+      "destination": "app/src/main/java/com/frederic22/hyperextreme/alive/CameraHoleGeometry.java"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/runtime.apk",
+      "sha256": "9ff06ad561bc522005715616c9dd7eeb16f480c3da29850ff3c3b5753684bc9b",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/runtime.apk"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/runtime.sha256",
+      "sha256": "9ab1cf49903f9e923963a5cc9e3285d0cf4ea5f5978b9488c73900ecfa86ce9a",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/runtime.sha256"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/source.json",
+      "sha256": "a7c8af1b316e9df473289ef47ed5c084d63674cca67e93f59003be0ced12056f",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/source.json"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/BebasNeue-Mono.otf",
+      "sha256": "9ee342c2d11954be176e315dc89fae8b792f6d90cf0073cb4479a1e6804c0f0b",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/BebasNeue-Mono.otf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/CommutersSansMono.otf",
+      "sha256": "21e68640a3b4f784fe1a58ad773b90ebdafe3fb38ca3db7b407639c5642fbdea",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/CommutersSansMono.otf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/MiHaus.ttf",
+      "sha256": "361a7cce9cb301bb3500633a450855b235d794eda268eb85f3613f1cd135afe6",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/MiHaus.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/MiSansRCF.ttf",
+      "sha256": "04d8642ae950ea08534a49614f09d3e75f8e63bf5cfe2fd6b040c1a8dda3da64",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/MiSansRCF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/MiSansRoundedF.ttf",
+      "sha256": "a691c11b247f618013500aeb17d33378caeab76405943615b68dbe88ace76da6",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/MiSansRoundedF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/MiSansSquareF.ttf",
+      "sha256": "3a4e0a7445a1bc1b035fe6a000497606fb3cbd689b0e5a70eff1f89879b64f66",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/MiSansSquareF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/MiSansVF.ttf",
+      "sha256": "0ddef90648998900175cfdca9a6f087a2544c182f130b0ad4f7e94a03a115e79",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/MiSansVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/MiSerif.ttf",
+      "sha256": "cc7cfdc73205b4802441da6e7ea8216ccd677780fca51ec41200e65bf86498e0",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/MiSerif.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/MiSerifSCVF.ttf",
+      "sha256": "7dbacc6e1bc6f0cfcde052b5f106a075da3babbb6e3df180e3cfa4c7e5011673",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/MiSerifSCVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/MiSerifTCVF.ttf",
+      "sha256": "3517d6bfc0e5e528f6e4ee5fb7b3ee85f146fef13af007b5efad4e51b0a9f0a6",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/MiSerifTCVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/runtime/hyperos/fonts/NeumaticCompressed.otf",
+      "sha256": "62d2344b12723fbb8d048d4a4e54b745fe77023951b5837b7f16c17cf7514c96",
+      "destination": "app/src/main/assets/native-clock/runtime/hyperos/fonts/NeumaticCompressed.otf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/clock_fonts.json",
+      "sha256": "c8a2e26c07731fd8812f6305aaff248b908e7171d7412f890a7999f7294c3566",
+      "destination": "app/src/main/assets/native-clock/vivo/clock_fonts.json"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/clock_styles.json",
+      "sha256": "41a6d12c09805cd43d023349b90d375ce8d9cb0770c311e5a709fa5c040aa0b8",
+      "destination": "app/src/main/assets/native-clock/vivo/clock_styles.json"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/layouts.apk",
+      "sha256": "be647ffce9b4ffb723800c1f1298915fc99b4ba7ca1e312a4b3edbc56afdd619",
+      "destination": "app/src/main/assets/native-clock/vivo/layouts.apk"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/layouts.sha256",
+      "sha256": "e6d4233f77d69cc1e69d4172320966111e3bfc0905bc81efe3bbf4190b2dff61",
+      "destination": "app/src/main/assets/native-clock/vivo/layouts.sha256"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/liquid_glass.agsl",
+      "sha256": "86b8dbb6b82daedbb2078b0e8cefc266a5255a86bfb8f7ff1a5f544e2c99a8d6",
+      "destination": "app/src/main/assets/native-clock/vivo/liquid_glass.agsl"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/shader_vibrancy_effect.agsl",
+      "sha256": "1cbaf0641f1b1648521864fed56065877d858a9b1744841cc25746b4c3bb360a",
+      "destination": "app/src/main/assets/native-clock/vivo/shader_vibrancy_effect.agsl"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/source.json",
+      "sha256": "976c27c733c19ba0046b677c55d1cab8840b0f5aa763333748521a9319d47976",
+      "destination": "app/src/main/assets/native-clock/vivo/source.json"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockHASerifVF-OS7.ttf",
+      "sha256": "96cce66cda48e9ae3cf2e88a14f7d8654160e4767b985dc211d7391480d1119e",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockHASerifVF-OS7.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockHASquareVF.ttf",
+      "sha256": "a42274959941e598347000aa399ee8ef5432901292e86664dd8b6f8db73076c9",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockHASquareVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockHAVF-OS7.ttf",
+      "sha256": "ce4edd82657a0e313fd336aa956d675ce53eeb9316a41898a8e27030102c98e8",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockHAVF-OS7.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockInlineVF.ttf",
+      "sha256": "00bbd86e691ce0575cfd7bbc17b58301e03e2b83882a4a6d7ddf3ed43f21293c",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockInlineVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockRoundedVF.ttf",
+      "sha256": "2cd4996d1afcfc14a3682ff7778596e4cab16bfda11b41705c807c34483a1ca7",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockRoundedVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockSerifVF.ttf",
+      "sha256": "4cb180e1d9761f9958a6287afc11c78b2f043f28d497a9a76d86cf071a4cfaa5",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockSerifVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockSilkVF.ttf",
+      "sha256": "e89bad340bbe49cb188daeb7d9945d537289abc3da9fe9616f9030d03b230eb2",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockSilkVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockSlabVF.ttf",
+      "sha256": "e94c6f46710565448756eb20b44edfda88610a0902e648ac0767f3e083626535",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockSlabVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockStencilVF.ttf",
+      "sha256": "070a4c13d95637f2372a391607a5b198424f718b145e2dcd660dc4dbfb124bfd",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockStencilVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansClockVF.ttf",
+      "sha256": "0a7d77ba06c769db09e678621722d093414fc2934d23837afb338655975ccdab",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansClockVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/vivoSansCondVF.ttf",
+      "sha256": "9d238e562650758581c7e89b75068391142c9afd10a93c0ff31dd5d7fe61c5e5",
+      "destination": "app/src/main/assets/native-clock/vivo/vivoSansCondVF.ttf"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s1-4x2.png",
+      "sha256": "60793c5a57120bf1cee4cd5eb9d3dbcf8fab4a75118d03408067a8b14b9cbe24",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s1-4x2.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s10-4x4.png",
+      "sha256": "68a5d09d4980c1d50d8b348005928476bfa08c39aa779044073b44df8a6e6567",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s10-4x4.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s10-4x5.png",
+      "sha256": "2b16bee1f958106af6116c257d2e8c5a9f433a55adea4a510fb750bbb632d86d",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s10-4x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s10-4x6.png",
+      "sha256": "1b73cc23d62106fe0e10aa9686cf688922b7159f86de3ececcd20dbcb949fe5c",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s10-4x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s11-2x4.png",
+      "sha256": "5240a51f1b884451b58fbfeed6e8d4e58bd68c87bc31fc24736c9539418c402d",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s11-2x4.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s11-2x5.png",
+      "sha256": "f9e9a19bf2bb0790a3acfca2f302f687f93ef9b7eb5c390bf07553a1cfa09c02",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s11-2x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s11-2x6.png",
+      "sha256": "f034cd5d0ba7294e1ce5fa3598e80de03a43b0039c181901db8a991895f7618d",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s11-2x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s12-3x2.png",
+      "sha256": "d2adf919d37bcac7b7c148c611860f6009b875a83d3e7ab92a8c1df2c3312ab2",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s12-3x2.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s12-3x3.png",
+      "sha256": "68361f9f6e43bdc8e33d15b337ad6b9d7beefd9da56be16c5c6743922da397fd",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s12-3x3.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s12-3x4.png",
+      "sha256": "5dfab9757ce9b2abdd432531dbcf25cdc70c61999620c80e9efc284974fc2ab3",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s12-3x4.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s12-4x2.png",
+      "sha256": "4e24a6ffade0df808392c8c56175dc8bca9b1b94f68fdf966aa62ed0805dc370",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s12-4x2.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s12-4x3.png",
+      "sha256": "4f0bf717a124fc5a552c30505d91cd211c7e6e23cc7e7a470e4418240e4ba769",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s12-4x3.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s12-4x4.png",
+      "sha256": "877f754a91a46bb588889b389b5ce64d9ab87555e0e20bb3a1cda5239e436fc2",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s12-4x4.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s12-4x5.png",
+      "sha256": "5501b4e2b5ad098cfc9dd3aac6b948bd6988a19000a04e06d141b263e13ecbb2",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s12-4x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s12-4x6.png",
+      "sha256": "16a63798218d60e1abaccb6eded2b749693ad392122206986d1e6f4c36bd5749",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s12-4x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s2-3x2.png",
+      "sha256": "b7074fce16fbce29a050b580fbfaf126f25c06a5d9a2b6a7a5baade6482c4985",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s2-3x2.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s3-2x3.png",
+      "sha256": "94beaa77ee0e86c597526cf43d737580b5733e2e2661cf91cc22b9a2609903ab",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s3-2x3.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s4-3x2.png",
+      "sha256": "3867a580f614c595dfc925218370c38da9f97c8b366edc2f8c98c17711cb30cc",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s4-3x2.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s5-4x1.png",
+      "sha256": "ca24d3297b00072c466a1dd1e7b6a2ebf3567ead5faeae8a39c757bad26c89a5",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s5-4x1.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s6-2x2.png",
+      "sha256": "c71abf176802939e4ae68831754304f6dc72d118c99f3299c648442800c700f5",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s6-2x2.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s7-3x2.png",
+      "sha256": "057ad1826e5e9a00cb846c5d078159038bb728e445290f0e78bf97daa5f30835",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s7-3x2.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s7-3x3.png",
+      "sha256": "6c02177291facfcf0466adbc1da7a8f6c42c359c0da0ea81168c0931bad84e98",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s7-3x3.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s7-3x4.png",
+      "sha256": "8c0771ad1a3f240cced801dcbd38df01f3ccbfb0e9b5a0a8c0cec6bc37624b1c",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s7-3x4.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s7-4x2.png",
+      "sha256": "53d9185defd67f2b5b20f0f8cee3ee4477e6995be3141a3f06ce29f832850f06",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s7-4x2.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s7-4x3.png",
+      "sha256": "51d9d105253af25f025619ed83c079b3a38b33ba804ac79c02b66f67d49ddedf",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s7-4x3.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s7-4x4.png",
+      "sha256": "22fb3b8fc21643d83fba8621e412e783546a703d92a3bf1d2f9c5f0d0053886b",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s7-4x4.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s7-4x5.png",
+      "sha256": "63224a046c1e674d9e3c4bbdd131b27ad21fb87fc1c0fdbfcd83da4899482605",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s7-4x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s7-4x6.png",
+      "sha256": "4470fd3520db26dea1d9259c11a01286186838ac916880760855e75af44169d8",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s7-4x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s8-2x4.png",
+      "sha256": "deec8aa2c0106938c8b8c7bb3ba1080ad7c5c9472b1c61d4b3aaa6f8861324e0",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s8-2x4.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s8-2x5.png",
+      "sha256": "3edcd323370767f2429551758b85411c42bf3bfb91f447639185844e4a6418f5",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s8-2x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s8-2x6.png",
+      "sha256": "cb2b548bbc836a15cbe66c9886ae66289e94eee1c0c943edb618b46bcfdfcf28",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s8-2x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s8-3x5.png",
+      "sha256": "967dc609cd7f38eeec10e2fe84f934444046cad80bb610b038e02e0bd8e7a3cd",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s8-3x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s8-3x6.png",
+      "sha256": "505832fc1fe51fac96f4919bcb67f5823afd1ab61b845470f96b5cb11c174def",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s8-3x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s8-4x5.png",
+      "sha256": "757227389b1f6970de873f8fbdc3346b901229e71a5cf35b4435eb22c5eef522",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s8-4x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s8-4x6.png",
+      "sha256": "7cb5c26a842e3caef350a70744eaf919de40003890ef113095fde98a42de20b2",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s8-4x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s9-2x4.png",
+      "sha256": "57626687121bb0c0b803f621636be2d15158776b79fbf950bf98e85721e88f67",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s9-2x4.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s9-2x5.png",
+      "sha256": "3829664a1ec4cbfa3eaabdf8fb201573c341812843f8fc1d5fd9e6deaf40c94b",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s9-2x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s9-2x6.png",
+      "sha256": "d6337d2c5e6963b9108246d3914298b95d7e0bb402353514accf5b4eccab73ba",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s9-2x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s9-3x5.png",
+      "sha256": "4926b9c1e2514b24d54e5c8465ab6f133fceba62c3170652e9eb634b558a0475",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s9-3x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s9-3x6.png",
+      "sha256": "b33959b445eb37c08358350f6781552ec0bfc38c405ddc4c3ddc56a27a19dd1d",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s9-3x6.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s9-4x5.png",
+      "sha256": "21a380ca9b63ad335005e3f7704902998f5a087829d4b00be52687565e438408",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s9-4x5.png"
+    },
+    {
+      "source": "app/assets/native-clock/vivo/previews/s9-4x6.png",
+      "sha256": "b492bf50a26a98f69c07bac683e8f7be4fc6c674854d8e4184e4001908447ded",
+      "destination": "app/src/main/assets/native-clock/vivo/previews/s9-4x6.png"
+    },
+    {
+      "source": "app/assets/notification/circle.svga",
+      "sha256": "cb9ed7398d8d7f64f9c3c6a5ac845ebaf7d2967d3fcb538fc4f0cdb9314ca7d0",
+      "destination": "app/src/main/assets/notification/circle.svga"
+    },
+    {
+      "source": "app/assets/notification/light.svga",
+      "sha256": "d1c9a0ffb462aabe3904ee4b488d7d09845b49fa6dbf027fa93fd37b0a12f3ed",
+      "destination": "app/src/main/assets/notification/light.svga"
+    },
+    {
+      "source": "app/assets/ui/editor-ui.apk",
+      "sha256": "ffc85195a80813668ebd39151bef9398bfc1bc728c7f8d7b9f2b70ba78bf7f65",
+      "destination": "app/src/main/assets/ui/editor-ui.apk"
+    },
+    {
+      "source": "app/assets/ui/editor-ui.sha256",
+      "sha256": "45e4def0541599c7110d1a7c97ae21a3d6f2243818c7b5485217edba7aa06979",
+      "destination": "app/src/main/assets/ui/editor-ui.sha256"
+    },
+    {
+      "source": "vendor/flyme/editor-ui.dex",
+      "destination": "app/src/main/assets/native-clock/runtime/flyme/code.dex",
+      "sha256": "d5ffa262e76c969c62bf32ad4373962f20a92e4ec976a245e44cfb3e07eab627"
+    },
+    {
+      "source": "app/java/miui/util/font/MultiLangHelper.java",
+      "destination": "alive-clock/bridge/miui/util/font/MultiLangHelper.java",
+      "sha256": "40f8adcd387f274643801543e98f622f26abee07bc9109d927157314b9214145"
+    },
+    {
+      "source": "app/java/com/miui/aod/utils/LooperUtils.java",
+      "destination": "alive-clock/bridge/com/miui/aod/utils/LooperUtils.java",
+      "sha256": "f10b40309bca614f357b1da8338855530e6ed4b3e5316f2511daff81db4f135e"
+    },
+    {
+      "source": "app/java/miui/util/FeatureParser.java",
+      "destination": "alive-clock/bridge/miui/util/FeatureParser.java",
+      "sha256": "ce89c66f51e45342352a6901ea6db8ccbdd989d70852f3e46fee68ad034d4614"
+    },
+    {
+      "source": "app/java/miui/os/Build.java",
+      "destination": "alive-clock/bridge/miui/os/Build.java",
+      "sha256": "d578333b1c6a81e9689c96017ab5a1359534af50a5774e90374a34844acb68f6"
+    },
+    {
+      "source": "app/assets/native-clock/previews/flyme-perspective.png",
+      "sha256": "589510dabe5ed425e056be3189f9fa0f1db70131e5cb28ddc7474fa62ef671a2",
+      "destination": "app/src/main/assets/native-clock/previews/flyme-perspective.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-all_in_one-1.png",
+      "sha256": "765daac3f59d868b4ad55494120cbda63fa2b20f603abde48dd78e842c0c10a5",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-all_in_one-1.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-all_in_one-2.png",
+      "sha256": "2683e5c797bf9f3c6cd43a64ed3bb80fea37009fdcae2c6b68aa068daa9395ac",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-all_in_one-2.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-all_in_one-3.png",
+      "sha256": "c2b1f110c64a422255b52f40b3ffc3c639b235d39db451e499233724ea176f8e",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-all_in_one-3.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-all_in_one-4.png",
+      "sha256": "ff1efcad06dd1ac0fbdc66e3b843903921ef21a4df0695aba45612bbf8e94db7",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-all_in_one-4.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-all_in_one-5.png",
+      "sha256": "239317cb0bfa6a4dd9466575787a9b3d87531fc5778636fe4c2e128486ad875d",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-all_in_one-5.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-all_in_one-6.png",
+      "sha256": "8ede7554f5785c7e7a6ac85d7ea1426483417dad9ca9a6694dac8c1193a7c11c",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-all_in_one-6.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-all_in_one-7.png",
+      "sha256": "9bc695859ad52ecda95edf503825a405cf03ae518e15bcfe349152084fc0721e",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-all_in_one-7.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-all_in_one-8.png",
+      "sha256": "5a25ed135e90ea9e3a66759b49fb7196e37df379698ce23cbb0c05f5dbebe866",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-all_in_one-8.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-classic-horizontal.png",
+      "sha256": "5fd5abd764fe5b3e9c8a19a638dfb4b255f2d2e86a721e178916a062137260b8",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-classic-horizontal.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-classic-vertical.png",
+      "sha256": "4249e4b7d6a986fc65355c721666110a28c1955b30ba4452973b2ba94176b987",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-classic-vertical.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-doodle-1.png",
+      "sha256": "5c8ba50d261156a36a01b2b3adbb7b7149f4719a40619e4d9ba48c890a111610",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-doodle-1.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-doodle-2.png",
+      "sha256": "a08e92048d21f4f446b4be9c46002cfd14df72e64d7a311c5ab7aa081f929d09",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-doodle-2.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-eastern_a-1.png",
+      "sha256": "dd1abfa6eb144e5f932da43802f4c0f70626d70288da2a144f92c9722022c759",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-eastern_a-1.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-eastern_b-2.png",
+      "sha256": "2d2e10493b9bee1dc4d447add240b6fe4d5442698e7d7119af68c9bfd9957726",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-eastern_b-2.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-eastern_c-1.png",
+      "sha256": "db672f62212494d1fa3a4d17736008fadeaed81615b9eea1b085e1e2882750b5",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-eastern_c-1.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-magazine_a-3.png",
+      "sha256": "2137e2c3e846c1f5fbffee85002b1e92cfaed178d9a967ddc96cc45806156485",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-magazine_a-3.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-magazine_b-1.png",
+      "sha256": "f9b6df15c167002a26095638bd36a0eb6877e0d67106a51b22c2c194d7677ce7",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-magazine_b-1.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-magazine_c-5.png",
+      "sha256": "806397a149b5d05a06a54499313dec7b9a01253c78be50a9f499559159da6f3e",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-magazine_c-5.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/hyperos-rhombus-4.png",
+      "sha256": "9f32d5fb68b6789ac40d2c126936845b3e3e9926e09874a09f0ed3a4b4ed3478",
+      "destination": "app/src/main/assets/native-clock/previews/hyperos-rhombus-4.png"
+    },
+    {
+      "source": "app/assets/native-clock/previews/source.json",
+      "sha256": "67d13ee02d0372a0d83b147251a980669a1f1233d39ba62f9e5827843b490fc1",
+      "destination": "app/src/main/assets/native-clock/previews/source.json"
+    },
+    {
+      "source": "app/assets/notification/source.json",
+      "sha256": "4b95bd3ec2d292a5a497030ebc7883e7074270f8a1f514aed770fe1519181ac1",
+      "destination": "app/src/main/assets/notification/source.json"
+    }
+  ],
+  "retired_on": "2026-11-14",
+  "retired_in": "0.5-alive.7-ui.22-trim1",
+  "status": "Clock and notification extensions removed; this document retains historical provenance only."
+}

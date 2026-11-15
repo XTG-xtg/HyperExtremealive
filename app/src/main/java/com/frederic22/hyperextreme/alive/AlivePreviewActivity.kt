@@ -58,9 +58,13 @@ class AlivePreviewActivity : ComponentActivity() {
         val variant = intent.getIntExtra("variant", Config.variant(this))
         val name = intent.getStringExtra("name") ?: "Alive"
         val mode = intent.getIntExtra("mode", 0).coerceIn(0, 2)
+        val preset = intent.getStringExtra("preset")?.let { runCatching { AlivePreset.parse(it) }.getOrNull() }
         setContent {
             val controller = remember { ThemeController(colorSchemeMode = ColorSchemeMode.Dark) }
-            MiuixTheme(controller = controller, textStyles = HyperTextStyles) { Preview(name, variant, mode, onBack = { finish() }) }
+            MiuixTheme(controller = controller, textStyles = HyperTextStyles) {
+                Preview(name, variant, mode, intent.getStringExtra("panel").orEmpty(),
+                    intent.getIntExtra("maskArea", 2).coerceIn(1, 3), preset, onBack = { finish() })
+            }
         }
     }
 }
@@ -74,7 +78,7 @@ internal val RenderSaver = listSaver<AliveRenderOptions, Float>(
     restore = { AliveRenderOptions(it[0] == 1f, it[1] == 1f, it[2] == 1f, it[3] == 1f, it[4] == 1f, it[5] == 1f, it[6].toInt(), it[7], it.getOrElse(8) { 0f }, it.getOrElse(9) { 0f }) })
 
 @Composable
-private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack: () -> Unit) {
+private fun Preview(name: String, initialVariant: Int, initialMode: Int, initialPanel: String, initialMaskArea: Int, initialPreset: AlivePreset?, onBack: () -> Unit) {
     val context = LocalContext.current
     val app = context.applicationContext
     val owner = LocalLifecycleOwner.current
@@ -82,21 +86,20 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
     val worker = remember { EglWorker(context, true) }
     val transition = remember { PreviewSceneTransition() }
     var expectedGeneration by remember { mutableLongStateOf(-1) }
-    var attachedVivoKey by remember { mutableStateOf<String?>(null) }
-    var variant by rememberSaveable { mutableIntStateOf(initialVariant) }
-    var sceneName by rememberSaveable { mutableStateOf(name) }
-    var dark by rememberSaveable { mutableStateOf(Config.dark(app)) }
-    var clock by rememberSaveable { mutableStateOf(Config.prefs(app).getBoolean("clock", false)) }
+    var variant by rememberSaveable { mutableIntStateOf(initialPreset?.variant ?: initialVariant) }
+    var sceneName by rememberSaveable { mutableStateOf(initialPreset?.name ?: name) }
+    var dark by rememberSaveable { mutableStateOf(initialPreset?.dark ?: Config.dark(app)) }
+    val clock = false
     var mode by rememberSaveable { mutableIntStateOf(initialMode) }
     var previous by remember { mutableIntStateOf(initialMode) }
     var demo by remember { mutableStateOf(false) }
     var showClockGuide by rememberSaveable { mutableStateOf(false) }
-    var panel by rememberSaveable { mutableStateOf("") }
-    var photo by rememberSaveable(stateSaver = PhotoSaver) { mutableStateOf(PhotoOptions.load(app, true)) }
-    var vivo by rememberSaveable(stateSaver = VivoSaver) { mutableStateOf(VivoOptions.load(app, if(initialVariant in 701..703) initialVariant else 701, true)) }
+    var panel by rememberSaveable { mutableStateOf(initialPanel.takeIf { it in listOf("mask", "vivo-crop", "vivo-area", "vivo", "vivo-photos") }.orEmpty()) }
+    var photo by rememberSaveable(stateSaver = PhotoSaver) { mutableStateOf(initialPreset?.photo ?: PhotoOptions.load(app, true)) }
+    var vivo by rememberSaveable(stateSaver = VivoSaver) { mutableStateOf(VivoOptions.parse(initialPreset?.vivoJson) ?: VivoOptions.load(app, if(initialVariant in 701..703) initialVariant else 701, true)) }
     var vivoImport by rememberSaveable { mutableIntStateOf(VivoMediaSelection.WALLPAPER) }
-    var maskArea by rememberSaveable { mutableIntStateOf(2) }
-    var renderOptions by rememberSaveable(stateSaver = RenderSaver) { mutableStateOf(AliveRenderOptions.load(app, true)) }
+    var maskArea by rememberSaveable { mutableIntStateOf(initialMaskArea) }
+    var renderOptions by rememberSaveable(stateSaver = RenderSaver) { mutableStateOf(initialPreset?.render ?: AliveRenderOptions.load(app, true)) }
     var revision by remember { mutableIntStateOf(0) }
     var sequence by remember { mutableLongStateOf(0) }
     var busy by remember { mutableStateOf(false) }
@@ -107,6 +110,9 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
     var surfaceHolder by remember { mutableStateOf<SurfaceHolder?>(null) }
     var importSlot by rememberSaveable { mutableIntStateOf(0) }
     var cropTarget by rememberSaveable { mutableIntStateOf(0) }
+    var subjectTask by remember { mutableStateOf<VivoSubjectRecognition?>(null) }
+    var subjectJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+    var subjectProgress by remember { mutableStateOf("") }
     val isPhoto = variant in 601..606
     val isVivo = variant in 701..703
     val hasPhoto = remember(revision, photo.lockPhoto) { PhotoMedia.available(app, photo, true, 0) }
@@ -119,6 +125,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
     val currentPanel by rememberUpdatedState(panel)
     val currentOptions by rememberUpdatedState(renderOptions)
     val title = if(isPhoto) listOf("圆景", "留光", "星月", "轻启·照片", "山脉", "银河")[variant-601] else sceneName
+    val vivoKey = if(isVivo) previewVivoSceneKey(vivo) else ""
 
     fun attach(surface: SurfaceHolder) {
         val rect = surface.surfaceFrame
@@ -126,23 +133,26 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
         if (currentVariant in 601..606) worker.photoOptions(currentPhoto)
         if (currentVariant in 701..703) {
             worker.vivoOptions(currentVivo)
-            attachedVivoKey = previewVivoSceneKey(currentVivo)
         }
         expectedGeneration = worker.attach(surface.surface, rect.width(), rect.height(), currentVariant, currentDark)
         worker.visible(currentPanel != "mask" && !currentBusy && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
     }
-    LaunchedEffect(surfaceHolder, variant, dark, revision, renderOptions.keepLock, photo.lockPhoto, photo.homePhoto, photo.framePhoto, photo.followLock) { rendered = false; error = ""; surfaceHolder?.takeIf { it.surface.isValid }?.let { attach(it) } }
+    LaunchedEffect(surfaceHolder, variant, dark, revision, vivoKey, renderOptions.keepLock, photo.lockPhoto, photo.homePhoto, photo.framePhoto, photo.followLock) { rendered = false; error = ""; surfaceHolder?.takeIf { it.surface.isValid }?.let { attach(it) } }
     LaunchedEffect(renderOptions) { worker.options(renderOptions); delay(200); renderOptions.saveDraft(app) }
     LaunchedEffect(panel) { worker.visible(panel!="mask" && !busy && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
     LaunchedEffect(mode) {
         worker.state(EngineRegistry.Snapshot(previous, mode, SystemClock.uptimeMillis(), ++sequence)); previous = mode
     }
     LaunchedEffect(variant, photo) { if (isPhoto) { worker.photoOptions(photo); delay(250); photo.save(app, true) } }
-    val vivoKey = previewVivoSceneKey(vivo)
-    LaunchedEffect(variant, vivoKey) { if(isVivo) { delay(180); vivo.saveDraft(app); if(attachedVivoKey != vivoKey) revision++ } }
     LaunchedEffect(variant, vivo) { if(isVivo) { worker.vivoOptions(vivo); delay(250); vivo.saveDraft(app) } }
-    LaunchedEffect(demo) {
-        if (demo) { mode = 0; delay(1800); mode = 1; delay(2000); mode = 2; delay(2000); demo = false }
+    LaunchedEffect(demo, variant) {
+        if (variant == 703) {
+            worker.flashDemo(demo)
+            if (demo) {
+                mode = 1
+                try { delay(4500); demo = false } finally { worker.flashDemo(false) }
+            }
+        } else if (demo) { mode = 0; delay(1800); mode = 1; delay(2000); mode = 2; delay(2000); demo = false }
     }
     LaunchedEffect(worker) {
         while (true) {
@@ -158,7 +168,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
         }
         owner.lifecycle.addObserver(observer)
         worker.visible(currentPanel != "mask" && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
-        onDispose { owner.lifecycle.removeObserver(observer); worker.close() }
+        onDispose { owner.lifecycle.removeObserver(observer); subjectTask?.cancel(); worker.close() }
     }
     BackHandler(enabled = busy || transition.running) { }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -171,19 +181,44 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
             } finally { busy = false; worker.visible(currentPanel != "mask" && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
         }
     }
+    suspend fun recognizeSubject(snapshot: VivoOptions, area: Int) {
+        val task = VivoSubjectRecognition(); subjectTask = task
+        try {
+            val result = recognizeVivoDraft(app, snapshot, area, task) { text -> scope.launch { subjectProgress = text } }
+            result.saveDraft(app); vivo = result
+            message = "${result.subjectSource} · 主体已生成，可修整边缘"
+        } finally { subjectTask = null }
+    }
+    fun recognize(area: Int) {
+        if (busy) return
+        busy = true; demo = false; worker.visible(false); subjectProgress = "正在准备主体识别…"
+        subjectJob = scope.launch {
+            try { recognizeSubject(currentVivo, area) }
+            catch (e: CancellationException) { message = "识别已取消，原有草稿已保留"; throw e }
+            catch (e: Exception) { message = "识别未完成：${e.message}；可重试或手动修整" }
+            finally { busy = false; subjectJob = null; worker.visible(currentPanel != "mask" && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
+        }
+    }
     val vivoPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if(uri != null) scope.launch {
             busy = true; worker.visible(false)
+            val selection = VivoMediaSelection(app, currentVivo)
+            val targetArea = if (currentVivo.area == 3) 3 else 2
+            var imported = false
             try {
-                val result = withContext(Dispatchers.IO) { runCatching {
-                    val selection = VivoMediaSelection(app, currentVivo)
-                    try {
-                        selection.importUris(VivoEngineRuntime.prepare(app).get(20, java.util.concurrent.TimeUnit.SECONDS), vivoImport, listOf(uri))
-                        selection.result.validateFiles(app); selection.result.saveDraft(app); selection.result
-                    } catch(e: Exception) { selection.discard(); throw e }
-                } }
-                result.onSuccess { vivo = it; message = "素材已导入草稿" }.onFailure { message = "导入失败：${it.message}" }
-            } finally { busy = false; worker.visible(currentPanel != "mask" && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
+                withContext(Dispatchers.IO) {
+                    selection.importUris(VivoEngineRuntime.prepare(app).get(20, java.util.concurrent.TimeUnit.SECONDS), vivoImport, listOf(uri))
+                    selection.result.validateFiles(app)
+                }
+                selection.result.saveDraft(app); vivo = selection.result; imported = true; message = "壁纸已导入草稿"
+                if (vivoImport == VivoMediaSelection.WALLPAPER && vivo.autoSubject) {
+                    try { recognizeSubject(vivo, targetArea) }
+                    catch (e: CancellationException) { throw e }
+                    catch (e: Exception) { message = "照片已保留，主体识别未完成：${e.message}" }
+                }
+            } catch (e: CancellationException) { throw e }
+            catch (e: Exception) { message = "导入失败：${e.message}" }
+            finally { if (!imported) selection.discard(); busy = false; worker.visible(currentPanel != "mask" && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
         }
     }
     fun pickVivo(kind: Int) {
@@ -240,7 +275,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                     override fun surfaceChanged(surface: SurfaceHolder, format: Int, width: Int, height: Int) { surfaceHolder = surface; revision++ }
                     override fun surfaceDestroyed(surface: SurfaceHolder) { surfaceHolder = null; expectedGeneration = -1; worker.detach() }
                 }); setOnTouchListener { view, event ->
-                    if(currentVariant in 701..703 && !currentBusy && !currentSwitching) { worker.touch(event.actionMasked,event.x/view.width.coerceAtLeast(1),event.y/view.height.coerceAtLeast(1)); true } else false
+                    if((currentVariant in 701..703 || InfinityTheme.supports(currentVariant)) && !currentBusy && !currentSwitching) { worker.touch(event.actionMasked,event.x/view.width.coerceAtLeast(1),event.y/view.height.coerceAtLeast(1)); true } else false
                 } }
             })
             Canvas(Modifier.fillMaxSize()) { drawRect(Color.Black, alpha = transition.shade.value) }
@@ -255,7 +290,23 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                 else stringResource(R.string.alive_preview_starting), color = Color.White,
                 modifier = Modifier.padding(24.dp).background(Color(0xBB161616)).padding(16.dp))
             val tools = buildList {
-                add(AliveEditorTool("样式", AliveToolIcon.STYLE) { openPanel("styles") })
+                add(AliveEditorTool("样式", AliveToolIcon.STYLE) { openPanel(if (isVivo) "vivo" else "styles") })
+                add(AliveEditorTool("保存预设", AliveToolIcon.PHOTO, rendered && error.isEmpty()) {
+                    demo = false
+                    scope.launch {
+                        busy = true
+                        try {
+                            val snapshot=withContext(Dispatchers.IO) { AlivePresets.snapshot(app,title,variant,dark,clock,photo,renderOptions,true,if(isVivo) vivo else null) }
+                            AlivePresets.save(app,snapshot)
+                            message="已保存预设，可在${if(isVivo) vivoTitle(variant) else if(InfinityTheme.supports(variant)) "Infinity" else "Alive"}主页右侧找到；未改变当前壁纸"
+                            AppToast.show(context,message)
+                        } catch(e: CancellationException) { throw e }
+                        catch(e: Exception) { message="预设保存失败：${e.message}";AppToast.show(context,message) }
+                        finally { busy=false }
+                    }
+                })
+                if (variant == 703) add(AliveEditorTool(if (demo) "停止" else "光效演示",
+                    if (demo) AliveToolIcon.STOP else AliveToolIcon.PLAY, rendered && error.isEmpty()) { panel = ""; demo = !demo })
                 if (isPhoto) {
                     add(AliveEditorTool("照片", AliveToolIcon.PHOTO) {
                         openPanel("photos")
@@ -265,31 +316,45 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                     if (mode != 0) add(AliveEditorTool("纹理", AliveToolIcon.TEXTURE, hasPhoto) { openPanel("texture") })
                 }
                 if(mode == 0 && (!isPhoto || photo.aodMode == 0)) add(AliveEditorTool("位置", AliveToolIcon.POSITION) { openPanel("position") })
-                if(isVivo) add(AliveEditorTool("效果与素材", AliveToolIcon.TEXTURE) { openPanel("vivo") })
+                if(isVivo) {
+                    add(AliveEditorTool("更换壁纸", AliveToolIcon.PHOTO) {
+                        if (vivo.family == VivoOptions.RASTER) openPanel("vivo-photos") else pickVivo(VivoMediaSelection.WALLPAPER)
+                    })
+                    if (vivo.family != VivoOptions.RASTER) {
+                        add(AliveEditorTool("取景", AliveToolIcon.CROP) { openPanel("vivo-crop") })
+                        add(AliveEditorTool("主体与范围", AliveToolIcon.SELECT) { openPanel("vivo-area") })
+                    }
+                    add(AliveEditorTool("动作", AliveToolIcon.OPTIONS) { openPanel("vivo-motion") })
+                }
                 add(AliveEditorTool("选项", AliveToolIcon.OPTIONS) { openPanel("options") })
-                add(AliveEditorTool(if (demo) "停止" else "演示", if (demo) AliveToolIcon.STOP else AliveToolIcon.PLAY,
+                if (variant != 703) add(AliveEditorTool(if (demo) "停止" else "演示", if (demo) AliveToolIcon.STOP else AliveToolIcon.PLAY,
                     rendered && error.isEmpty()) { panel = ""; demo = !demo })
             }
             if(panel == "mask") VivoMaskEditor(vivo, subject=maskArea!=1,
-                onSaved={ file -> vivo=VivoOptions.parse(vivo.json()).apply { if(maskArea==1) paint=file else subject=file;area=maskArea };vivo.saveDraft(app);panel="vivo" },
-                onCancel={panel="vivo"})
+                onSaved={ file, source, detail -> vivo=vivo.edited { if(maskArea==1) paint=file else { subject=file;subjectSource=source;subjectDetail=detail };area=maskArea };vivo.saveDraft(app);panel="vivo-area" },
+                onCancel={panel="vivo-area"})
+            else if(panel == "vivo-crop") VivoCropEditor(vivo, onChange = { vivo = it }, onDone = { panel = "" })
             else if(panel == "crop") PhotoCropEditor(variant, photo, cropTarget,
                 onTarget = { cropTarget = it; mode = if(it == 2) 0 else it + 1 },
                 onChange = { photo = it }, onDone = { panel = "" })
             else AliveEditorChrome(title = title, mode = mode, busy = busy || transition.running,
                 canApply = rendered && error.isEmpty() && (!isPhoto || hasPhoto),
-                message = message.ifEmpty { if(showClockGuide) "示意时钟 · 非系统真实样式" else "仅预览壁纸 · 时钟以系统实际样式为准" },
+                message = message.ifEmpty { if(variant == 703) if(demo) "正在演示" else ""
+                    else if(isVivo && vivo.family == VivoOptions.LIQUID) "轻点${listOf("涂抹区域", "主体", "背景", "壁纸")[vivo.area-1]}查看液态效果 · 选区外保持不动" else if(showClockGuide) "示意时钟 · 非系统真实样式" else "仅预览壁纸 · 时钟以系统实际样式为准" },
                 tools = tools, onCancel = { photo.save(app, true); renderOptions.saveDraft(app); if(isVivo) vivo.saveDraft(app); onBack() },
                 onApply = { demo = false; confirmation = true }, onMode = { demo = false; mode = it })
         }
     }
-    WindowBottomSheet(show = panel.isNotEmpty() && panel != "crop" && panel != "mask", title = when (panel) { "styles" -> "壁纸样式"; "position" -> "息屏布局"; "photos" -> photoSourceTitle(photoSourceSlot(mode,variant,photo)); "texture" -> if(mode == 2) "桌面纹理" else "锁屏纹理"; "vivo" -> "Vivo 效果与素材"; else -> "壁纸选项" },
+    WindowBottomSheet(show = panel.isNotEmpty() && panel !in listOf("crop", "mask", "vivo-crop"), title = when (panel) { "styles" -> "壁纸样式"; "position" -> "息屏布局"; "photos" -> photoSourceTitle(photoSourceSlot(mode,variant,photo)); "texture" -> if(mode == 2) "桌面纹理" else "锁屏纹理"; "vivo" -> "效果设置"; "vivo-photos" -> "壁纸素材"; "vivo-area" -> "主体识别与效果范围"; "vivo-motion" -> "动作与三态"; else -> "壁纸选项" },
         enableWindowDim = false, onDismissRequest = { panel = "" },
-        endAction = { val dismiss = LocalDismissState.current; TextButton(text = "完成", onClick = { dismiss?.invoke() }) }) {
+        endAction = { val dismiss = LocalDismissState.current; EditorTextAction("完成", onClick = { dismiss?.invoke() }) }) {
         if(panel == "styles") AliveWallpaperPicker(variant, photo, !busy, ::selectScene)
-        else Column(Modifier.fillMaxWidth().heightIn(max = 340.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        else Column(Modifier.fillMaxWidth().heightIn(max = if (panel == "vivo" && variant == 703) 460.dp else 340.dp).verticalScroll(rememberScrollState()).navigationBarsPadding(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             when (panel) {
-                "vivo" -> VivoControls(vivo, onChange = { vivo = it }, onImport = ::pickVivo, onMask={maskArea=it;panel="mask"}, onSwap = { a,b ->
+                "vivo" -> VivoControls(vivo, onChange = { vivo = it })
+                "vivo-area" -> VivoAreaControls(vivo, { vivo = it }, onMask = { maskArea = it; panel = "mask" }, onRecognize = ::recognize, onImport = ::pickVivo)
+                "vivo-motion" -> VivoMotionControls(vivo, { vivo = it })
+                "vivo-photos" -> VivoPhotoControls(vivo, onChange = { vivo = it }, onImport = ::pickVivo, onCrop = { panel = "vivo-crop" }, onSwap = { a,b ->
                     if(!busy) scope.launch {
                         busy=true;worker.visible(false)
                         try {
@@ -322,32 +387,31 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                         Text("全屏照片会增加息屏发光面积；仅系统时钟会将壁纸置黑，不关闭系统 AOD。", style = MiuixTheme.textStyles.body2)
                     }
                     if (!isPhoto) SwitchRow(title = stringResource(R.string.alive_dark), summary = stringResource(R.string.alive_dark_note), checked = dark, onCheckedChange = { dark = it })
-                    Text("息屏图案亮度 · ${"%.0f".format(renderOptions.brightness * 100)}%", style = MiuixTheme.textStyles.body2)
-                    Slider(value = renderOptions.brightness, valueRange = .25f..3f, onValueChange = { mode = 0; option(7, it) })
-                    AliveSegments(listOf("较暗 50%", "原版 100%", "明亮 200%"), when(renderOptions.brightness) { .5f -> 0; 1f -> 1; 2f -> 2; else -> -1 }) {
-                        mode = 0; option(7, floatArrayOf(.5f, 1f, 2f)[it])
-                    }
-                    Text("调整时自动切到息屏预览，应用后影响实际壁纸。100% 为原版；默认 130%。不修改系统面板亮度、息屏时长或指纹高亮；纯黑和已达纯白的像素无法继续提亮。", style = MiuixTheme.textStyles.body2)
+                    com.frederic22.hyperextreme.ui.AodBrightnessControl(renderOptions.brightness) { mode=0;option(7,it) }
+                    Text("调整时自动切到息屏预览，应用壁纸后保存。", style = MiuixTheme.textStyles.body2)
                     if(variant < 201 || isPhoto && photo.aodMode == 0) {
                         SwitchRow(title = "跟随系统息屏时钟", summary = "保留系统时钟，图案跟随其真实布局和防烧屏移动", checked = renderOptions.followClock, onCheckedChange = { option(3, if(it) 1f else 0f) })
                         SwitchRow(title = "防烧屏位移兜底", summary = "未读取到系统时钟位置时，每分钟小幅移动图案；不会重复叠加系统位移", checked = renderOptions.burnIn, onCheckedChange = { option(4, if(it) 1f else 0f) })
                     } else SwitchRow(title = "防烧屏位移", checked = renderOptions.burnIn, onCheckedChange = { option(4, if(it) 1f else 0f) })
-                    SwitchRow(title = "息屏持续动画", summary = "关闭后保留转场，稳定后停绘；只在可见时运行", checked = renderOptions.continuousAod, onCheckedChange = { option(1, if(it) 1f else 0f) })
+                    if(!InfinityTheme.supports(variant)) SwitchRow(title = "息屏持续动画", summary = "关闭后保留转场，稳定后停绘；只在可见时运行", checked = renderOptions.continuousAod, onCheckedChange = { option(1, if(it) 1f else 0f) })
                     if(!isPhoto) {
-                        SwitchRow(title = "桌面持续动画", checked = renderOptions.continuousHome, onCheckedChange = { option(2, if(it) 1f else 0f) })
+                        if(!InfinityTheme.supports(variant)) SwitchRow(title = "桌面持续动画", checked = renderOptions.continuousHome, onCheckedChange = { option(2, if(it) 1f else 0f) })
                         if(variant < 301 || variant in 501..503) SwitchRow(title = "桌面保留锁屏形态", checked = renderOptions.keepLock, onCheckedChange = { option(0, if(it) 1f else 0f) })
                     }
-                    if(variant in 501..503) {
+                    if(variant in 501..503 || InfinityTheme.supports(variant)) {
                         Text("传感器灵敏度 · ${renderOptions.sensitivity}", style = MiuixTheme.textStyles.body2)
                         Slider(value = renderOptions.sensitivity.toFloat(), valueRange = -50f..50f, onValueChange = { option(6, it) })
-                        SwitchRow(title = "息屏陀螺仪动画", checked = renderOptions.stereoAod, onCheckedChange = { option(5, if(it) 1f else 0f) })
+                        if(variant in 501..503) SwitchRow(title = "息屏陀螺仪动画", checked = renderOptions.stereoAod, onCheckedChange = { option(5, if(it) 1f else 0f) })
+                        else Text("倾斜手机或轻扫可带动星点；息屏保留星空，转场结束后静止。", style = MiuixTheme.textStyles.body2)
                     }
-                    if(clock) SwitchRow(title = "关闭旧版额外时钟", summary = "旧版叠加时钟可能与系统时钟重叠，建议关闭", checked = clock, onCheckedChange = { clock = it })
                     SwitchRow(title = "显示示意时钟", summary = "仅辅助检查布局，不是真实系统时钟样式；取景时始终隐藏", checked = showClockGuide, onCheckedChange = { showClockGuide = it })
                     Text("系统自定义字体、小组件和通知由系统绘制，此处不伪造。关闭示意时钟不会关闭真实锁屏或息屏时钟。", style = MiuixTheme.textStyles.body2)
                 }
             }
         }
+    }
+    WindowDialog(show = subjectTask != null, title = "识别壁纸主体", summary = subjectProgress, onDismissRequest = {}) {
+        TextButton("取消识别", onClick = { subjectTask?.cancel(); subjectJob?.cancel() })
     }
     WindowDialog(show = confirmation, title = stringResource(R.string.alive_confirm_title), summary = stringResource(R.string.alive_confirm_note),
         onDismissRequest = { confirmation = false }) {
@@ -359,6 +423,15 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                 if (!busy) scope.launch {
                     busy = true; worker.visible(false); photo.save(app, true); if(isVivo) vivo.saveDraft(app)
                     try {
+                        val previousPreset = withContext(Dispatchers.IO) {
+                            val active=Config.variant(app)
+                            val current=AlivePresets.current(app,AlivePresets.family(active))
+                            AlivePresets.snapshot(app,current.name,current.variant,current.dark,current.clock,current.photo,current.render,false,VivoOptions.parse(current.vivoJson))
+                        }
+                        val nextPreset = withContext(Dispatchers.IO) { AlivePresets.snapshot(app,title,variant,dark,clock,photo,renderOptions,true,if(isVivo) vivo else null) }
+                        // Save both snapshots before replacing anything. Failure leaves the wallpaper untouched.
+                        AlivePresets.save(app,previousPreset)
+                        AlivePresets.save(app,nextPreset)
                         val result = withContext(Dispatchers.IO) { runCatching {
                             AliveSettings.apply(app, variant, dark, clock, renderOptions)
                         } }
@@ -370,7 +443,15 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, onBack:
                             value?.code == 10 -> app.getString(R.string.alive_framework_missing)
                             else -> app.getString(R.string.alive_failed) }
                         AppToast.show(context, message)
-                    } finally { busy = false; worker.visible(currentPanel != "mask" && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
+                        if (value?.ok() == true) {
+                            try {
+                                withContext(Dispatchers.IO) { AlivePresets.markCurrent(app,previousPreset);AlivePresets.markCurrent(app,nextPreset) }
+                            } catch(e: CancellationException) { throw e }
+                            catch(e: Exception) { message += "；历史预设保存失败，可在编辑器重新保存";AppToast.show(context,message) }
+                        }
+                    } catch(e: CancellationException) { throw e }
+                    catch(e: Exception) { message="操作未完成：${e.message}；原有壁纸与预设仍保留";AppToast.show(context,message) }
+                    finally { busy = false; worker.visible(currentPanel != "mask" && owner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) }
                 }
             })
         }

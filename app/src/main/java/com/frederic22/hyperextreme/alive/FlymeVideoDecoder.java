@@ -29,7 +29,7 @@ final class FlymeVideoDecoder implements AutoCloseable {
 
     FlymeVideoDecoder(AssetManager assets,String path,Surface surface,Handler handler,Runnable invalidate)throws IOException{
         this.surface=surface;this.handler=handler;this.invalidate=invalidate;
-        try(AssetFileDescriptor descriptor=assets.openFd(path)){
+        try(AssetFileDescriptor descriptor=DynamicResources.openFd(assets,path)){
             extractor.setDataSource(descriptor.getFileDescriptor(),descriptor.getStartOffset(),descriptor.getLength());
             for(int track=0;track<extractor.getTrackCount();track++){
                 MediaFormat candidate=extractor.getTrackFormat(track);

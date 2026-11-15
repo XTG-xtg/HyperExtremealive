@@ -1,6 +1,7 @@
 package com.frederic22.hyperextreme.alive
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -30,8 +31,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
-internal enum class AliveToolIcon { PHOTO, STYLE, POSITION, CROP, TEXTURE, OPTIONS, PLAY, STOP }
+internal enum class AliveToolIcon { PHOTO, STYLE, POSITION, CROP, TEXTURE, OPTIONS, PLAY, STOP, BRUSH, ERASER, SELECT, UNDO, CLEAR, EYE, SPARK, CLOCK, CHEVRON }
 internal data class AliveEditorTool(val label: String, val icon: AliveToolIcon, val enabled: Boolean = true, val onClick: () -> Unit)
 
 /** Pure UI: this layer cannot write config or signal a wallpaper. */
@@ -95,15 +97,17 @@ internal fun AliveEditorChrome(
 @Composable
 internal fun AliveEditorTopBar(title: String, startLabel: String, endLabel: String,
     startEnabled: Boolean, endEnabled: Boolean, onStart: () -> Unit, onEnd: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier, immersive: Boolean = true) {
     Row(modifier.fillMaxWidth()
-        .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = .45f), Color.Transparent)))
-        .statusBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp),
+        .then(if (immersive) Modifier.background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = .4f), Color.Transparent))) else Modifier)
+        .statusBarsPadding().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        EditorPill(startLabel, startEnabled, false, onStart)
-        Text(title, color = Color.White, fontSize = 15.sp, textAlign = TextAlign.Center,
+        EditorPill(startLabel, startEnabled, false, onStart, immersive)
+        Text(title, color = if (immersive) Color.White else MiuixTheme.colorScheme.onSurface,
+            fontSize = 16.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center,
+            maxLines = 1, overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
-        EditorPill(endLabel, endEnabled, true, onEnd)
+        EditorPill(endLabel, endEnabled, true, onEnd, immersive)
     }
 }
 
@@ -119,19 +123,22 @@ internal fun AliveSegments(
     labels: List<String>,
     selected: Int,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onSelect: (Int) -> Unit,
 ) {
-    Row(modifier.widthIn(max = 420.dp).fillMaxWidth().clip(RoundedCornerShape(26.dp))
-        .background(Color(0x59000000)).padding(3.dp).selectableGroup(),
+    val colors = aliveUiColors()
+    Row(modifier.widthIn(max = 420.dp).fillMaxWidth().clip(RoundedCornerShape(16.dp))
+        .background(colors.text.copy(alpha = .055f)).padding(4.dp).selectableGroup(),
         verticalAlignment = Alignment.CenterVertically) {
         labels.forEachIndexed { index, label ->
             val active = index == selected
-            Box(Modifier.weight(1f).heightIn(min = 42.dp).clip(RoundedCornerShape(23.dp))
-                .background(if (active) Color(0xFF4A4A4C) else Color.Transparent)
-                .selectable(selected = active, role = Role.Tab) { onSelect(index) }
+            val fill = animateColorAsState(if (active) colors.text.copy(alpha = .13f) else Color.Transparent)
+            Box(Modifier.weight(1f).heightIn(min = 44.dp).clip(RoundedCornerShape(12.dp))
+                .background(fill.value)
+                .selectable(selected = active, enabled = enabled, role = Role.Tab) { onSelect(index) }
                 .testTag("alive-segment-$label"),
                 contentAlignment = Alignment.Center) {
-                Text(label, color = if (active) Color.White else Color(0xFFB0B0B6),
+                Text(label, color = (if (active) colors.text else colors.secondary).copy(alpha = if (enabled) 1f else .45f),
                     fontSize = 14.sp, fontWeight = if (active) FontWeight.Medium else FontWeight.Normal,
                     maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp))
@@ -141,12 +148,14 @@ internal fun AliveSegments(
 }
 
 @Composable
-private fun EditorPill(label: String, enabled: Boolean, primary: Boolean, onClick: () -> Unit) {
-    Box(Modifier.testTag("alive-header-$label").widthIn(min = 74.dp).heightIn(min = 48.dp).clip(CircleShape)
-        .background(if (primary) Color(0xFF2F6BFF).copy(alpha = if (enabled) 1f else .45f) else Color(0xCC3A3A3C))
-        .clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(horizontal = 18.dp, vertical = 10.dp),
+private fun EditorPill(label: String, enabled: Boolean, primary: Boolean, onClick: () -> Unit, immersive: Boolean) {
+    val text = if (immersive || primary) Color.White else MiuixTheme.colorScheme.onSurface
+    Box(Modifier.testTag("alive-header-$label").widthIn(min = 68.dp).heightIn(min = 48.dp).clip(RoundedCornerShape(16.dp))
+        .background(if (primary) Color(0xFF3478F6).copy(alpha = if (enabled) 1f else .3f)
+            else if (immersive) Color(0x99282B30) else Color.Transparent)
+        .clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(horizontal = 14.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center) {
-        Text(label, color = Color.White.copy(alpha = if (enabled) 1f else .55f), fontSize = 14.sp)
+        Text(label, color = text.copy(alpha = if (enabled) 1f else .45f), fontSize = 14.sp)
     }
 }
 
@@ -194,6 +203,38 @@ internal fun AliveToolGlyph(icon: AliveToolIcon, modifier: Modifier = Modifier, 
                 moveTo(8*u, 4*u); lineTo(20*u, 12*u); lineTo(8*u, 20*u); close()
             }, tint, style = stroke)
             AliveToolIcon.STOP -> drawRoundRect(tint, Offset(6*u, 6*u), Size(12*u, 12*u), CornerRadius(2*u))
+            AliveToolIcon.BRUSH -> {
+                drawPath(Path().apply { moveTo(9*u, 14*u); lineTo(17*u, 3*u); quadraticTo(19*u, u, 21*u, 4*u); lineTo(13*u, 16*u); close() }, tint, style = stroke)
+                drawPath(Path().apply { moveTo(9*u, 15*u); cubicTo(4*u, 14*u, 7*u, 20*u, 3*u, 21*u); cubicTo(11*u, 22*u, 13*u, 20*u, 12*u, 17*u) }, tint, style = stroke)
+            }
+            AliveToolIcon.ERASER -> {
+                drawPath(Path().apply { moveTo(3*u, 14*u); lineTo(13*u, 3*u); lineTo(21*u, 10*u); lineTo(12*u, 20*u); lineTo(9*u, 20*u); close() }, tint, style = stroke)
+                line(8f, 9f, 16f, 16f); line(9f, 21f, 21f, 21f)
+            }
+            AliveToolIcon.SELECT -> {
+                for (x in listOf(4f, 20f)) { val dx = if (x == 4f) 5f else -5f
+                    line(x, 4f, x + dx, 4f); line(x, 4f, x, 9f)
+                    line(x, 20f, x + dx, 20f); line(x, 20f, x, 15f) }
+            }
+            AliveToolIcon.UNDO -> {
+                line(8f, 5f, 3f, 10f); line(3f, 10f, 8f, 15f)
+                drawPath(Path().apply { moveTo(3*u, 10*u); lineTo(15*u, 10*u); cubicTo(23*u, 10*u, 23*u, 21*u, 14*u, 21*u) }, tint, style = stroke)
+            }
+            AliveToolIcon.CLEAR -> {
+                line(4f, 6f, 20f, 6f); line(9f, 3f, 15f, 3f)
+                drawPath(Path().apply { moveTo(6*u, 6*u); lineTo(7*u, 21*u); lineTo(17*u, 21*u); lineTo(18*u, 6*u) }, tint, style = stroke)
+                line(10f, 10f, 10f, 17f); line(14f, 10f, 14f, 17f)
+            }
+            AliveToolIcon.EYE -> {
+                drawPath(Path().apply { moveTo(2*u, 12*u); quadraticTo(12*u, -2*u, 22*u, 12*u); quadraticTo(12*u, 26*u, 2*u, 12*u) }, tint, style = stroke)
+                drawCircle(tint, 3*u, center, style = stroke)
+            }
+            AliveToolIcon.SPARK -> drawPath(Path().apply {
+                moveTo(12*u, 2*u); quadraticTo(13*u, 11*u, 22*u, 12*u); quadraticTo(13*u, 13*u, 12*u, 22*u)
+                quadraticTo(11*u, 13*u, 2*u, 12*u); quadraticTo(11*u, 11*u, 12*u, 2*u)
+            }, tint, style = stroke)
+            AliveToolIcon.CLOCK -> { drawCircle(tint, 9*u, center, style = stroke); line(12f, 6f, 12f, 12f); line(12f, 12f, 16f, 14f) }
+            AliveToolIcon.CHEVRON -> { line(9f, 6f, 15f, 12f); line(15f, 12f, 9f, 18f) }
         }
     }
 }

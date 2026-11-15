@@ -58,7 +58,7 @@ class VivoIntegrationTest {
         }
     }
     @Test fun bundledRuntimeAndModelMatchPinnedDigests() {
-        fun hash(path:String)=MessageDigest.getInstance("SHA-256").digest(context.assets.open(path).use { it.readBytes() }).joinToString("") { "%02x".format(it.toInt() and 255) }
+        fun hash(path:String)=MessageDigest.getInstance("SHA-256").digest(PackedAssets.open(context.assets,path).use { it.readBytes() }).joinToString("") { "%02x".format(it.toInt() and 255) }
         for(name in listOf("engine.apk","textures.zip","libpag.so","libffavc.so")) {
             assertEquals(context.assets.open("vivo/runtime/$name.sha256").bufferedReader().use { it.readText().trim() },hash("vivo/runtime/$name"))
         }

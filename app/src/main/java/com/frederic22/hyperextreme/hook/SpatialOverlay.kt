@@ -72,7 +72,7 @@ internal object SpatialOverlay {
      * 与 GL 的唯一差别是坐标入口：GL 拿的是顶点插值出来的 NDC，这里拿的是 Canvas 局部坐标，
      * 所以开头多一步 `coord → ndc`（y 翻转，屏幕坐标 y 向下、NDC y 向上）。
      */
-    private const val AGSL = """
+    private val AGSL = """
         uniform shader uTex;
         uniform shader uDepth;
         uniform float2 uTexSize;
@@ -83,6 +83,8 @@ internal object SpatialOverlay {
         uniform float2 uShift;
         uniform float uDkTh;
         uniform float uDim;
+        uniform float uExposure;
+        ${com.frederic22.hyperextreme.alive.AodBrightness.AGSL}
         // 显示区域（2026-11-05）：uv' = uv * uUvScale + uUvOffset。
         // ⚠️ **两路都必须变换**（深度场 + 颜色），只改一处会让主体轮廓与位移场错位 ——
         // 和 `SpatialGlCore.FRAG` 那边是同一条约束。
@@ -140,7 +142,7 @@ internal object SpatialOverlay {
             // AOD 压暗（2026-10-30 定案：**必须有**）：主体压在时钟之上，背景暗了主体还亮
             // 会非常突兀。GL 两份走 SF 的 `setColor`（不改 buffer、不脏玻璃采样），
             // 本 View 在窗口内用不了 SC 属性 ⇒ 只能在这里乘；它也不在玻璃的采样路径上。
-            return half4(c.rgb * half(uDim), c.a);
+            return half4(aodExpose(float3(c.rgb) / max(float(c.a), 0.00001) * uDim, uExposure) * float(c.a), c.a);
         }
     """
 
@@ -662,6 +664,7 @@ internal object SpatialOverlay {
                 s.setFloatUniform("uDkTh", SpatialRenderer.dkThreshold())
                 // AOD 压暗：与 GL 同一份值（GL 走 setColor、这里走 shader）
                 s.setFloatUniform("uDim", SpatialRenderer.aodDimValue())
+                s.setFloatUniform("uExposure", SpatialRenderer.aodExposureValue())
                 paint.shader = s
                 canvas.drawRect(0f, 0f, w, h, paint)
                 if (!drawnOnce) {

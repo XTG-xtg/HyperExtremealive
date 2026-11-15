@@ -168,6 +168,14 @@ public class WallpaperFeaturesTest {
         assertFalse(ran[0]); assertTrue(FakeWallpapers.cleared.isEmpty());
     }
 
+    @Test public void lockSlotFollowsIndependentLockWallpaper() {
+        FakeWallpapers.home = aliveHome; FakeWallpapers.lock = null;
+        assertTrue(WallpaperFeatures.isBoundSlot(context, Feature.ALIVE, WallpaperManager.FLAG_SYSTEM));
+        assertFalse(WallpaperFeatures.isBoundSlot(context, Feature.ALIVE, WallpaperManager.FLAG_LOCK));
+        FakeWallpapers.lock = aliveLock;
+        assertTrue(WallpaperFeatures.isBoundSlot(context, Feature.ALIVE, WallpaperManager.FLAG_LOCK));
+    }
+
     @Implements(WallpaperManager.class)
     public static class FakeWallpapers {
         static WallpaperInfo home, lock;

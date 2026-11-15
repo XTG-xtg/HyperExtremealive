@@ -65,7 +65,7 @@ final class CosmicRenderer implements WallpaperRenderer {
                 GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D,GLES30.GL_TEXTURE_MAG_FILTER,GLES30.GL_LINEAR);
                 GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D,GLES30.GL_TEXTURE_WRAP_S,GLES30.GL_REPEAT);
                 GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D,GLES30.GL_TEXTURE_WRAP_T,GLES30.GL_REPEAT);
-                try(InputStream input=assets.open("shader/phoenix/Noise6.png")){
+                try(InputStream input=DynamicResources.open(assets,"shader/phoenix/Noise6.png")){
                     Bitmap bitmap=BitmapFactory.decodeStream(input);
                     if(bitmap==null)throw new IOException("Invalid Phoenix noise texture");
                     try{GLUtils.texImage2D(GLES30.GL_TEXTURE_2D,0,bitmap,0);}finally{bitmap.recycle();}

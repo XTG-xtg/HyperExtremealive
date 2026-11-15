@@ -22,6 +22,7 @@ final class VivoMediaSelection {
     static VivoOptions defaults(VivoOptions current){
         VivoOptions result=new VivoOptions(current.family);
         result.sensitivity=current.sensitivity;result.wallpaperZoom=current.wallpaperZoom;
+        result.aodAnimation=current.aodAnimation;result.autoSubject=current.autoSubject;result.subjectEngine=current.subjectEngine;
         return result;
     }
     void importUris(VivoEngineRuntime runtime,int kind,List<Uri> uris)throws Exception{
@@ -57,9 +58,15 @@ final class VivoMediaSelection {
                 decoder.setTargetSize(Math.max(1,Math.round(info.getSize().getWidth()*ratio)),Math.max(1,Math.round(info.getSize().getHeight()*ratio)));
                 decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE);
             });
-            try{selected.add(write(bitmap));}finally{bitmap.recycle();}
+            try{
+                if(kind==SUBJECT||kind==PAINT){
+                    Bitmap photo=VivoImages.original(context,runtime,result),normalized=null;
+                    try{normalized=VivoMaskGeometry.normalize(bitmap,photo.getWidth(),photo.getHeight());selected.add(write(normalized));}
+                    finally{photo.recycle();if(normalized!=null)normalized.recycle();}
+                }else selected.add(write(bitmap));
+            }finally{bitmap.recycle();}
         }
-        if(kind==SUBJECT){result.subject=selected.get(0);result.area=2;return;}
+        if(kind==SUBJECT){result.subject=selected.get(0);result.subjectSource="手动导入";result.subjectDetail="";result.area=2;return;}
         if(kind==PAINT){result.paint=selected.get(0);result.area=1;return;}
         if(kind==COVER){
             ensureRasterPhotos(runtime);
@@ -71,7 +78,7 @@ final class VivoMediaSelection {
         }else{
             result.photos.clear();result.photos.addAll(selected);result.video="";
             result.rasterVideos.clear();for(int i=0;i<selected.size();i++)result.rasterVideos.add("");
-            result.subject="";result.paint="";result.area=4;
+            result.subject="";result.paint="";result.area=4;result.subjectSource="";result.subjectDetail="";
         }
         result.x=result.y=.5f;result.zoom=1;
     }

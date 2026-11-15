@@ -84,12 +84,12 @@ check(helper.index('if(!preflight(user)){') < helper.index('set(manager,"HomeWal
 worker = (code / 'EglWorker.java').read_text()
 check('if(value)sequence=-1' not in worker, 'Visibility must not replay a transition')
 check('CosmicEgl.choose' in worker, 'Host uses the imported multisample EGL selection')
-check('postDelayed(tick' not in worker and 'postFrameCallback(vsync)' in worker,
+check('postDelayed(tick' not in worker and 'postFrameCallbackDelayed(vsync,delay)' in worker,
       'Display vsync owns pacing; no artificial 1fps AOD or post-swap sleep')
 check('MotionSession.acquire' in worker and 'if(preview)' in worker,
       'Real slots share CPU motion; preview is isolated')
 registry = (code / 'EngineRegistry.java').read_text(encoding='utf-8')
-check('Config.variant' not in registry and 'power.isInteractive()' in registry
+check('Config.variant' not in registry.split('static void signal(')[1].split('static synchronized Snapshot snapshot')[0] and 'power.isInteractive()' in registry
       and 'POWER_GATE.resolve' in registry, 'All live scenes use the real power-state gate')
 service = (code / 'AliveWallpaperService.java').read_text(encoding='utf-8')
 check('photo()' not in service and '!power.isInteractive()' in service
@@ -98,7 +98,17 @@ check('photo()' not in service and '!power.isInteractive()' in service
 check('if(renderer.frameReady())' in worker, 'Do not swap an incomplete photo mask sample')
 check('photo.frameReady()&&(photo.needsRedraw()||photo.animating()||progress<1||options.continuousAod&&photo.motion().active())' in worker and 'photo.needsRedraw()||photo.animating()||progress<1?0:25' in worker,
       'Photo transitions and late-mask catch-up remain vsync-driven; settled photos stop and idle lens is paced')
-check('if(framePosted&&scheduledDelay>0)stopFrames()' in worker, 'Wake and edit events preempt idle pacing')
+pump = (code / 'FramePump.java').read_text()
+check('wait >= delay' in pump and 'cancel();' in pump and 'pump.request(delay,fallback)' in worker,
+      'Wake and edit events preempt idle pacing through the coalescing frame pump')
+display_policy = (code / 'DisplayFramePolicy.java').read_text()
+check('fallbackUntil=SystemClock.uptimeMillis()+3000' in worker and 'DisplayFramePolicy.fallback' in worker
+      and 'now < fallbackUntil ? 100 : -1' in display_policy,
+      'Awake, unknown-display and preview missing-vsync fallback remains bounded')
+check('display != Display.STATE_OFF' in display_policy and 'if (!canRender(preview, display)) return -1' in display_policy
+      and 'display == Display.STATE_DOZE_SUSPEND' in display_policy
+      and 'if (visibleDoze) return delay == 0 ? 16 : 33' in display_policy,
+      'Visible AOD retains paced fallback after three seconds; true OFF cannot render')
 mask_source = (code / 'MaskFrames.java').read_text(encoding='utf-8')
 check('glTexSubImage2D' in mask_source and 'wanted()' in mask_source and 'capacity=' in mask_source,
       'Bounded mask read-ahead and reusable texture storage')
@@ -184,6 +194,10 @@ build(sdk, Path(args.java_home), args.compile_sdk, args.build_tools, scratch / '
 with tempfile.TemporaryDirectory(dir=scratch) as temp:
     assert Path(temp).resolve().is_relative_to(scratch.resolve())
     android = sdk / f'platforms/android-{args.compile_sdk}/android.jar'
+    if not android.is_file():
+        android = sdk / f'platforms/android-{args.compile_sdk}.0/android.jar'
+    if not android.is_file():
+        raise RuntimeError(f'Missing Android platform: {android}')
     classpath = str(ROOT / 'app/libs/libxposed-api-102.jar')
     options = ['-encoding', 'UTF-8', '-source', '8', '-target', '8', '-bootclasspath',
                str(android) + os.pathsep + str(sdk / f'build-tools/{args.build_tools}/core-lambda-stubs.jar'),

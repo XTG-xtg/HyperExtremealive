@@ -6,9 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.frederic22.hyperextreme.R
-import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
@@ -35,7 +33,7 @@ internal fun PhotoControls(variant: Int, options: PhotoOptions, section: String,
             "position" -> {
                 CropSlider("水平位置", options.aodOffsetX, -.45f.. .45f) { update(8, it) }
                 CropSlider("垂直位置", options.aodOffsetY, -.45f.. .45f) { update(9, it) }
-                TextButton(text = "恢复默认位置", onClick = { onChange(options.edit(8, 0f).edit(9, 0f)) })
+                EditorTextAction("恢复默认位置", icon = AliveToolIcon.UNDO, onClick = { onChange(options.edit(8, 0f).edit(9, 0f)) })
             }
             else -> {
                 AliveSegments(if(variant == 602) listOf("锁屏", "桌面", "相框") else listOf("锁屏", "桌面"), target) {
@@ -47,7 +45,7 @@ internal fun PhotoControls(variant: Int, options: PhotoOptions, section: String,
                 CropSlider(stringResource(R.string.alive_photo_y), values[1], 0f..1f) { update(keys[1], it) }
                 CropSlider(stringResource(R.string.alive_photo_zoom), values[2], 1f..4f) { update(keys[2], it) }
                 if (target == 2) CropSlider(stringResource(R.string.alive_photo_angle), options.frameAngle, -45f..45f) { update(7, it) }
-                TextButton(text = "恢复取景", onClick = { onChange(options.edit(keys[0], .5f).edit(keys[1], .5f).edit(keys[2], 1f).edit(7, 0f)) })
+                EditorTextAction("恢复取景", icon = AliveToolIcon.UNDO, onClick = { onChange(options.edit(keys[0], .5f).edit(keys[1], .5f).edit(keys[2], 1f).edit(7, 0f)) })
             }
         }
     }
@@ -55,13 +53,17 @@ internal fun PhotoControls(variant: Int, options: PhotoOptions, section: String,
 
 @Composable
 private fun CropSlider(label: String, value: Float, range: ClosedFloatingPointRange<Float>, onChange: (Float) -> Unit) {
-    Text(label, style = MiuixTheme.textStyles.body2, color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
-    Slider(value = value, valueRange = range, onValueChange = onChange, modifier = Modifier.fillMaxWidth())
+    val display = when {
+        range.start < -1f -> "%.0f°".format(value)
+        range.endInclusive > 1f -> "%.1f×".format(value)
+        else -> "%.0f%%".format(value * 100)
+    }
+    EditorValueSlider(label, value, range, display, onChange = onChange)
 }
 
 @Composable
 internal fun AodPositionControls(options: AliveRenderOptions, onChange: (AliveRenderOptions) -> Unit) {
     CropSlider("水平位置", options.aodOffsetX, -.45f.. .45f) { onChange(options.position(it, options.aodOffsetY)) }
     CropSlider("垂直位置", options.aodOffsetY, -.45f.. .45f) { onChange(options.position(options.aodOffsetX, it)) }
-    TextButton(text = "恢复默认位置", onClick = { onChange(options.position(0f, 0f)) })
+    EditorTextAction("恢复默认位置", icon = AliveToolIcon.UNDO, onClick = { onChange(options.position(0f, 0f)) })
 }

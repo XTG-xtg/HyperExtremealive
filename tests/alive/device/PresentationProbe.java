@@ -16,7 +16,7 @@ public final class PresentationProbe {
         EGLSurface s=EGL14.eglCreatePbufferSurface(d,config,new int[]{EGL14.EGL_WIDTH,64,EGL14.EGL_HEIGHT,96,EGL14.EGL_NONE},0);
         if(!EGL14.eglMakeCurrent(d,s,s,c))throw new AssertionError("EGL current");
         AodPresentation pass=new AodPresentation(context.getAssets(),64,96);
-        for(float gain:new float[]{.25f,.5f,1,1.3f,2,3})for(float source:new float[]{0,.05f,.2f,.6f,1}){
+        for(float gain:new float[]{.25f,.5f,1,1.3f,2,3,5,100,1e20f,Float.MAX_VALUE})for(float source:new float[]{0,.05f,.2f,.6f,1}){
             GLES30.glDisable(GLES30.GL_SCISSOR_TEST);GLES30.glColorMask(true,true,true,true);
             GLES30.glClearColor(source,source,source,1);GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
             if(gain!=1){GLES30.glEnable(GLES30.GL_SCISSOR_TEST);GLES30.glScissor(0,0,1,1);GLES30.glColorMask(false,false,false,false);}

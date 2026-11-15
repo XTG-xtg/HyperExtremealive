@@ -86,6 +86,12 @@ internal object RecentsStateProbe {
 
     fun install(module: XposedModule, loader: ClassLoader): Boolean {
         if (installed.get()) return true
+        // Reflection-heavy transition dumps are diagnostics, not part of status-bar behavior.
+        // Read once at installation, never add Provider IPC to animation callbacks.
+        if (HookRuntime.remoteBoolean(com.frederic22.hyperextreme.data.MaskPrefs.KEY_VERBOSE) != true) {
+            HookRuntime.log("WMProbe：详细日志未开启，跳过动画状态探针")
+            return true
+        }
 
         val perDisplay = hookOnTransitionStateChanged(module, loader, CLS_PER_DISPLAY, "perDisplay")
         val tasksImpl = hookOnTransitionStateChanged(module, loader, CLS_TASKS_IMPL_LISTENER, "tasksImpl")

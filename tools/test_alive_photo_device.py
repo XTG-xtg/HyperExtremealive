@@ -23,13 +23,15 @@ def main():
     parser.add_argument('--assert-placement', action='store_true')
     parser.add_argument('--variants',default='601,602',help='Comma-separated photo IDs (601..606)')
     parser.add_argument('--power-only',action='store_true',help='Only run hidden live-worker orb regressions')
+    parser.add_argument('--recovery-only',action='store_true',help='Isolated EGL loss, hidden recovery, missing-vsync and detach regressions')
+    parser.add_argument('--companion-only',action='store_true',help='Awake-device isolated shader-family first-sleep preparation and cancellation')
     parser.add_argument('--assets-only',action='store_true',help='Only run independent photo source pixel assertions')
     parser.add_argument('--editor-fixes',action='store_true',help='Real AOD thumbnails and settled-worker brightness regression')
     parser.add_argument('--preview-switch',action='store_true',help='Switch all renderer families on one preview surface')
     parser.add_argument('--vivo',default='',help='Only test Vivo family:style pairs, e.g. 1:1,2:1,3:1')
     parser.add_argument('--vivo-mask',action='store_true',help='Only run offline ONNX subject-mask tests')
     parser.add_argument('--vivo-worker',action='store_true',help='Only run Vivo real-window worker lifecycle tests')
-    parser.add_argument('--vivo-fixture',choices=['factory','custom','video'],default='factory')
+    parser.add_argument('--vivo-fixture',choices=['factory','custom','video','region','flash-matrix','flash-covers'],default='factory')
     parser.add_argument('--shell-uid',action='store_true',help='Run Vivo video diagnostics as shell instead of root (isolated temp storage)')
     args = parser.parse_args()
     if args.native_library and not args.gpu_perf: parser.error('--native-library requires --gpu-perf')
@@ -47,6 +49,8 @@ def main():
     files += sorted((repo / 'app/src/main/java/com/frederic22/hyperextreme/data').glob('*.java'))
     files += [repo / 'tests/alive/device/PhotoPipelineProbe.java', repo / 'tests/alive/device/LiveFrameProbe.java', repo / 'tests/alive/device/PhotoInterruptionProbe.java', repo / 'tests/alive/device/PhotoPerfProbe.java']
     files += [repo/'tests/alive/device/ProbeContext.java',repo/'tests/alive/device/PresentationProbe.java',repo/'tests/alive/device/LivePowerProbe.java']
+    files += [repo/'tests/alive/device/RecoveryWorkerProbe.java']
+    files += [repo/'tests/alive/device/CompanionPreparationProbe.java']
     files += [repo/'tests/alive/device/PhotoAssetsProbe.java']
     files += [repo/'tests/alive/device/VivoPipelineProbe.java']
     files += [repo/'tests/alive/device/VivoMaskProbe.java']
@@ -93,6 +97,10 @@ def main():
         cases = [(f'perf-{v}', 'PhotoPerfProbe', str(v)) for v in [601, 602]]
     if args.power_only:
         cases=[(f'power-{v}','LivePowerProbe',str(v)) for v in [1,101,201]]
+    if args.recovery_only:
+        cases=[(f'recovery-{v}','RecoveryWorkerProbe',str(v)) for v in [1,101,201,301,501,601,602,701,702,703]]
+    if args.companion_only:
+        cases=[(f'companion-{v}','CompanionPreparationProbe',str(v)) for v in [1,3,4,101,201,301,501,601,602]]
     if args.assets_only:
         cases=[('photo-assets','PhotoAssetsProbe','')]
     if args.vivo:
@@ -142,7 +150,7 @@ def main():
                 if args.vivo_mask and not name.startswith('subject-'): continue
                 if args.vivo and not any(name.startswith(f'{family}-{style}-{args.vivo_fixture}-') for family,style in pairs): continue
                 subprocess.run(adb+['pull',path,str(pictures/Path(path).name)],check=True)
-    elif not (args.power_only or args.state_only or args.perf_only or args.assets_only or args.vivo_worker or args.preview_switch or args.placement_only or args.cache_only or args.gpu_perf):
+    elif not (args.power_only or args.recovery_only or args.companion_only or args.state_only or args.perf_only or args.assets_only or args.vivo_worker or args.preview_switch or args.placement_only or args.cache_only or args.gpu_perf):
         pictures=out/'frames';pictures.mkdir(exist_ok=True)
         listing=subprocess.run(adb+['shell','find',remote,'-maxdepth','1','-name','*.png'],capture_output=True,text=True,check=True)
         for path in listing.stdout.splitlines():

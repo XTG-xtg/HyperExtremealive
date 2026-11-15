@@ -18,6 +18,7 @@ final class AliveCatalog {
     }
 
     static List<Scene> load(Context context) throws Exception {
+        DynamicResources.bind(context);
         List<Scene> scenes = new ArrayList<>();
         JSONArray cosmic = json(context, "cosmic/catalog.json");
         for (int i = 0; i < cosmic.length(); i++) {
@@ -54,6 +55,8 @@ final class AliveCatalog {
         scenes.add(new Scene(701, 6, "液态", "vivo/preview/liquid.jpg"));
         scenes.add(new Scene(702, 6, "趣味光栅", "vivo/preview/raster.jpg"));
         scenes.add(new Scene(703, 6, "闪卡", "vivo/preview/flash.jpg"));
+        for(int i=0;i<InfinityTheme.SLUGS.length;i++)
+            scenes.add(new Scene(801+i,7,InfinityTheme.NAMES[i],"infinity/"+InfinityTheme.SLUGS[i]+"/preview.jpg"));
         return scenes;
     }
 

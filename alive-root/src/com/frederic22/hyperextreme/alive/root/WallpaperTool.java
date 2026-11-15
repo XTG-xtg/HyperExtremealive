@@ -1,6 +1,7 @@
 package com.frederic22.hyperextreme.alive.root;
 
 import com.frederic22.hyperextreme.alive.core.ModuleIdentity;
+import com.frederic22.hyperextreme.alive.core.MusicLockRecovery;
 
 import android.content.ComponentName;
 import android.content.pm.ServiceInfo;
@@ -73,7 +74,7 @@ public final class WallpaperTool {
     public static void main(String[] args) {
         try {
             if(Process.myUid()!=1000)throw new SecurityException("System UID required; actual="+Process.myUid());
-            if(args.length!=2)throw new IllegalArgumentException("Usage: query|check|apply USER_ID");
+            if(args.length!=2)throw new IllegalArgumentException("Usage: query|check|apply|restore-lock USER_ID");
             int user=Integer.parseInt(args[1]);if(user<0||user>10000)throw new IllegalArgumentException("Invalid user");
             Object manager=service();
             if("query".equals(args[0])) {
@@ -81,6 +82,16 @@ public final class WallpaperTool {
                 preflight(user);
             } else if("check".equals(args[0])) {
                 if(!preflight(user))System.exit(10);
+            } else if("restore-lock".equals(args[0])) {
+                if(!preflight(user)){System.exit(10);return;}
+                String home=query(manager,1,user),lock=query(manager,2,user);
+                if(!MusicLockRecovery.canRestore(home,lock)) {
+                    System.out.println("RECOVERY_SKIPPED home="+home+" lock="+lock);
+                    return;
+                }
+                set(manager,"LockWallpaperService",2,user);
+                if(!home.equals(query(manager,1,user)))throw new IllegalStateException("HOME changed during lock recovery");
+                System.out.println("LOCK_VERIFIED");
             } else if("apply".equals(args[0])) {
                 if(!preflight(user)){System.exit(10);return;}
                 // These are two verified transactions, not an atomic pair. Partial failure is explicit.

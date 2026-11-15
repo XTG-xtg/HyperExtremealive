@@ -10,12 +10,12 @@ import android.os.Bundle;
 import android.os.Process;
 import android.os.SystemClock;
 
-/** A single bounded IPC channel. No image bytes, arbitrary file paths, or shell commands. */
+/** Bounded lifecycle and hit-coverage IPC. No photographs, arbitrary paths or shell commands. */
 public final class ConfigProvider extends ContentProvider {
     public boolean onCreate() { return true; }
     private boolean trusted() {
         int uid = Binder.getCallingUid();
-        return uid == Process.myUid() || uid == 0 || uid % 100000 == 1000;
+        return ConfigCallerTrust.trusted(getContext(), uid, Process.myUid());
     }
     public Bundle call(String method, String arg, Bundle extras) {
         int uid = Binder.getCallingUid();
@@ -23,9 +23,24 @@ public final class ConfigProvider extends ContentProvider {
         if (!trusted() && !(debugShell && "status".equals(method))) throw new SecurityException("Untrusted config caller: " + uid);
         if ("getConfig".equals(method)) return Config.read(getContext());
         if ("status".equals(method)) return EngineRegistry.status(getContext());
+        if("liquidTap".equals(method)){
+            if(extras==null)throw new IllegalArgumentException("Missing tap");
+            float x=extras.getFloat("x",Float.NaN),y=extras.getFloat("y",Float.NaN);
+            long at=extras.getLong("at",-1),age=SystemClock.uptimeMillis()-at;
+            if(!Float.isFinite(x)||!Float.isFinite(y)||x<0||x>=1||y<0||y>=1||age<0||age>1000)throw new IllegalArgumentException("Invalid or stale tap");
+            EngineRegistry.liquidTap(getContext(),x,y,at,extras.getLong("revision",-1));return Bundle.EMPTY;
+        }
         if ("clockGeometry".equals(method)) {
             if(extras==null)throw new IllegalArgumentException("Missing clock geometry");
             if(Config.prefs(getContext()).getBoolean("enabled",false))EngineRegistry.clock(new ClockSnapshot(extras));
+            return Bundle.EMPTY;
+        }
+        if ("music".equals(method)) {
+            AliveMusicRestore.onMusic(getContext(), extras != null && extras.getBoolean("shown", false));
+            return Bundle.EMPTY;
+        }
+        if ("heal".equals(method)) {
+            AliveMusicRestore.heal(getContext());
             return Bundle.EMPTY;
         }
         if ("signal".equals(method)) {

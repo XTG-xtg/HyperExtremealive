@@ -37,7 +37,7 @@ final class RootBridge {
         return c.getSharedPreferences("alive_diagnostics",0).getString("last_result","");
     }
     static synchronized Result wallpaper(Context c,String operation) throws Exception {
-        if(!operation.equals("apply")&&!operation.equals("query")&&!operation.equals("check"))throw new IllegalArgumentException("Invalid operation");
+        if(!operation.equals("apply")&&!operation.equals("query")&&!operation.equals("check")&&!operation.equals("restore-lock"))throw new IllegalArgumentException("Invalid operation");
         boolean apply=operation.equals("apply");
         File local=new File(c.getCacheDir(),"alive_root.dex");
         try(InputStream in=c.getAssets().open("alive_root.dex");OutputStream out=new FileOutputStream(local)){byte[] b=new byte[8192];int n;while((n=in.read(b))>0)out.write(b,0,n);}
@@ -49,9 +49,12 @@ final class RootBridge {
         String cmd="mkdir -p "+quote(folder)+" && chmod 755 "+quote(folder)+" && cp "+quote(local.getAbsolutePath())+" "+quote(remote)+" && chmod 644 "+quote(remote)+" && su -M 1000 -c "+quote(inner);
         Result result=run(cmd);
         if(apply&&result.ok()&&!result.text.contains("PAIR_VERIFIED"))result=new Result(3,"Incomplete verification: "+result.text);
+        if(operation.equals("restore-lock")&&result.ok()&&!result.text.contains("LOCK_VERIFIED")&&!result.text.contains("RECOVERY_SKIPPED"))
+            result=new Result(3,"Incomplete lock verification: "+result.text);
         if(result.code==10)result=new Result(10,"系统框架适配未就绪：请为 "+c.getApplicationInfo().loadLabel(c.getPackageManager())+" 勾选“系统框架（system）”并重启。android 不是此 LSPosed 的系统框架作用域。本次预检没有修改壁纸。\n"+result.text);
         record(c,operation,result);
         if(apply&&result.ok()){Config.prefs(c).edit().putBoolean("enabled",true).apply();Config.changed(c);}
+        if(operation.equals("restore-lock")&&result.ok()&&result.text.contains("LOCK_VERIFIED"))Config.changed(c);
         return result;
     }
 }

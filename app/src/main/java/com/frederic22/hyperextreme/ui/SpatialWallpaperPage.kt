@@ -1,5 +1,7 @@
 package com.frederic22.hyperextreme.ui
 
+import com.frederic22.hyperextreme.alive.AodBrightness
+
 import android.graphics.RectF
 import android.net.Uri
 import android.widget.Toast
@@ -259,7 +261,7 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
      * **关闭不再走这里**：统一交给 [SpatialControl.disable]（改 prefs → 推属性 → toast →
      * 重启 miwallpaper），因为视差页的「功能冲突提醒」也要用同一套关闭动作。
      */
-    fun enableSpatial(key: String) {
+    fun enableSpatial(key: String): Boolean {
         try {
             WallpaperFeatures.activate(ctx, Feature.SPATIAL) {
                 check(!WallpaperFeatures.isBound(ctx, Feature.SPATIAL)) { "请先关闭空间壁纸的系统服务模式" }
@@ -323,9 +325,48 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                 }.apply { isDaemon = true }.start()
                 Unit
             }
+            return true
         } catch (failure: Exception) {
             Toast.makeText(ctx, failure.message ?: "无法启用空间壁纸", Toast.LENGTH_LONG).show()
+            return false
         }
+    }
+
+    val previewLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val request = EffectPreviewRequest.parse(result.data)
+        val brightness = EffectPreviewRequest.brightness(result.resultCode, result.data)
+        val candidate = candidates.firstOrNull { it.key == request?.key }
+        if(request?.kind == EffectWallpaperKind.SPATIAL && brightness != null && candidate?.hasLayers == true) {
+            val other = WallpaperConflict.running(ctx, state, WallpaperChain.SPATIAL)
+            when {
+                other != null -> { conflictOther = other; showConflict = true }
+                candidate.key == inUseKey -> {
+                    AodBrightness.save(ctx, brightness)
+                    Toast.makeText(ctx, "预览设置已保存", Toast.LENGTH_SHORT).show()
+                }
+                mountMode == MaskPrefs.SPATIAL_MOUNT_SERVICE -> {
+                    if(!DynamicWallpaperPermission.allowed(ctx)) {
+                        Toast.makeText(ctx, "请先给予模块“动态壁纸服务”权限", Toast.LENGTH_LONG).show()
+                        DynamicWallpaperPermission.openSettings(ctx)
+                    } else try {
+                        SpatialServiceMode.enable(ctx, candidate.key)
+                        serviceTargetKey = candidate.key
+                        AodBrightness.save(ctx, brightness)
+                    } catch(failure: Exception) {
+                        Toast.makeText(ctx, failure.message ?: "无法打开系统壁纸页", Toast.LENGTH_LONG).show()
+                    }
+                }
+                !state.fullyActivated -> Toast.makeText(ctx, "以LSPosed模式运行时需要激活模块，请先激活", Toast.LENGTH_LONG).show()
+                else -> if(enableSpatial(candidate.key)) AodBrightness.save(ctx, brightness)
+            }
+        }
+    }
+    fun previewCandidate(candidate: SpatialDepth.SpatialCandidate) {
+        if(!candidate.hasLayers) {
+            Toast.makeText(ctx, "请先生成深度缓存", Toast.LENGTH_SHORT).show()
+            return
+        }
+        previewLauncher.launch(EffectPreviewRequest(EffectWallpaperKind.SPATIAL, candidate.key).intent(ctx))
     }
 
     /** 真正干活：深度 →（紧接着）生成层图。分层失败**不阻断**深度结果。 */
@@ -643,7 +684,7 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                 }
 
                 // 主按钮四态（2026-11-04，逻辑照光栅页）：
-                //   新建卡「新图片」/ 服务模式「恢复默认」·「跳转系统页」/ 当前图「取消应用」/ 其余「应用」。
+                //   新建卡「新图片」/ 服务模式「恢复默认」/ 当前图「取消应用」/ 其余「预览与应用」。
                 val serviceMode = mountMode == MaskPrefs.SPATIAL_MOUNT_SERVICE
                 val isActive = selected != null && selected.key == inUseKey
                 // 「取消 / 恢复」这类次要动作的配色判据：服务模式看"服务真在跑"，
@@ -652,9 +693,9 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                 val label = when {
                     stopPending -> "重试关闭"
                     selected == null -> "新图片"
-                    serviceMode -> if (serviceRunning) "恢复默认" else "跳转系统页"
+                    serviceMode -> if (serviceRunning) "恢复默认" else "预览与应用"
                     isActive -> "取消应用"
-                    else -> "应用"
+                    else -> "预览与应用"
                 }
                 // 提示色 ⇄ 常态：颜色叠化过去，不是硬切（与光栅页一致）。
                 val bg by animateColorAsState(
@@ -692,7 +733,7 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                                 )
                             }
                             // ── 系统壁纸服务模式：只走系统路径 ──
-                            serviceMode -> if (serviceRunning) {
+                            serviceMode && serviceRunning -> {
                                 // `WallpaperManager.clear()` 是同步 binder，丢 IO 线程。
                                 scope.launch {
                                     val result = withContext(Dispatchers.IO) { SpatialServiceMode.disable(ctx) }
@@ -708,39 +749,6 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                                         ctx, "已恢复到系统默认壁纸", Toast.LENGTH_LONG,
                                     ).show()
                                 }
-                            } else {
-                                // 功能冲突（三侧统一）：跳系统页会把系统壁纸换掉 ⇒ 先关对方。
-                                val other = WallpaperConflict.running(
-                                    ctx, state, WallpaperChain.SPATIAL,
-                                )
-                                when {
-                                    other != null -> {
-                                        conflictOther = other
-                                        showConflict = true
-                                    }
-                                    !DynamicWallpaperPermission.allowed(ctx) -> {
-                                        Toast.makeText(
-                                            ctx,
-                                            "请先给予模块“动态壁纸服务”权限",
-                                            Toast.LENGTH_LONG,
-                                        ).show()
-                                        DynamicWallpaperPermission.openSettings(ctx)
-                                    }
-                                    !c.hasLayers -> Toast.makeText(
-                                        ctx, "请先生成深度缓存", Toast.LENGTH_SHORT,
-                                    ).show()
-                                    else -> {
-                                        try {
-                                        SpatialServiceMode.enable(ctx, c.key)
-                                        serviceTargetKey = c.key
-                                        Toast.makeText(
-                                            ctx, "请在系统服务页设置生效范围", Toast.LENGTH_LONG,
-                                        ).show()
-                                        } catch (failure: Exception) {
-                                            Toast.makeText(ctx, failure.message ?: "无法打开系统壁纸页", Toast.LENGTH_LONG).show()
-                                        }
-                                    }
-                                }
                             }
                             // ── LSPosed：关闭方向不做互斥检查 ──
                             isActive -> {
@@ -749,28 +757,7 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
                                 activeKey = ""
                                 reload++
                             }
-                            else -> {
-                                // 激活保险：未激活时点「应用」只会静默失败。
-                                if (!state.fullyActivated) {
-                                    Toast.makeText(
-                                        ctx,
-                                        "以LSPosed模式运行时需要激活模块，请先激活",
-                                        Toast.LENGTH_LONG,
-                                    ).show()
-                                } else if (!c.hasLayers) {
-                                    Toast.makeText(ctx, "请先生成深度缓存", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    val other = WallpaperConflict.running(
-                                        ctx, state, WallpaperChain.SPATIAL,
-                                    )
-                                    if (other != null) {
-                                        conflictOther = other
-                                        showConflict = true
-                                    } else {
-                                        enableSpatial(c.key)
-                                    }
-                                }
-                            }
+                            else -> previewCandidate(c)
                         }
                     },
                     modifier = Modifier.width(buttonWidth),
@@ -793,6 +780,10 @@ internal fun SpatialWallpaperDetail(state: MaskUiState) {
             }
         }
 
+        if(selected != null && (selected.key == inUseKey || serviceRunning)) {
+            TextButton("预览与调整", onClick = { previewCandidate(selected) },
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp))
+        }
         // 三、参数调整（2026-11-04 用户要求：**去掉「参数调整」这个小标题**，
         //    卡片直接接在按钮下面 —— 间距仍按统一的 BLOCK_GAP）。
         Spacer(Modifier.height(BLOCK_GAP))
