@@ -24,14 +24,16 @@ internal class WallpaperAodBrightness(
     private var began=SystemClock.uptimeMillis()
     private val watch=AodBrightness.Watch(context,handler) { request() }
     private fun asleep(): Boolean {
+        // DOZE can lag SCREEN_ON. A stale display notification must not restore the boost.
+        power?.let { return !it.isInteractive }
         val state=displays?.getDisplay(Display.DEFAULT_DISPLAY)?.state
-        return power?.isInteractive == false || state == Display.STATE_DOZE || state == Display.STATE_DOZE_SUSPEND
+        return state == Display.STATE_DOZE || state == Display.STATE_DOZE_SUSPEND
     }
     private fun weight(): Float {
         val t=((SystemClock.uptimeMillis()-began)/700f).coerceIn(0f,1f)
         return from+(target-from)*t*t*(3-2*t)
     }
-    val exposure: Float get()=AodBrightness.gain(watch.value,weight())
+    val exposure: Float get()=AodBrightness.frameGain(watch.value,weight(),target==1f)
     private val frame=object:Runnable {
         override fun run() {
             if(closed || !shown || displays?.getDisplay(Display.DEFAULT_DISPLAY)?.state == Display.STATE_OFF) return

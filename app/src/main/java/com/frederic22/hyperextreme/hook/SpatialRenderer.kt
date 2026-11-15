@@ -302,6 +302,7 @@ internal object SpatialRenderer {
     private var uExposureLoc = 0
     private var brightness: com.frederic22.hyperextreme.alive.AodBrightness.Watch? = null
     @Volatile private var aodTargetDim = .5f
+    @Volatile private var aodBoostActive = false
     private var layerCount = 0
     private var textures = IntArray(0)
 
@@ -584,6 +585,7 @@ internal object SpatialRenderer {
             // 压暗 tick 落地则会把亮度再拉回 0.5（偶发压暗回弹）。
             cancelAodHomeLocked()
             cancelDimAnimLocked()
+            aodBoostActive = false
             // **AOD 直接解锁**（不经过锁屏）走的是
             // `startKeyguardExitAnimationByInteractiveOrFullAODUnlockAnimation`，
             // 不会调 `doWallpaperBlackAnim(show=true)` ⇒ `onExitAod()` 不执行 ⇒
@@ -828,6 +830,7 @@ internal object SpatialRenderer {
 
     /** 压暗渐变（handler 节拍，[AOD_STEP_MS] 一步）。 */
     private fun animateDimLocked(h: Handler, target: Float, durationMs: Long) {
+        aodBoostActive = target < 1f
         // 同一时刻只允许一条渐变：否则进/出 AOD 挨得近时两条 tick 会互相覆盖，终值不可预期。
         cancelDimAnimLocked()
         val from = aodDim
@@ -882,8 +885,8 @@ internal object SpatialRenderer {
     /** 给 [SpatialOverlay] 的 AGSL 用：与 GL **同一个**压暗值。 */
     internal fun aodDimValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.wallpaperDim(
         aodDim, aodTargetDim, brightness?.value ?: 1f)
-    internal fun aodExposureValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.gain(
-        brightness?.value ?: 0f, com.frederic22.hyperextreme.alive.AodBrightness.dimWeight(aodDim, aodTargetDim))
+    internal fun aodExposureValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.frameGain(
+        brightness?.value ?: 0f, com.frederic22.hyperextreme.alive.AodBrightness.dimWeight(aodDim, aodTargetDim), aodBoostActive)
 
     /**
      * 回锁屏 / 重新亮屏：把 alpha 复位到 1。
@@ -1474,8 +1477,10 @@ internal object SpatialRenderer {
                     // 后落地的归位 tick 覆盖，传感器就会一直冻着，直到下一次进出 AOD。
                     cancelAodHomeLocked()
                     cancelDimAnimLocked()
+                    aodBoostActive = false
                     aodFrozen = false
                     unfreezeTransition()
+                    requestDraw(force = true)
                     reregisterSensor(c ?: ctx)
                 }
             }

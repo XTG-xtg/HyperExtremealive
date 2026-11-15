@@ -52,6 +52,23 @@ class AodBrightnessTest {
             assertEquals(weight,AodBrightness.wallpaperBlack(weight,0f),0f)
         }
     }
+    @Test fun wakeNeverBoostsTheLockOrHomeEvenWhileTheAodSceneStillContributes() {
+        for(level in listOf(0f,.25f,1f,1.25f,2.5f,5f,100f,Float.NaN)) {
+            for(frame in 0..120) {
+                val weight=1f-frame/120f
+                val awake=AodBrightness.frameGain(level,weight,false)
+                assertTrue(awake.isFinite() && awake in 0f..1f)
+                if(level>=1f) assertEquals(1f,awake,0f)
+                assertEquals(AodBrightness.gain(level,weight),AodBrightness.frameGain(level,weight,true),0f)
+            }
+        }
+        // A new sleep still reaches the configured gain after an interrupted wake.
+        repeat(60) {
+            assertEquals(5f,AodBrightness.frameGain(5f,1f,true),0f)
+            assertEquals(1f,AodBrightness.frameGain(5f,1f,false),0f)
+            assertEquals(1f,AodBrightness.frameGain(5f,.75f,false),0f)
+        }
+    }
     @Test fun holdKeepsEntryBrightnessUntilWakeHideOrZeroIsSelected() {
         val hold=AodBrightness.Hold()
         for(level in listOf(.25f,1f,2.5f,5f)) {

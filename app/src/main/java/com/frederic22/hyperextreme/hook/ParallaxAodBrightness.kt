@@ -37,6 +37,7 @@ internal object ParallaxAodBrightness {
         animation?.cancel()
         if(!show) aodBlack = targetBlack.coerceIn(0f, 1f)
         target = if(show) 0f else aodBlack
+        if(show) update() // Drop extra exposure before the first native wake animation frame.
         if(!animate || backdrop?.get()?.isAttachedToWindow != true) { black = target; update(); return }
         animation = ValueAnimator.ofFloat(black, target).apply {
             duration = 700
@@ -51,7 +52,7 @@ internal object ParallaxAodBrightness {
             val effectShader = shader ?: RuntimeShader(SHADER).also { shader = it }
             val value = watch?.value ?: AodBrightness.DEFAULT
             effectShader.setFloatUniform("dim", 1-AodBrightness.wallpaperBlack(black, value))
-            effectShader.setFloatUniform("exposure", AodBrightness.gain(value, black/aodBlack.coerceAtLeast(.001f)))
+            effectShader.setFloatUniform("exposure", AodBrightness.frameGain(value, black/aodBlack.coerceAtLeast(.001f), target>0f))
             val exposure = RenderEffect.createRuntimeShaderEffect(effectShader, "content")
             view.setRenderEffect(blur?.let { RenderEffect.createChainEffect(it, exposure) } ?: exposure)
         }.onFailure { HookRuntime.log("视差息屏亮度设置失败：${it.message}") }

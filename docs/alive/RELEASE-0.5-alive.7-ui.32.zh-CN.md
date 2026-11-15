@@ -1,5 +1,7 @@
 # HyperExtreme Alive ui32
 
+> 本版本完成了本地构建，但未公开发布 Release；发布前收到 AOD 唤醒闪亮反馈，正式发布由 ui33 替代。
+
 `0.5-alive.7-ui.32-aod-slider` · versionCode `47` · Android 13+ / ARM64。
 
 ## 主要更新

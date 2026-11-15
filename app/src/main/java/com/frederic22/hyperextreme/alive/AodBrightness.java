@@ -22,6 +22,13 @@ public final class AodBrightness {
         float level=normalize(value);
         return 1+((level==0?1:level)-1)*t;
     }
+    /** Wake restores the panel and removes the OEM mask before the scene finishes.
+     * Extra exposure must leave on its first awake frame, not trail that restoration.
+     * Sub-unity dimming can still fade smoothly without producing a bright overshoot. */
+    public static float frameGain(float value,float weight,boolean ambient){
+        float exposure=gain(value,weight);
+        return ambient?exposure:Math.min(1,exposure);
+    }
     public static float dimWeight(float dim,float aodDim){
         return Math.max(0,Math.min(1,(1-dim)/Math.max(.001f,1-aodDim)));
     }
