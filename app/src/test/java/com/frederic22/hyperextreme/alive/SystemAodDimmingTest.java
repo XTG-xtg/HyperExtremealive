@@ -23,18 +23,14 @@ public class SystemAodDimmingTest {
     private List<Object> args(boolean show,float black,int type){return Arrays.asList(show,black,type,true,new Object());}
     private ComponentName own(String service){return new ComponentName(ModuleIdentity.PACKAGE,service);}
 
-    @Test public void higherExposureAlsoLiftsThePostShaderWhiteCeiling(){
-        // Even a fully white shader output used to remain at 20% behind an 80% OEM mask.
-        assertEquals(.2f,1-AodBrightness.wallpaperBlack(.8f,1),.00001f);
-        assertEquals(.6f,1-AodBrightness.wallpaperBlack(.8f,2),.00001f);
-        assertEquals(.84f,1-AodBrightness.wallpaperBlack(.8f,5),.00001f);
-        assertEquals(.85f,1-AodBrightness.wallpaperBlack(.3f,2),.00001f);
+    @Test public void nonzeroBrightnessRemovesTheFullAodMaskAtEveryAmbientLevel(){
+        // The ROM mask must no longer dim the already-adjusted wallpaper a second time.
+        assertEquals(.2f,1-AodBrightness.wallpaperBlack(.8f,0),.00001f);
         for(float black:new float[]{.3f,.5f,.57f,.8f}){
-            float previous=black;
-            for(float gain:new float[]{1,1.3f,2,5,100,1e20f,Float.MAX_VALUE}){
+            for(float gain:new float[]{.25f,1,1.3f,2,5,100,1e20f,Float.MAX_VALUE}){
                 float next=AodBrightness.wallpaperBlack(black,gain);
-                assertTrue(Float.isFinite(next)&&next>=0&&next<=previous);
-                previous=next;
+                assertEquals(0,next,0);
+                assertTrue(SystemAodDimming.candidate(args(false,black,1),gain));
             }
         }
     }
@@ -46,7 +42,7 @@ public class SystemAodDimmingTest {
         List<Object> original=args(false,.8f,1);
         assertTrue(SystemAodDimming.candidate(original,2));
         Object[] adjusted=SystemAodDimming.arguments(original,2);
-        assertEquals(.4f,(Float)adjusted[1],0);
+        assertEquals(0,(Float)adjusted[1],0);
         assertEquals(.8f,(Float)original.get(1),0);
         for(int i:new int[]{0,2,3,4})assertSame(original.get(i),adjusted[i]);
         assertFalse(SystemAodDimming.candidate(args(true,.8f,1),5));
@@ -55,8 +51,8 @@ public class SystemAodDimmingTest {
         assertFalse(SystemAodDimming.candidate(Arrays.asList(false,.8f),5));
         assertFalse(SystemAodDimming.ownsFullAod(new Panel()));
     }
-    @Test public void lowGainCustomAodAndInvalidValuesKeepTheSystemTarget(){
-        for(float gain:new float[]{.25f,1,Float.NaN,Float.POSITIVE_INFINITY,Float.NEGATIVE_INFINITY}){
+    @Test public void zeroCustomAodAndInvalidValuesKeepTheSystemTarget(){
+        for(float gain:new float[]{0,-1,Float.NaN,Float.POSITIVE_INFINITY,Float.NEGATIVE_INFINITY}){
             assertEquals(.8f,AodBrightness.wallpaperBlack(.8f,gain),0);
             assertFalse(SystemAodDimming.candidate(args(false,.8f,1),gain));
         }
@@ -99,17 +95,17 @@ public class SystemAodDimmingTest {
     }
     @Test public void ambientUpdatesCannotFadeExplicitBrightnessButWakeAndTimeoutStillWork(){
         Object panel=new Object();
-        assertEquals(.1f,(Float)SystemAodDimming.heldArguments(panel,args(false,.5f,1),5,true)[1],0);
+        assertEquals(0,(Float)SystemAodDimming.heldArguments(panel,args(false,.5f,1),5,true)[1],0);
         for(int repeat=0;repeat<60;repeat++)for(float ambient:new float[]{.3f,.8f,.57f})
-            assertEquals(.1f,(Float)SystemAodDimming.heldArguments(panel,args(false,ambient,1),5,true)[1],0);
+            assertEquals(0,(Float)SystemAodDimming.heldArguments(panel,args(false,ambient,1),5,true)[1],0);
         // The automatic full-black timeout stays native and releases the held entry.
         assertNull(SystemAodDimming.heldArguments(panel,args(false,1,0),5,true));
-        assertEquals(.16f,(Float)SystemAodDimming.heldArguments(panel,args(false,.8f,1),5,true)[1],.00001f);
+        assertEquals(0,(Float)SystemAodDimming.heldArguments(panel,args(false,.8f,1),5,true)[1],0);
         assertNull(SystemAodDimming.heldArguments(panel,args(true,.8f,1),5,true));
-        assertEquals(.06f,(Float)SystemAodDimming.heldArguments(panel,args(false,.3f,1),5,true)[1],.00001f);
+        assertEquals(0,(Float)SystemAodDimming.heldArguments(panel,args(false,.3f,1),5,true)[1],0);
         // Zero and unrelated wallpapers restore the system's live target.
         assertNull(SystemAodDimming.heldArguments(panel,args(false,.8f,1),0,true));
         assertNull(SystemAodDimming.heldArguments(panel,args(false,.8f,1),5,false));
-        assertEquals(.1f,(Float)SystemAodDimming.heldArguments(new Object(),args(false,.5f,1),5,true)[1],0);
+        assertEquals(0,(Float)SystemAodDimming.heldArguments(new Object(),args(false,.5f,1),5,true)[1],0);
     }
 }

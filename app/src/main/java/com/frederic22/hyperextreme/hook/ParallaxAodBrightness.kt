@@ -51,7 +51,7 @@ internal object ParallaxAodBrightness {
         runCatching {
             val effectShader = shader ?: RuntimeShader(SHADER).also { shader = it }
             val value = watch?.value ?: AodBrightness.DEFAULT
-            effectShader.setFloatUniform("dim", 1-AodBrightness.wallpaperBlack(black, value))
+            effectShader.setFloatUniform("dim", AodBrightness.wallpaperDim(1-black, 1-aodBlack, value))
             effectShader.setFloatUniform("exposure", AodBrightness.frameGain(value, black/aodBlack.coerceAtLeast(.001f), target>0f))
             val exposure = RenderEffect.createRuntimeShaderEffect(effectShader, "content")
             view.setRenderEffect(blur?.let { RenderEffect.createChainEffect(it, exposure) } ?: exposure)

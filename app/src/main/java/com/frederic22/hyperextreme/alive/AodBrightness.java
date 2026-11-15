@@ -32,11 +32,11 @@ public final class AodBrightness {
     public static float dimWeight(float dim,float aodDim){
         return Math.max(0,Math.min(1,(1-dim)/Math.max(.001f,1-aodDim)));
     }
-    /** Lift the wallpaper-only OEM mask as well as the pixels beneath it. */
+    /** Explicit brightness uses unmasked wallpaper pixels; zero keeps the OEM appearance. */
     public static float wallpaperBlack(float black,float value){
         // Fully black is the custom-AOD/hide target, never a brightness adjustment.
-        if(!Float.isFinite(black)||black<=0||black>=1||!Float.isFinite(value)||value<=1)return black;
-        return black/normalize(value);
+        if(!Float.isFinite(black)||black<=0||black>=1||normalize(value)==0)return black;
+        return 0;
     }
     /** Keep the entry mask until wake/hide. OEM ambient-light updates must not
      * change an explicitly selected AOD brightness during the same session. */

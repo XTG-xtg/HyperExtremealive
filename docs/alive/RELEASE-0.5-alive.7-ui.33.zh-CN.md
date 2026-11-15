@@ -1,5 +1,7 @@
 # HyperExtreme Alive ui33
 
+> 本版本未公开发布 Release；按后续反馈加入去遮罩调整，正式发布由 ui34 替代。
+
 `0.5-alive.7-ui.33-aod-wake` · versionCode `48` · Android 13+ / ARM64。
 
 ## 主要更新
