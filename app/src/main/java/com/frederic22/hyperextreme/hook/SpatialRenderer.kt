@@ -885,8 +885,9 @@ internal object SpatialRenderer {
     /** 给 [SpatialOverlay] 的 AGSL 用：与 GL **同一个**压暗值。 */
     internal fun aodDimValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.wallpaperDim(
         aodDim, aodTargetDim, brightness?.value ?: 1f)
-    internal fun aodExposureValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.frameGain(
-        brightness?.value ?: 0f, com.frederic22.hyperextreme.alive.AodBrightness.dimWeight(aodDim, aodTargetDim), aodBoostActive)
+    internal fun aodExposureValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.renderGain(
+        brightness?.value ?: 0f, com.frederic22.hyperextreme.alive.AodBrightness.dimWeight(aodDim, aodTargetDim),
+        aodBoostActive, false, brightness?.managed == true)
 
     /**
      * 回锁屏 / 重新亮屏：把 alpha 复位到 1。

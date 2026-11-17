@@ -36,6 +36,8 @@ public final class AliveHooks {
     private static final AodWallpaperGuard AOD_WALLPAPER=new AodWallpaperGuard();
     private static final AodSessionBrightness AOD_BRIGHTNESS=new AodSessionBrightness();
     private static final MiuiAodPanelBrightness MIUI_AOD_PANEL=new MiuiAodPanelBrightness();
+    private static final WakeGlide WAKE_GLIDE=new WakeGlide();
+    private static final LauncherWallpaperScroll LAUNCHER_SCROLL=new LauncherWallpaperScroll();
     private static boolean systemAdapter;
     private static final ThreadLocal<AodCreation> AOD_CREATION=new ThreadLocal<>();
     private static final class AodCreation {
@@ -58,7 +60,7 @@ public final class AliveHooks {
         return ipc;
     }
 
-    private static void log(String message) {
+    static void log(String message) {
         Log.i(Protocol.TAG, message);
         if (logger != null) logger.log(Log.INFO, Protocol.TAG, message);
     }
@@ -103,7 +105,14 @@ public final class AliveHooks {
             }
             Bundle result = c.getContentResolver().call(Protocol.CONFIG, "getConfig", null, null);
             cached = result == null ? Bundle.EMPTY : result;
-            if(systemAdapter)MIUI_AOD_PANEL.refresh(c,worker());
+            if(systemAdapter){
+                Runnable changed=()->{readAt=-750;refreshFailures=0;refresh();};
+                MIUI_AOD_PANEL.refresh(c,worker(),changed);
+                Bundle panel=new Bundle();panel.putBoolean("managed",MIUI_AOD_PANEL.managed());
+                c.getContentResolver().call(Protocol.CONFIG,"panelBridge",null,panel);
+                LAUNCHER_SCROLL.refresh(c,worker(),cached,changed);
+                if(!MIUI_AOD_PANEL.managed()||aodBrightness()==0)WAKE_GLIDE.cancel();
+            }
             retry=result==null||cached.getBoolean("configured",false)&&!cached.getBoolean("enabled",false);
             LiquidKeyguardHooks.config(cached);
         } catch (RuntimeException error) {
@@ -174,18 +183,36 @@ public final class AliveHooks {
         logger = module;
         systemAdapter=true;
         String dozeStrategy="com.android.server.display.brightness.strategy.DozeBrightnessStrategy";
-        hook(module,loader,dozeStrategy,"updateBrightness",chain->{
+        boolean panelReady=hook(module,loader,dozeStrategy,"updateBrightness",chain->{
             if(!MiuiAodPanelBrightness.contract((Method)chain.getExecutable()))return chain.proceed();
             Object nativeState=chain.proceed();
             return MIUI_AOD_PANEL.update(chain.getThisObject(),chain.getArgs().get(0),nativeState,aodBrightness(),AliveHooks::log);
         });
+        MIUI_AOD_PANEL.installed(panelReady&&MiuiAodPanelBrightness.supported(loader));
         hook(module,loader,dozeStrategy,"setDozeBrightnessState",chain->{
             if(chain.getArgs().size()==2&&Boolean.FALSE.equals(chain.getArgs().get(0)))MIUI_AOD_PANEL.clear();
             return chain.proceed();
         });
         hook(module,loader,"com.android.server.display.DisplayPowerController","requestPowerState",chain->{
             if(chain.getArgs().size()==2)MIUI_AOD_PANEL.powerRequest(chain.getThisObject(),chain.getArgs().get(0));
+            Object controller=chain.getThisObject();
+            if(Integer.valueOf(0).equals(field(controller,"mDisplayId"))&&chain.getArgs().size()==2
+                    &&(Integer.valueOf(1).equals(field(chain.getArgs().get(0),"dozeScreenState"))
+                        ||!Integer.valueOf(1).equals(field(chain.getArgs().get(0),"policy"))
+                            &&!Integer.valueOf(3).equals(field(chain.getArgs().get(0),"policy"))))WAKE_GLIDE.cancel();
             return chain.proceed();
+        });
+        hook(module,loader,"com.android.server.display.DisplayPowerController","updatePowerState",chain->{
+            Object result=chain.proceed();WAKE_GLIDE.caps(chain.getThisObject());return result;
+        });
+        hook(module,loader,"com.android.server.display.DisplayPowerState$PhotonicModulator","setState",chain->{
+            Method method=(Method)chain.getExecutable();
+            if(!WakeGlide.contract(method))return chain.proceed();
+            Context c=context();android.os.PowerManager power=c==null?null:c.getSystemService(android.os.PowerManager.class);
+            boolean ambient=power==null||!power.isInteractive();
+            boolean eligible=MIUI_AOD_PANEL.managed()&&aodBrightness()>0;
+            Object[] args=WAKE_GLIDE.arguments(chain.getThisObject(),method,chain.getArgs().toArray(),ambient,eligible);
+            return args==null?true:chain.proceed(args);
         });
         worker().post(AliveHooks::refresh);
         hook(module,loader,"android.hardware.display.AmbientDisplayConfiguration","alwaysOnAvailable",chain->{
@@ -208,6 +235,7 @@ public final class AliveHooks {
             for (String method : new String[]{"goToSleep", "goToSleepInternal", "goToSleepGroup", "wakeUp", "wakeUpInternal", "wakePowerGroup"}) {
                 hook(module, loader, type, method, chain -> {
                     boolean sleep = method.startsWith("goToSleep");
+                    if(sleep)WAKE_GLIDE.cancel();else WAKE_GLIDE.wake(MIUI_AOD_PANEL.managed()&&aodBrightness()>0);
                     MIUI_AOD_PANEL.clear();
                     boolean biometric = false;
                     for (Object arg : chain.getArgs()) {

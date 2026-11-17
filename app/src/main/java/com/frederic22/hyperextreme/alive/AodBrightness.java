@@ -9,6 +9,8 @@ import android.os.Handler;
 public final class AodBrightness {
     public static final String KEY="aod_brightness";
     public static final float DEFAULT=0f,MIN=0f,MAX=5f,STEP=.25f;
+    public static final String PANEL_MANAGED="aod_panel_managed";
+    private static volatile boolean panelManaged;
     private AodBrightness(){}
     public static float normalize(float value){return Float.isFinite(value)?Math.max(MIN,Math.min(MAX,value)):DEFAULT;}
     public static float load(Context context){return normalize(Config.prefs(context).getFloat(KEY,DEFAULT));}
@@ -28,6 +30,16 @@ public final class AodBrightness {
     public static float frameGain(float value,float weight,boolean ambient){
         float exposure=gain(value,weight);
         return ambient?exposure:Math.min(1,exposure);
+    }
+    public static boolean panelManaged(){return panelManaged;}
+    static void panelManaged(Context context,boolean managed){
+        if(panelManaged==managed)return;
+        panelManaged=managed;
+        EngineRegistry.refreshOptions(context);
+        context.getContentResolver().notifyChange(Protocol.CONFIG,null);
+    }
+    public static float renderGain(float value,float weight,boolean ambient,boolean preview,boolean managed){
+        return !preview&&managed?1:frameGain(value,weight,ambient);
     }
     public static float dimWeight(float dim,float aodDim){
         return Math.max(0,Math.min(1,(1-dim)/Math.max(.001f,1-aodDim)));
@@ -70,6 +82,7 @@ public final class AodBrightness {
         private final Runnable invalidate;
         private boolean registered;
         public volatile float value=DEFAULT;
+        public volatile boolean managed;
         public Watch(Context context,Handler handler,Runnable invalidate){
             super(handler);this.context=context;this.invalidate=invalidate;
             refresh();
@@ -78,12 +91,12 @@ public final class AodBrightness {
         }
         public void refresh(){
             try {
-                if(Protocol.PACKAGE.equals(context.getPackageName()))value=load(context);
-                else {
-                    Bundle result=context.getContentResolver().call(Protocol.CONFIG,"getConfig",null,null);
-                    if(result!=null)value=normalize(result.getFloat(KEY,DEFAULT));
-                }
-            }catch(RuntimeException error){android.util.Log.w(Protocol.TAG,"Brightness refresh unavailable",error);}
+                // Spatial/raster services share the package but run in :wallpaper.
+                // A process-local flag would apply shader gain on top of panel gain.
+                Bundle result=context.getContentResolver().call(Protocol.CONFIG,"getConfig",null,null);
+                if(result!=null){value=normalize(result.getFloat(KEY,DEFAULT));managed=result.getBoolean(PANEL_MANAGED,false);}
+                else {managed=false;if(Protocol.PACKAGE.equals(context.getPackageName()))value=load(context);}
+            }catch(RuntimeException error){managed=false;android.util.Log.w(Protocol.TAG,"Brightness refresh unavailable",error);}
         }
         @Override public void onChange(boolean selfChange){
             refresh();

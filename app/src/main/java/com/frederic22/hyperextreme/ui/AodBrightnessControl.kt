@@ -35,7 +35,7 @@ internal fun AodBrightnessControl(value: Float, onChange: (Float) -> Unit) {
             for(tick in 0..5) Text(tick.toString(), style = MiuixTheme.textStyles.footnote1,
                 color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
         }
-        Text("0 保留系统原始息屏亮度，每格 0.25 倍。", style = MiuixTheme.textStyles.body2,
+        Text("0 保留原始亮度，每格 0.25。跟随系统自动亮度，暗处按设定倍率增强，亮处减少增强；最高 5 倍。", style = MiuixTheme.textStyles.body2,
             color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
     }
 }

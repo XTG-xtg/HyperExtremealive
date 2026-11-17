@@ -316,8 +316,8 @@ final class EglWorker {
             if(renderer==null)return;
             if(renderer.motion() instanceof InfinityMotion){
                 if(!infinityInput(sequence,generation,epoch,wasVisible)||state.mode!=2)return;
-                // A zero page step is a single-page axis, often reported with a default offset of zero.
-                synchronized(motionSession){((InfinityMotion)renderer.motion()).follow(xStep>0?x-.5f:0,yStep>0?y-.5f:0,time);}
+                synchronized(motionSession){((InfinityMotion)renderer.motion()).follow(
+                    InfinityLauncherOffset.centered(x,xStep),InfinityLauncherOffset.centered(y,yStep),time);}
                 request();
             }else applyOffset(x-.5f,y-.5f);
         }catch(Throwable error){fail(error);}});
@@ -379,7 +379,7 @@ final class EglWorker {
             // Keep the scene/placement transition, but never boost the restored lock/home.
             // The display wake can precede the asynchronous scene signal.
             boolean ambient=state.mode==0&&(preview||!requestedInteractive);
-            float exposure=AodBrightness.frameGain(options.brightness,aodWeight,ambient);
+            float exposure=AodBrightness.renderGain(options.brightness,aodWeight,ambient,preview,AodBrightness.panelManaged());
             if(renderer.frameReady())presentation.render(exposure,
                 translate?presentationX*aodWeight:0,translate?presentationY*aodWeight:0);
             int glError=GLES30.glGetError();if(glError!=GLES30.GL_NO_ERROR)throw new IllegalStateException("GL error 0x"+Integer.toHexString(glError));

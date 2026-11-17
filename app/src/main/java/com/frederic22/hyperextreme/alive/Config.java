@@ -8,9 +8,16 @@ final class Config {
     static SharedPreferences prefs(Context c) { return c.getSharedPreferences("alive", Context.MODE_PRIVATE); }
     static int variant(Context c) { return prefs(c).getInt("variant", 1); }
     static boolean dark(Context c) { return prefs(c).getBoolean("dark", false); }
+    static boolean launcherScroll(Context c){return prefs(c).getBoolean("launcher_scroll",true);}
+    static void setLauncherScroll(Context c,boolean value){
+        prefs(c).edit().putBoolean("launcher_scroll",value).apply();
+        c.getContentResolver().notifyChange(Protocol.CONFIG,null);
+    }
     static Bundle read(Context c) {
         SharedPreferences p = prefs(c); Bundle b = new Bundle();
         b.putInt("variant", variant(c)); b.putBoolean("dark", dark(c));
+        b.putBoolean("launcher_scroll",launcherScroll(c));
+        b.putBoolean(AodBrightness.PANEL_MANAGED,AodBrightness.panelManaged());
         b.putBoolean("configured", p.getBoolean("enabled", false));
         b.putBoolean("enabled", b.getBoolean("configured") && EngineRegistry.hasEngine());
         // Retired overlays remain disabled even with legacy saved settings.

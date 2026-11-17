@@ -109,8 +109,9 @@ internal object RasterRenderer {
     /** 给 [RasterOverlay] 的 AGSL 用：与 GL **同一个**压暗值（AOD 时两边必须同步）。 */
     internal fun aodDimValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.wallpaperDim(
         dim, aodTargetDim, brightness?.value ?: 1f)
-    internal fun aodExposureValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.gain(
-        brightness?.value ?: 0f, com.frederic22.hyperextreme.alive.AodBrightness.dimWeight(dim, aodTargetDim))
+    internal fun aodExposureValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.renderGain(
+        brightness?.value ?: 0f, com.frederic22.hyperextreme.alive.AodBrightness.dimWeight(dim, aodTargetDim),
+        fullAod, false, brightness?.managed == true)
 
     private var appCtx: Context? = null
 

@@ -23,9 +23,9 @@
 - **Infinity 壁纸**：20 款样式，支持息屏、锁屏与桌面转场，以及桌面滑动跟随、松手回弹和页面视差。
 - **照片与取景**：锁屏、桌面和相框独立选图、缩放与裁切；桌面可跟随锁屏照片，锁屏与桌面纹理分别设置。
 - **统一三态预览**：Alive、Infinity、Vivo 系列及独立光栅、空间、视差壁纸均可在全屏预览中切换息屏、锁屏和桌面，确认应用后才保存设置。
-- **息屏亮度**：在预览中调整，固定 0–5 倍、20 格、每格 0.25；0 保留系统原始息屏亮度。非零倍率去掉全屏 AOD 的系统壁纸遮罩，通过壁纸曝光控制亮度，保留自动关闭与唤醒流程。
-- **唤醒曝光**：退出 AOD 的首帧撤销额外曝光，避免高倍率残留到锁屏恢复阶段；原有展开与压暗过渡继续播放。
-- **稳定 AOD**：Infinity 星点移除额外脉冲及分组归零闪烁。ui36 针对小米绕过 SystemUI 的全屏 AOD 自动亮度路径，在非零倍率下保持入场面板亮度请求；唤醒、完全熄灭或选择 0 时释放，温控等系统限制继续生效。此项修复仍待实机确认，详见[修复记录](docs/alive/UI36-AOD-PANEL.zh-CN.md)。
+- **息屏亮度**：预览内使用 0–5、20 格、每格 0.25 的滑块，0 保留原始亮度。ui37 接入自适应增强：跟随小米全屏 AOD 的原生环境亮度，暗处最高增强 5 倍，亮处减少增强；面板接管时不叠加壁纸曝光，温控及自动关闭继续生效。
+- **唤醒缓动**：本模块全屏 AOD 唤醒时，短暂保持息屏背光，再平滑恢复原生锁屏／桌面目标，最长 2.5 秒。同步处理背光与 SDR，连续息屏、0 值及黑屏请求会取消缓动。
+- **桌面跟随修正**：支持小米桌面自动页面步长，Infinity 预览可选择保持桌面滚动；仅应用成功后保存，关闭或换壁纸恢复原设置。Infinity 星点闪烁修正继续保留。[ui37 变更说明](docs/alive/UI37-ADAPTIVE-GLIDE.zh-CN.md)
 - **光栅与空间壁纸**：支持多图光栅搭配、卡片管理、空间壁纸显示区域裁剪，以及系统壁纸服务模式。视差预览显示所选背景和移动效果，系统主体以实机为准。
 - **系统个性化**：保留 HyperExtreme 的视差壁纸、景深及其他系统个性化功能。
 
@@ -40,11 +40,11 @@
 
 ## 使用方法
 
-已发布版本见 [Releases](https://github.com/XTG-xtg/HyperExtremealive/releases/latest)。当前 ui36 为修复候选，Release 暂存草稿，以下是本次构建的文件名。
+已发布版本见 [Releases](https://github.com/XTG-xtg/HyperExtremealive/releases/latest)。当前 ui37 为实机测试候选，以下为本次构建的文件名。
 
 | 文件 | 用途 |
 | --- | --- |
-| `HyperExtreme-Alive-0.5-alive.7-ui.36.apk` | ui36 Release 构建，versionCode 51，开启 R8 优化与资源收缩 |
+| `HyperExtreme-Alive-0.5-alive.7-ui.37.apk` | ui37 Release 构建，versionCode 52，开启 R8 优化与资源收缩 |
 | `HyperExtreme-Alive-Dynamic-Wallpapers-v1.zip` | 启航、流光、视频、立体等动态壁纸的配套资源包 |
 | `SHA256SUMS.txt` | 安装包与资源包的 SHA-256 校验值 |
 
@@ -55,7 +55,7 @@
 5. Alive、空间、光栅和视差壁纸不能同时启用，切换前请先关闭正在使用的另一项。
 
 资源包只存放壁纸数据，照片壁纸、Infinity 和 Vivo 系列所需资源仍随 APK 提供。
-ui36 更新后需要重启手机：新增亮度钩子位于 `system_server`，仅重启系统界面或重新打开应用无法加载。
+ui37 更新后需要完整重启手机：亮度与背光钩子位于 `system_server`，仅重启系统界面或重新打开应用无法加载。
 
 本分支使用独立包名 `com.xtg.hyperextremealive`，可与主线并存，不会覆盖主线或自动迁移旧配置。
 请勿同时启用两个模块中修改相同系统功能的选项，遇到异常请先排查模块冲突。
@@ -91,6 +91,7 @@ OpenAlive 自实现代码的 [MIT 许可](docs/alive/OPENALIVE_LICENSE)不涵盖
 - **HyperExtreme · Frederic22**：本项目的基础与原作。[Github](https://github.com/22Frederic/HyperExtreme) · [酷安](https://www.coolapk.com/u/3268364)
 - **HyperAlive · AXLES / Askt-clot**：Alive 壁纸界面与交互的参考来源。[GitHub 主页](https://github.com/Askt-clot) · [开源仓库](https://github.com/Askt-clot/HyperAlive) · [酷安](https://www.coolapk.com/u/39588100)
 - **OpenAlive · 下北沢最速傳說 / Maga-King**：照片渲染管线及相关功能的移植来源。[Github](https://github.com/Maga-King/OpenAlive) · [酷安](https://www.coolapk.com/u/24655132)
+- **tangtang-dotcom · HyperExtremealive_go**：ui37 桌面自动步长修正、自适应 AOD 亮度与唤醒背光缓动的参考来源。[GitHub](https://github.com/tangtang-dotcom/HyperExtremealive_go)
 - **整合维护 · 年华虚度 / XTG-xtg**：本分支的整合、HyperOS 适配与维护。[Github](https://github.com/XTG-xtg/HyperExtremealive) · [酷安](https://www.coolapk.com/u/44199044)
 
 上游代码保留原作者署名与相应许可；官方运行时、字体、壁纸及素材的权利仍归原权利人。

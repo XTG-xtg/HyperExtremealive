@@ -1,16 +1,17 @@
 package com.frederic22.hyperextreme.alive;
 
-/** One physical-display session. The wallpaper shader remains responsible for the 0..5 gain. */
+/** Live OEM ambient brightness with a bounded, monotonic dark-to-bright lift. */
 final class AodPanelHold {
-    private float entry=Float.NaN;
-    void clear(){entry=Float.NaN;}
     static boolean valid(float value){return Float.isFinite(value)&&value>0&&value<=1;}
-    float brightness(float requested,float normal,float level,boolean eligible){
-        if(!eligible||AodBrightness.normalize(level)==0){clear();return requested;}
-        // OFF/proximity and unspecified requests must retain their native meaning.
+    float brightness(float requested,float level){
+        float gain=AodBrightness.normalize(level);
+        if(gain==0)return requested;
         if(!valid(requested))return requested;
-        if(!valid(entry))entry=valid(normal)?normal:requested;
-        return entry;
+        if(gain<=1)return requested*gain;
+        float low=.02f,high=.15f,bright=1+(gain-1)*.375f;
+        float out=requested<=low?requested*gain:requested>=high?requested*bright
+            :low*gain+(high*bright-low*gain)*(requested-low)/(high-low);
+        return Math.min(1,Math.max(requested,Math.min(requested*gain,out)));
     }
     static boolean eligible(boolean owned,boolean fullAod,boolean interactive,int display,int policy,int state){
         // Full AOD initially uses STATE_ON, then DOZE/DOZE_SUSPEND; STATE_OFF is final.

@@ -33,7 +33,7 @@ internal class WallpaperAodBrightness(
         val t=((SystemClock.uptimeMillis()-began)/700f).coerceIn(0f,1f)
         return from+(target-from)*t*t*(3-2*t)
     }
-    val exposure: Float get()=AodBrightness.frameGain(watch.value,weight(),target==1f)
+    val exposure: Float get()=AodBrightness.renderGain(watch.value,weight(),target==1f,false,watch.managed)
     private val frame=object:Runnable {
         override fun run() {
             if(closed || !shown || displays?.getDisplay(Display.DEFAULT_DISPLAY)?.state == Display.STATE_OFF) return

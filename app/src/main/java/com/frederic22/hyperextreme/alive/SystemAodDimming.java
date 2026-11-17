@@ -73,6 +73,15 @@ final class SystemAodDimming {
             return ownsLock(context,user);
         }catch(ReflectiveOperationException|RuntimeException|LinkageError unavailable){return false;}
     }
+    static Context selectedContext(Context context) throws ReflectiveOperationException {
+        int user=(Integer)Class.forName("android.app.ActivityManager").getMethod("getCurrentUser").invoke(null);
+        UserHandle handle=(UserHandle)UserHandle.class.getMethod("of",int.class).invoke(null,user);
+        return (Context)Context.class.getMethod("createContextAsUser",UserHandle.class,int.class).invoke(context,handle,0);
+    }
+    static boolean ownsHome(Context context) throws ReflectiveOperationException {
+        WallpaperInfo info=WallpaperManager.getInstance(context).getWallpaperInfo(WallpaperManager.FLAG_SYSTEM);
+        return info!=null&&owns(info.getComponent());
+    }
     private static boolean ownsLock(Context context,int user) throws ReflectiveOperationException {
         UserHandle handle=(UserHandle)UserHandle.class.getMethod("of",int.class).invoke(null,user);
         Context selected=(Context)Context.class.getMethod("createContextAsUser",UserHandle.class,int.class).invoke(context,handle,0);

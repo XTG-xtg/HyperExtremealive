@@ -6,26 +6,30 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.PowerManager;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
 /** Adapter for Xiaomi's full-AOD strategy, which bypasses DozeService brightness requests. */
 final class MiuiAodPanelBrightness {
-    private final WeakHashMap<Object,AodPanelHold> sessions=new WeakHashMap<>();
+    private final AodPanelHold curve=new AodPanelHold();
     private volatile boolean owned;
+    private volatile boolean fullMode,installed;
     private boolean watching;
     private long bindingRevision;
     private boolean reportedFailure;
     private String lastDecision="";
+    private Handler worker;
+    private Runnable changed;
 
-    synchronized void clear(){sessions.clear();lastDecision="";}
+    synchronized void clear(){lastDecision="";}
+    void installed(boolean ready){installed=ready;}
+    boolean managed(){return installed&&owned&&fullMode;}
 
     // Called only on the config worker; WallpaperManager/ActivityManager IPC must not run
     // in DisplayPowerController's hook/lock. Invalidate before refreshing changed bindings.
-    void refresh(Context context,Handler worker){
+    void refresh(Context context,Handler worker,Runnable changed){
         if(context==null)return;
+        this.worker=worker;this.changed=changed;
         try {
         if(!watching){
             IntentFilter filter=new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
@@ -33,20 +37,29 @@ final class MiuiAodPanelBrightness {
             context.registerReceiver(new BroadcastReceiver(){
                 @Override public void onReceive(Context c,Intent event){
                     synchronized(MiuiAodPanelBrightness.this){owned=false;bindingRevision++;clear();}
-                    worker.post(()->refresh(context,worker));
+                    worker.post(changed);
                 }
             },filter);
+            android.database.ContentObserver modeObserver=new android.database.ContentObserver(worker){
+                @Override public void onChange(boolean selfChange){changed.run();}
+            };
+            for(String key:new String[]{"full_screen_aod_on","doze_always_on"})
+                context.getContentResolver().registerContentObserver(android.provider.Settings.Secure.getUriFor(key),false,modeObserver);
             watching=true;
         }
         long revision;
         synchronized(this){revision=bindingRevision;}
         boolean current=SystemAodDimming.ownsSelectedLock(context);
+        Context selected=SystemAodDimming.selectedContext(context);
+        boolean mode=android.provider.Settings.Secure.getInt(selected.getContentResolver(),"full_screen_aod_on",0)==1
+            &&android.provider.Settings.Secure.getInt(selected.getContentResolver(),"doze_always_on",0)==1;
         synchronized(this){
             if(revision!=bindingRevision)return;
             if(owned!=current)clear();
             owned=current;
+            fullMode=mode;
         }
-        }catch(RuntimeException|LinkageError unavailable){synchronized(this){owned=false;clear();}}
+        }catch(ReflectiveOperationException|RuntimeException|LinkageError unavailable){synchronized(this){owned=false;fullMode=false;clear();}}
     }
 
     void powerRequest(Object display,Object request){
@@ -63,6 +76,22 @@ final class MiuiAodPanelBrightness {
             &&p[0].getName().equals("com.android.server.display.brightness.StrategyExecutionRequest")
             &&method.getReturnType().getName().equals("com.android.server.display.DisplayBrightnessState");
     }
+    static boolean supported(ClassLoader loader){
+        try{
+            Class<?> execution=Class.forName("com.android.server.display.brightness.StrategyExecutionRequest",false,loader);
+            Class<?> strategy=Class.forName("com.android.server.display.brightness.strategy.DozeBrightnessStrategy",false,loader);
+            Method update=strategy.getDeclaredMethod("updateBrightness",execution);
+            if(!contract(update))return false;
+            Class<?> state=update.getReturnType();
+            Class<?> builder=Class.forName(state.getName()+"$Builder",false,loader);
+            builder.getMethod("from",state);builder.getMethod("setBrightness",float.class);builder.getMethod("build");
+            Class<?> miui=Class.forName("com.android.server.display.brightness.strategy.DozeBrightnessStrategyImpl",false,loader);
+            miui.getDeclaredField("mContext");miui.getDeclaredField("mIsFullAod");
+            strategy.getDeclaredField("mDisplayId");strategy.getDeclaredField("mDozeBrightnessStrategyStub");
+            execution.getMethod("getDisplayPowerRequest");state.getMethod("getBrightness");
+            return true;
+        }catch(ReflectiveOperationException|RuntimeException|LinkageError unsupported){return false;}
+    }
 
     Object update(Object strategy,Object execution,Object original,float level,Consumer<String> log){
         if(original==null)return null;
@@ -76,21 +105,20 @@ final class MiuiAodPanelBrightness {
             int display=(Integer)field(strategy,"mDisplayId"),policy=(Integer)field(request,"policy"),state=(Integer)field(request,"dozeScreenState");
             boolean eligible=AodPanelHold.eligible(owned,full,interactive,display,policy,state);
             float nativeBrightness=(Float)original.getClass().getMethod("getBrightness").invoke(original);
-            Object controller=field(stub,"mDozeAutoBrightnessController");
-            float normal=controller==null?Float.NaN:(Float)field(controller,"mNormalBrightness");
             float held;
             synchronized(this){
                 String decision="owned="+owned+" full="+full+" interactive="+interactive+" display="+display+" policy="+policy+" state="+state+" level="+level;
                 if(!decision.equals(lastDecision)){lastDecision=decision;log.accept("AOD Xiaomi scope "+decision);}
-                if(!owned||!eligible||AodBrightness.normalize(level)==0){sessions.remove(strategy);return original;}
-                held=sessions.computeIfAbsent(strategy,key->new AodPanelHold())
-                    .brightness(nativeBrightness,normal,level,true);
+                if(!managed()||!eligible||AodBrightness.normalize(level)==0)return original;
+                held=curve.brightness(nativeBrightness,level);
             }
             if(held==nativeBrightness||!AodPanelHold.valid(held))return original;
             Object result=copyBrightness(original,held);
-            log.accept("AOD Xiaomi panel native="+nativeBrightness+" entry="+normal+" held="+held+" level="+level);
+            log.accept("AOD Xiaomi adaptive native="+nativeBrightness+" adjusted="+held+" level="+level);
             return result;
         }catch(ReflectiveOperationException|RuntimeException|LinkageError unavailable){
+            installed=false;
+            if(worker!=null&&changed!=null)worker.post(changed);
             clear();
             if(!reportedFailure){reportedFailure=true;log.accept("AOD Xiaomi panel contract unavailable: "+unavailable);}
             return original;
@@ -107,11 +135,6 @@ final class MiuiAodPanelBrightness {
     }
 
     private static Object field(Object host,String name) throws ReflectiveOperationException {
-        if(host==null)return null;
-        for(Class<?> type=host.getClass();type!=null;type=type.getSuperclass()){
-            try{Field field=type.getDeclaredField(name);field.setAccessible(true);return field.get(host);}
-            catch(NoSuchFieldException missing){/* Check the superclass. */}
-        }
-        throw new NoSuchFieldException(name);
+        return SystemFields.get(host,name);
     }
 }

@@ -12,7 +12,11 @@ import android.os.SystemClock;
 
 /** Bounded lifecycle and hit-coverage IPC. No photographs, arbitrary paths or shell commands. */
 public final class ConfigProvider extends ContentProvider {
-    public boolean onCreate() { return true; }
+    public boolean onCreate() {
+        // Reconcile the ephemeral panel bridge after a provider-process restart.
+        new android.os.Handler(android.os.Looper.getMainLooper()).post(()->getContext().getContentResolver().notifyChange(Protocol.CONFIG,null));
+        return true;
+    }
     private boolean trusted() {
         int uid = Binder.getCallingUid();
         return ConfigCallerTrust.trusted(getContext(), uid, Process.myUid());
@@ -22,6 +26,11 @@ public final class ConfigProvider extends ContentProvider {
         boolean debugShell = uid == 2000 && (getContext().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         if (!trusted() && !(debugShell && "status".equals(method))) throw new SecurityException("Untrusted config caller: " + uid);
         if ("getConfig".equals(method)) return Config.read(getContext());
+        if("panelBridge".equals(method)){
+            if(uid!=0&&uid%100000!=1000)throw new SecurityException("System-only panel bridge");
+            AodBrightness.panelManaged(getContext(),extras!=null&&extras.getBoolean("managed",false));
+            return Bundle.EMPTY;
+        }
         if ("status".equals(method)) return EngineRegistry.status(getContext());
         if("liquidTap".equals(method)){
             if(extras==null)throw new IllegalArgumentException("Missing tap");

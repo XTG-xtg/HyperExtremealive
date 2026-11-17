@@ -100,6 +100,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
     var vivoImport by rememberSaveable { mutableIntStateOf(VivoMediaSelection.WALLPAPER) }
     var maskArea by rememberSaveable { mutableIntStateOf(initialMaskArea) }
     var renderOptions by rememberSaveable(stateSaver = RenderSaver) { mutableStateOf(initialPreset?.render ?: AliveRenderOptions.load(app, true)) }
+    var launcherScroll by rememberSaveable { mutableStateOf(Config.launcherScroll(app)) }
     var revision by remember { mutableIntStateOf(0) }
     var sequence by remember { mutableLongStateOf(0) }
     var busy by remember { mutableStateOf(false) }
@@ -388,6 +389,9 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
                     }
                     if (!isPhoto) SwitchRow(title = stringResource(R.string.alive_dark), summary = stringResource(R.string.alive_dark_note), checked = dark, onCheckedChange = { dark = it })
                     com.frederic22.hyperextreme.ui.AodBrightnessControl(renderOptions.brightness) { mode=0;option(7,it) }
+                    if (InfinityTheme.supports(variant)) SwitchRow(title="桌面手势跟随",
+                        summary="应用后保持小米桌面的壁纸滚动；关闭后恢复原设置",checked=launcherScroll,
+                        onCheckedChange={launcherScroll=it})
                     Text("调整时自动切到息屏预览，应用壁纸后保存。", style = MiuixTheme.textStyles.body2)
                     if(variant < 201 || isPhoto && photo.aodMode == 0) {
                         SwitchRow(title = "跟随系统息屏时钟", summary = "保留系统时钟，图案跟随其真实布局和防烧屏移动", checked = renderOptions.followClock, onCheckedChange = { option(3, if(it) 1f else 0f) })
@@ -444,6 +448,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
                             else -> app.getString(R.string.alive_failed) }
                         AppToast.show(context, message)
                         if (value?.ok() == true) {
+                            if(InfinityTheme.supports(variant)) Config.setLauncherScroll(app,launcherScroll)
                             try {
                                 withContext(Dispatchers.IO) { AlivePresets.markCurrent(app,previousPreset);AlivePresets.markCurrent(app,nextPreset) }
                             } catch(e: CancellationException) { throw e }
