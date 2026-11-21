@@ -74,8 +74,10 @@ private val VivoSaver = Saver<VivoOptions, String>(save = { it.json() }, restore
 
 internal val RenderSaver = listSaver<AliveRenderOptions, Float>(
     save = { listOf(if(it.keepLock) 1f else 0f, if(it.continuousAod) 1f else 0f, if(it.continuousHome) 1f else 0f,
-        if(it.followClock) 1f else 0f, if(it.burnIn) 1f else 0f, if(it.stereoAod) 1f else 0f, it.sensitivity.toFloat(), it.brightness, it.aodOffsetX, it.aodOffsetY) },
-    restore = { AliveRenderOptions(it[0] == 1f, it[1] == 1f, it[2] == 1f, it[3] == 1f, it[4] == 1f, it[5] == 1f, it[6].toInt(), it[7], it.getOrElse(8) { 0f }, it.getOrElse(9) { 0f }) })
+        if(it.followClock) 1f else 0f, if(it.burnIn) 1f else 0f, if(it.stereoAod) 1f else 0f, it.sensitivity.toFloat(), it.brightness, it.aodOffsetX, it.aodOffsetY,
+        if(it.infinityGesture) 1f else 0f, if(it.infinityGyro) 1f else 0f) },
+    restore = { AliveRenderOptions(it[0] == 1f, it[1] == 1f, it[2] == 1f, it[3] == 1f, it[4] == 1f, it[5] == 1f, it[6].toInt(), it[7], it.getOrElse(8) { 0f }, it.getOrElse(9) { 0f },
+        it.getOrElse(10) { 1f } == 1f, it.getOrElse(11) { 1f } == 1f) })
 
 @Composable
 private fun Preview(name: String, initialVariant: Int, initialMode: Int, initialPanel: String, initialMaskArea: Int, initialPreset: AlivePreset?, onBack: () -> Unit) {
@@ -89,10 +91,11 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
     var variant by rememberSaveable { mutableIntStateOf(initialPreset?.variant ?: initialVariant) }
     var sceneName by rememberSaveable { mutableStateOf(initialPreset?.name ?: name) }
     var dark by rememberSaveable { mutableStateOf(initialPreset?.dark ?: Config.dark(app)) }
-    var clock by rememberSaveable { mutableStateOf(initialPreset?.clock ?: Config.prefs(app).getBoolean("clock", false)) }
+    val clock = false
     var mode by rememberSaveable { mutableIntStateOf(initialMode) }
     var previous by remember { mutableIntStateOf(initialMode) }
     var demo by remember { mutableStateOf(false) }
+    var immersiveHidden by rememberSaveable { mutableStateOf(false) }
     var showClockGuide by rememberSaveable { mutableStateOf(false) }
     var panel by rememberSaveable { mutableStateOf(initialPanel.takeIf { it in listOf("mask", "vivo-crop", "vivo-area", "vivo", "vivo-photos") }.orEmpty()) }
     var photo by rememberSaveable(stateSaver = PhotoSaver) { mutableStateOf(initialPreset?.photo ?: PhotoOptions.load(app, true)) }
@@ -100,6 +103,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
     var vivoImport by rememberSaveable { mutableIntStateOf(VivoMediaSelection.WALLPAPER) }
     var maskArea by rememberSaveable { mutableIntStateOf(initialMaskArea) }
     var renderOptions by rememberSaveable(stateSaver = RenderSaver) { mutableStateOf(initialPreset?.render ?: AliveRenderOptions.load(app, true)) }
+    var launcherScroll by rememberSaveable { mutableStateOf(Config.launcherScroll(app)) }
     var revision by remember { mutableIntStateOf(0) }
     var sequence by remember { mutableLongStateOf(0) }
     var busy by remember { mutableStateOf(false) }
@@ -227,7 +231,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
     }
     fun pickPhoto(slot: Int) { importSlot = slot; photo.save(app, true); picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }
     fun openPanel(value: String) {
-        demo = false; panel = value
+        demo = false; immersiveHidden = false; panel = value
         if(value == "crop") { cropTarget = photoSourceSlot(mode,variant,photo); mode = if(cropTarget == 2) 0 else cropTarget + 1 }
     }
     fun selectScene(scene: AliveCatalog.Scene) {
@@ -264,7 +268,8 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
             if(key == 1) value == 1f else o.continuousAod, if(key == 2) value == 1f else o.continuousHome,
             if(key == 3) value == 1f else o.followClock, if(key == 4) value == 1f else o.burnIn,
             if(key == 5) value == 1f else o.stereoAod, if(key == 6) value.toInt() else o.sensitivity,
-            if(key == 7) value else o.brightness, o.aodOffsetX, o.aodOffsetY)
+            if(key == 7) value else o.brightness, o.aodOffsetX, o.aodOffsetY,
+            if(key == 8) value == 1f else o.infinityGesture, if(key == 9) value == 1f else o.infinityGyro)
     }
 
     Scaffold(contentWindowInsets = WindowInsets(0)) { _ ->
@@ -275,20 +280,26 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
                     override fun surfaceChanged(surface: SurfaceHolder, format: Int, width: Int, height: Int) { surfaceHolder = surface; revision++ }
                     override fun surfaceDestroyed(surface: SurfaceHolder) { surfaceHolder = null; expectedGeneration = -1; worker.detach() }
                 }); setOnTouchListener { view, event ->
-                    if(currentVariant in 701..703 && !currentBusy && !currentSwitching) { worker.touch(event.actionMasked,event.x/view.width.coerceAtLeast(1),event.y/view.height.coerceAtLeast(1)); true } else false
+                    if((currentVariant in 701..703 || InfinityTheme.supports(currentVariant)) && !currentBusy && !currentSwitching) { worker.touch(event.actionMasked,event.x/view.width.coerceAtLeast(1),event.y/view.height.coerceAtLeast(1)); true } else false
                 } }
             })
             Canvas(Modifier.fillMaxSize()) { drawRect(Color.Black, alpha = transition.shade.value) }
             if(rendered && !transition.running && error.isEmpty() && showClockGuide && panel != "crop" && panel != "mask") AliveSceneOverlay(mode, variant = variant)
-            if (!transition.running && isPhoto && !hasPhoto) Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("所选照片不可用，请重新选择", color = Color.White)
-                TextButton(text = stringResource(R.string.alive_photo), enabled = !busy,
-                    colors = ButtonDefaults.textButtonColorsPrimary(),
-                    onClick = { pickPhoto(0) })
+            if (!transition.running && isPhoto && !hasPhoto) {
+                AlivePreviewStatusCard(
+                    text = "所选照片不可用，请重新选择",
+                    loading = false,
+                    actionLabel = stringResource(R.string.alive_photo),
+                    actionEnabled = !busy,
+                    onAction = { pickPhoto(0) },
+                )
+            } else if (!transition.running && (error.isNotEmpty() || !rendered)) {
+                AlivePreviewStatusCard(
+                    text = if (error.isNotEmpty()) stringResource(R.string.alive_preview_error, error)
+                        else stringResource(R.string.alive_preview_starting),
+                    loading = error.isEmpty(),
+                )
             }
-            else if (!transition.running && (error.isNotEmpty() || !rendered)) Text(if (error.isNotEmpty()) stringResource(R.string.alive_preview_error, error)
-                else stringResource(R.string.alive_preview_starting), color = Color.White,
-                modifier = Modifier.padding(24.dp).background(Color(0xBB161616)).padding(16.dp))
             val tools = buildList {
                 add(AliveEditorTool("样式", AliveToolIcon.STYLE) { openPanel(if (isVivo) "vivo" else "styles") })
                 add(AliveEditorTool("保存预设", AliveToolIcon.PHOTO, rendered && error.isEmpty()) {
@@ -298,7 +309,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
                         try {
                             val snapshot=withContext(Dispatchers.IO) { AlivePresets.snapshot(app,title,variant,dark,clock,photo,renderOptions,true,if(isVivo) vivo else null) }
                             AlivePresets.save(app,snapshot)
-                            message="已保存预设，可在${if(isVivo) vivoTitle(variant) else "Alive"}主页右侧找到；未改变当前壁纸"
+                            message="已保存预设，可在${if(isVivo) vivoTitle(variant) else if(InfinityTheme.supports(variant)) "Infinity" else "Alive"}主页右侧找到；未改变当前壁纸"
                             AppToast.show(context,message)
                         } catch(e: CancellationException) { throw e }
                         catch(e: Exception) { message="预设保存失败：${e.message}";AppToast.show(context,message) }
@@ -327,9 +338,6 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
                     add(AliveEditorTool("动作", AliveToolIcon.OPTIONS) { openPanel("vivo-motion") })
                 }
                 add(AliveEditorTool("选项", AliveToolIcon.OPTIONS) { openPanel("options") })
-                if(mode == 0) add(AliveEditorTool("时钟与通知", AliveToolIcon.CLOCK) {
-                    context.startActivity(android.content.Intent(context, AliveExtensionsActivity::class.java))
-                })
                 if (variant != 703) add(AliveEditorTool(if (demo) "停止" else "演示", if (demo) AliveToolIcon.STOP else AliveToolIcon.PLAY,
                     rendered && error.isEmpty()) { panel = ""; demo = !demo })
             }
@@ -340,19 +348,30 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
             else if(panel == "crop") PhotoCropEditor(variant, photo, cropTarget,
                 onTarget = { cropTarget = it; mode = if(it == 2) 0 else it + 1 },
                 onChange = { photo = it }, onDone = { panel = "" })
-            else AliveEditorChrome(title = title, mode = mode, busy = busy || transition.running,
+            else AliveEditorChrome(
+                title = title,
+                mode = mode,
+                busy = busy || transition.running,
                 canApply = rendered && error.isEmpty() && (!isPhoto || hasPhoto),
                 message = message.ifEmpty { if(variant == 703) if(demo) "正在演示" else ""
                     else if(isVivo && vivo.family == VivoOptions.LIQUID) "轻点${listOf("涂抹区域", "主体", "背景", "壁纸")[vivo.area-1]}查看液态效果 · 选区外保持不动" else if(showClockGuide) "示意时钟 · 非系统真实样式" else "仅预览壁纸 · 时钟以系统实际样式为准" },
-                tools = tools, onCancel = { photo.save(app, true); renderOptions.saveDraft(app); if(isVivo) vivo.saveDraft(app); onBack() },
-                onApply = { demo = false; confirmation = true }, onMode = { demo = false; mode = it })
+                tools = tools,
+                onCancel = { photo.save(app, true); renderOptions.saveDraft(app); if(isVivo) vivo.saveDraft(app); onBack() },
+                onApply = { demo = false; confirmation = true },
+                onMode = { demo = false; mode = it },
+                subtitle = listOf("息屏预览", "锁屏预览", "桌面预览")[mode.coerceIn(0, 2)],
+                activeDemo = demo,
+                onStopDemo = { demo = false },
+                immersiveHidden = immersiveHidden,
+                onToggleImmersive = { immersiveHidden = !immersiveHidden },
+            )
         }
     }
     WindowBottomSheet(show = panel.isNotEmpty() && panel !in listOf("crop", "mask", "vivo-crop"), title = when (panel) { "styles" -> "壁纸样式"; "position" -> "息屏布局"; "photos" -> photoSourceTitle(photoSourceSlot(mode,variant,photo)); "texture" -> if(mode == 2) "桌面纹理" else "锁屏纹理"; "vivo" -> "效果设置"; "vivo-photos" -> "壁纸素材"; "vivo-area" -> "主体识别与效果范围"; "vivo-motion" -> "动作与三态"; else -> "壁纸选项" },
         enableWindowDim = false, onDismissRequest = { panel = "" },
-        endAction = { val dismiss = LocalDismissState.current; EditorTextAction("完成", onClick = { dismiss?.invoke() }) }) {
+        endAction = { val dismiss = LocalDismissState.current; TextButton("完成", onClick = { dismiss?.invoke() }) }) {
         if(panel == "styles") AliveWallpaperPicker(variant, photo, !busy, ::selectScene)
-        else Column(Modifier.fillMaxWidth().heightIn(max = if (panel == "vivo" && variant == 703) 460.dp else 340.dp).verticalScroll(rememberScrollState()).navigationBarsPadding(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        else Column(Modifier.fillMaxWidth().heightIn(max = if (panel == "options" || (panel == "vivo" && variant == 703)) 460.dp else 360.dp).verticalScroll(rememberScrollState()).navigationBarsPadding(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             when (panel) {
                 "vivo" -> VivoControls(vivo, onChange = { vivo = it })
                 "vivo-area" -> VivoAreaControls(vivo, { vivo = it }, onMask = { maskArea = it; panel = "mask" }, onRecognize = ::recognize, onImport = ::pickVivo)
@@ -372,47 +391,97 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
                 })
                 "photos" -> PhotoSourcePanel(photoSourceSlot(mode,variant,photo),photo,!busy,onChange={photo=it},onPick=::pickPhoto)
                 "position" -> {
-                    if(variant < 201 || isPhoto) SwitchRow(title = "跟随系统息屏时钟", checked = renderOptions.followClock,
-                        onCheckedChange = { option(3, if(it) 1f else 0f) })
-                    if(isPhoto) PhotoControls(variant, photo, panel, mode, onPreviewMode = { mode = it }) {
-                        photo = it; option(3, 0f)
-                    } else AodPositionControls(renderOptions) { renderOptions = it }
-                    SwitchRow(title = "防烧屏位移", checked = renderOptions.burnIn,
-                        onCheckedChange = { option(4, if(it) 1f else 0f) })
+                    EditorSettingsGroup("息屏位置", insideMargin = PaddingValues(horizontal = 16.dp, vertical = 12.dp)) {
+                        if(isPhoto) PhotoControls(variant, photo, panel, mode, onPreviewMode = { mode = it }) {
+                            photo = it; option(3, 0f)
+                        } else AodPositionControls(renderOptions) { renderOptions = it }
+                    }
+                    EditorSettingsGroup("息屏策略") {
+                        if(variant < 201 || isPhoto) SwitchRow(title = "跟随系统息屏时钟", checked = renderOptions.followClock,
+                            onCheckedChange = { option(3, if(it) 1f else 0f) })
+                        SwitchRow(title = "防烧屏位移", checked = renderOptions.burnIn,
+                            onCheckedChange = { option(4, if(it) 1f else 0f) })
+                    }
                 }
                 "crop", "texture" -> {
-                    PhotoControls(variant, photo, panel, mode, onPreviewMode = { mode = it }) { photo = it }
+                    EditorSettingsGroup(if (mode == 2) "桌面纹理" else "锁屏纹理", insideMargin = PaddingValues(horizontal = 16.dp, vertical = 14.dp)) {
+                        PhotoControls(variant, photo, panel, mode, onPreviewMode = { mode = it }) { photo = it }
+                    }
                 }
                 "options" -> {
-                    if(isPhoto) {
-                        Text("照片息屏样式", style = MiuixTheme.textStyles.body2)
-                        AliveSegments(listOf("动态造型", "全屏照片", "仅系统时钟"), photo.aodMode) { photo = photo.edit(15, it.toFloat()); mode = 0 }
-                        Text("全屏照片会增加息屏发光面积；仅系统时钟会将壁纸置黑，不关闭系统 AOD。", style = MiuixTheme.textStyles.body2)
+                    EditorSettingsGroup("息屏显示") {
+                        if(isPhoto) {
+                            Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text("照片息屏样式", style = MiuixTheme.textStyles.body1)
+                                AliveSegments(listOf("动态造型", "全屏照片", "仅系统时钟"), photo.aodMode) { photo = photo.edit(15, it.toFloat()); mode = 0 }
+                                Text("全屏照片会增加息屏发光面积；仅系统时钟会将壁纸置黑，不关闭系统 AOD。",
+                                    style = MiuixTheme.textStyles.footnote1, color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
+                            }
+                        }
+                        Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            com.frederic22.hyperextreme.ui.AodBrightnessControl(renderOptions.brightness) { mode=0;option(7,it) }
+                            Text("调整时自动切到息屏预览，应用壁纸后保存。",
+                                style = MiuixTheme.textStyles.footnote1, color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
+                        }
+                        if(variant < 201 || isPhoto && photo.aodMode == 0) {
+                            SwitchRow(title = "跟随系统息屏时钟", summary = "保留系统时钟，图案跟随其真实布局和防烧屏移动", checked = renderOptions.followClock, onCheckedChange = { option(3, if(it) 1f else 0f) })
+                            SwitchRow(title = "防烧屏位移兜底", summary = "未读取到系统时钟位置时，每分钟小幅移动图案；不会重复叠加系统位移", checked = renderOptions.burnIn, onCheckedChange = { option(4, if(it) 1f else 0f) })
+                        } else {
+                            SwitchRow(title = "防烧屏位移", checked = renderOptions.burnIn, onCheckedChange = { option(4, if(it) 1f else 0f) })
+                        }
                     }
-                    if (!isPhoto) SwitchRow(title = stringResource(R.string.alive_dark), summary = stringResource(R.string.alive_dark_note), checked = dark, onCheckedChange = { dark = it })
-                    Text("息屏图案亮度 · ${"%.0f".format(renderOptions.brightness * 100)}%", style = MiuixTheme.textStyles.body2)
-                    Slider(value = renderOptions.brightness, valueRange = .25f..3f, onValueChange = { mode = 0; option(7, it) })
-                    AliveSegments(listOf("较暗 50%", "原版 100%", "明亮 200%"), when(renderOptions.brightness) { .5f -> 0; 1f -> 1; 2f -> 2; else -> -1 }) {
-                        mode = 0; option(7, floatArrayOf(.5f, 1f, 2f)[it])
+
+                    EditorSettingsGroup("动态与交互") {
+                        if (InfinityTheme.supports(variant)) {
+                            SwitchRow(
+                                title = "手势跟随",
+                                summary = "桌面滑动与轻扫带动星点与视角；应用后同步保持小米桌面壁纸滚动",
+                                checked = renderOptions.infinityGesture,
+                                onCheckedChange = {
+                                    option(8, if (it) 1f else 0f)
+                                    launcherScroll = it
+                                },
+                            )
+                            SwitchRow(
+                                title = "陀螺仪感应",
+                                summary = "倾斜手机带动星点与视角视差；与手势跟随独立控制",
+                                checked = renderOptions.infinityGyro,
+                                onCheckedChange = { option(9, if (it) 1f else 0f) },
+                            )
+                        }
+                        if(!InfinityTheme.supports(variant)) {
+                            SwitchRow(title = "息屏持续动画", summary = "关闭后保留转场，稳定后停绘；只在可见时运行", checked = renderOptions.continuousAod, onCheckedChange = { option(1, if(it) 1f else 0f) })
+                        }
+                        if(!isPhoto) {
+                            if(!InfinityTheme.supports(variant)) SwitchRow(title = "桌面持续动画", checked = renderOptions.continuousHome, onCheckedChange = { option(2, if(it) 1f else 0f) })
+                            if(variant < 301 || variant in 501..503) SwitchRow(title = "桌面保留锁屏形态", checked = renderOptions.keepLock, onCheckedChange = { option(0, if(it) 1f else 0f) })
+                        }
+                        if(variant in 501..503 || InfinityTheme.supports(variant)) {
+                            val gyroEnabled = !InfinityTheme.supports(variant) || renderOptions.infinityGyro
+                            Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                EditorValueSlider(
+                                    title = if (InfinityTheme.supports(variant)) "陀螺仪灵敏度" else "传感器灵敏度",
+                                    value = renderOptions.sensitivity.toFloat(),
+                                    range = -50f..50f,
+                                    label = "${renderOptions.sensitivity}",
+                                    enabled = gyroEnabled,
+                                ) { option(6, it) }
+                                if(InfinityTheme.supports(variant)) {
+                                    Text("手势跟随与陀螺仪可分别开关；息屏保留星空，转场结束后静止。",
+                                        style = MiuixTheme.textStyles.footnote1, color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
+                                }
+                            }
+                            if(variant in 501..503) SwitchRow(title = "息屏陀螺仪动画", checked = renderOptions.stereoAod, onCheckedChange = { option(5, if(it) 1f else 0f) })
+                        }
                     }
-                    Text("调整时自动切到息屏预览，应用后影响实际壁纸。100% 为原版；默认 130%。不修改系统面板亮度、息屏时长或指纹高亮；纯黑和已达纯白的像素无法继续提亮。", style = MiuixTheme.textStyles.body2)
-                    if(variant < 201 || isPhoto && photo.aodMode == 0) {
-                        SwitchRow(title = "跟随系统息屏时钟", summary = "保留系统时钟，图案跟随其真实布局和防烧屏移动", checked = renderOptions.followClock, onCheckedChange = { option(3, if(it) 1f else 0f) })
-                        SwitchRow(title = "防烧屏位移兜底", summary = "未读取到系统时钟位置时，每分钟小幅移动图案；不会重复叠加系统位移", checked = renderOptions.burnIn, onCheckedChange = { option(4, if(it) 1f else 0f) })
-                    } else SwitchRow(title = "防烧屏位移", checked = renderOptions.burnIn, onCheckedChange = { option(4, if(it) 1f else 0f) })
-                    SwitchRow(title = "息屏持续动画", summary = "关闭后保留转场，稳定后停绘；只在可见时运行", checked = renderOptions.continuousAod, onCheckedChange = { option(1, if(it) 1f else 0f) })
-                    if(!isPhoto) {
-                        SwitchRow(title = "桌面持续动画", checked = renderOptions.continuousHome, onCheckedChange = { option(2, if(it) 1f else 0f) })
-                        if(variant < 301 || variant in 501..503) SwitchRow(title = "桌面保留锁屏形态", checked = renderOptions.keepLock, onCheckedChange = { option(0, if(it) 1f else 0f) })
+
+                    EditorSettingsGroup("预览与外观") {
+                        if (!isPhoto) SwitchRow(title = stringResource(R.string.alive_dark), summary = stringResource(R.string.alive_dark_note), checked = dark, onCheckedChange = { dark = it })
+                        SwitchRow(title = "显示示意时钟", summary = "仅辅助检查布局，不是真实系统时钟样式；取景时始终隐藏", checked = showClockGuide, onCheckedChange = { showClockGuide = it })
                     }
-                    if(variant in 501..503) {
-                        Text("传感器灵敏度 · ${renderOptions.sensitivity}", style = MiuixTheme.textStyles.body2)
-                        Slider(value = renderOptions.sensitivity.toFloat(), valueRange = -50f..50f, onValueChange = { option(6, it) })
-                        SwitchRow(title = "息屏陀螺仪动画", checked = renderOptions.stereoAod, onCheckedChange = { option(5, if(it) 1f else 0f) })
-                    }
-                    if(clock) SwitchRow(title = "关闭旧版额外时钟", summary = "旧版叠加时钟可能与系统时钟重叠，建议关闭", checked = clock, onCheckedChange = { clock = it })
-                    SwitchRow(title = "显示示意时钟", summary = "仅辅助检查布局，不是真实系统时钟样式；取景时始终隐藏", checked = showClockGuide, onCheckedChange = { showClockGuide = it })
-                    Text("系统自定义字体、小组件和通知由系统绘制，此处不伪造。关闭示意时钟不会关闭真实锁屏或息屏时钟。", style = MiuixTheme.textStyles.body2)
+                    Text("系统自定义字体、小组件和通知由系统绘制，此处不伪造。关闭示意时钟不会关闭真实锁屏或息屏时钟。",
+                        style = MiuixTheme.textStyles.footnote1, color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                        modifier = Modifier.padding(horizontal = 4.dp))
                 }
             }
         }
@@ -432,7 +501,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
                     try {
                         val previousPreset = withContext(Dispatchers.IO) {
                             val active=Config.variant(app)
-                            val current=AlivePresets.current(app,if(active in 701..703) active else 0)
+                            val current=AlivePresets.current(app,AlivePresets.family(active))
                             AlivePresets.snapshot(app,current.name,current.variant,current.dark,current.clock,current.photo,current.render,false,VivoOptions.parse(current.vivoJson))
                         }
                         val nextPreset = withContext(Dispatchers.IO) { AlivePresets.snapshot(app,title,variant,dark,clock,photo,renderOptions,true,if(isVivo) vivo else null) }
@@ -451,6 +520,7 @@ private fun Preview(name: String, initialVariant: Int, initialMode: Int, initial
                             else -> app.getString(R.string.alive_failed) }
                         AppToast.show(context, message)
                         if (value?.ok() == true) {
+                            if(InfinityTheme.supports(variant)) Config.setLauncherScroll(app,launcherScroll)
                             try {
                                 withContext(Dispatchers.IO) { AlivePresets.markCurrent(app,previousPreset);AlivePresets.markCurrent(app,nextPreset) }
                             } catch(e: CancellationException) { throw e }

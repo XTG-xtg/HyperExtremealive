@@ -23,4 +23,14 @@ public class DisplayFramePolicyTest {
         assertEquals(100, DisplayFramePolicy.fallback(false, Display.STATE_ON, true, false, 0, 2000, 3000));
         assertEquals(0, DisplayFramePolicy.fallback(false, Display.STATE_ON, true, true, 0, 4000, 3000));
     }
+    @Test public void sceneMatchesRejectsMismatchedInteractiveAndMode() {
+        assertTrue(DisplayFramePolicy.sceneMatches(true, Display.STATE_ON, true, 0));
+        assertTrue(DisplayFramePolicy.sceneMatches(false, Display.STATE_UNKNOWN, true, 0));
+        assertTrue(DisplayFramePolicy.sceneMatches(false, Display.STATE_ON, true, 1));
+        assertTrue(DisplayFramePolicy.sceneMatches(false, Display.STATE_ON, true, 2));
+        assertFalse(DisplayFramePolicy.sceneMatches(false, Display.STATE_ON, true, 0));
+        assertTrue(DisplayFramePolicy.sceneMatches(false, Display.STATE_DOZE, false, 0));
+        assertFalse(DisplayFramePolicy.sceneMatches(false, Display.STATE_DOZE, false, 1));
+        assertFalse(DisplayFramePolicy.sceneMatches(false, Display.STATE_DOZE, false, 2));
+    }
 }

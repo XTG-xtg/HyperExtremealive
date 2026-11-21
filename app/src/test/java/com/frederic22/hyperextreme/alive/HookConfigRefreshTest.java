@@ -64,4 +64,14 @@ public class HookConfigRefreshTest {
         shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(30));
         assertEquals(4,provider.reads);assertFalse(cached().getBoolean("enabled"));
     }
+    @Test public void startupPrefersActualApplicationAttribution() {
+        ReflectionHelpers.setStaticField(AliveHooks.class,"context",null);
+        assertSame(RuntimeEnvironment.getApplication(),ReflectionHelpers.callStaticMethod(AliveHooks.class,"context"));
+    }
+    @Test public void dedicatedSystemUiCannotUseAndroidSystemContext() {
+        assertFalse(AliveHooks.systemContextAllowed(10231));
+        assertFalse(AliveHooks.systemContextAllowed(110231));
+        assertTrue(AliveHooks.systemContextAllowed(1000));
+        assertTrue(AliveHooks.systemContextAllowed(101000));
+    }
 }

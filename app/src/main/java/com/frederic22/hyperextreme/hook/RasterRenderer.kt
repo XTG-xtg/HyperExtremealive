@@ -107,7 +107,10 @@ internal object RasterRenderer {
     private var settleOnIdle = true
 
     /** 给 [RasterOverlay] 的 AGSL 用：与 GL **同一个**压暗值（AOD 时两边必须同步）。 */
-    internal fun aodDimValue(): Float = dim
+    internal fun aodDimValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.wallpaperDim(
+        dim, aodTargetDim, brightness?.value ?: 1f)
+    internal fun aodExposureValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.gain(
+        brightness?.value ?: 0f, com.frederic22.hyperextreme.alive.AodBrightness.dimWeight(dim, aodTargetDim))
 
     private var appCtx: Context? = null
 
@@ -167,6 +170,9 @@ internal object RasterRenderer {
     private var uDir = 0
     private var uBand = 0
     private var uDim = 0
+    private var uExposure = 0
+    private var brightness: com.frederic22.hyperextreme.alive.AodBrightness.Watch? = null
+    @Volatile private var aodTargetDim = .5f
     private var uFromUv = 0
     private var uToUv = 0
 
@@ -426,6 +432,7 @@ internal object RasterRenderer {
         uDir = GLES20.glGetUniformLocation(program, "uDir")
         uBand = GLES20.glGetUniformLocation(program, "uBand")
         uDim = GLES20.glGetUniformLocation(program, "uDim")
+        uExposure = GLES20.glGetUniformLocation(program, "uExposure")
         uFromUv = GLES20.glGetUniformLocation(program, "uFromUv")
         uToUv = GLES20.glGetUniformLocation(program, "uToUv")
 
@@ -486,6 +493,8 @@ internal object RasterRenderer {
 
         dirty = true
         runningKey = key
+        brightness?.close()
+        brightness = com.frederic22.hyperextreme.alive.AodBrightness.Watch(ctx, requireNotNull(handler)) { forceDraw() }
         runningScope = scope
         drawEveryMount()
         HookRuntime.log(
@@ -598,6 +607,7 @@ internal object RasterRenderer {
     // ───────────────────────────── 停止 ─────────────────────────────
 
     private fun stopInternal(reason: String) {
+        brightness?.close(); brightness = null
         val had = runningKey != null
         runningKey = null
         runningScope = -1
@@ -1050,6 +1060,8 @@ internal object RasterRenderer {
             if (runningKey == null) return@post
             aodFrozen = true
             dim = (1f - black.coerceIn(0f, 1f))
+            aodTargetDim = dim
+            brightness?.refresh()
             // 景深主体同步淡出（它在窗口里，AOD 时不该留在屏上）。
             runCatching { RasterOverlay.onEnterAod() }
             if (black >= 0.99f) {
@@ -1629,7 +1641,8 @@ internal object RasterRenderer {
         GLES20.glUniform4f(uFromUv, uvF[0], uvF[1], uvF[2], uvF[3])
         GLES20.glUniform4f(uToUv, uvT[0], uvT[1], uvT[2], uvT[3])
         GLES20.glUniform1f(uBand, RasterGlCore.BAND)
-        GLES20.glUniform1f(uDim, dim)
+        GLES20.glUniform1f(uDim, aodDimValue())
+        GLES20.glUniform1f(uExposure, aodExposureValue())
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         GLES20.glDisableVertexAttribArray(aPos)
         GLES20.glDisableVertexAttribArray(aUv)

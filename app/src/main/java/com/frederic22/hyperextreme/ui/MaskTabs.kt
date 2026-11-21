@@ -260,6 +260,12 @@ internal fun FunctionHome(onOpen: (DetailPage) -> Unit) {
         AppEntryCard(
             icons = icons,
             packageName = MiuiWallpaperPackageName,
+            title = "Infinity 壁纸",
+            onClick = { onOpen(DetailPage.InfinityWallpaper) },
+        )
+        AppEntryCard(
+            icons = icons,
+            packageName = MiuiWallpaperPackageName,
             title = "液态壁纸",
             onClick = { onOpen(DetailPage.LiquidWallpaper) },
         )
@@ -493,6 +499,19 @@ internal fun ParallaxBgDetail(state: MaskUiState, onPick: () -> Unit) {
     // 功能冲突弹窗（2026-11-04 起三侧统一：空间 / 光栅任一在跑都不许应用）
     var showConflict by remember { mutableStateOf(false) }
     var conflictOther by remember { mutableStateOf<RunningWallpaper?>(null) }
+    val previewLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val request = EffectPreviewRequest.parse(result.data)
+        val brightness = EffectPreviewRequest.brightness(result.resultCode, result.data)
+        if(request?.kind == EffectWallpaperKind.PARALLAX && brightness != null) {
+            val other = WallpaperConflict.running(ctx, state, WallpaperChain.PARALLAX)
+            if(other != null) { conflictOther = other; showConflict = true }
+            else if(state.parallaxActive) {
+                com.frederic22.hyperextreme.alive.AodBrightness.save(ctx, brightness)
+                AppToast.show(ctx, "预览设置已保存")
+            } else if(state.requireActivated()) state.enableParallax(brightness)
+        }
+    }
+    fun openPreview() = previewLauncher.launch(EffectPreviewRequest(EffectWallpaperKind.PARALLAX, "").intent(ctx))
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -511,6 +530,11 @@ internal fun ParallaxBgDetail(state: MaskUiState, onPick: () -> Unit) {
                 .padding(horizontal = 12.dp)
                 .padding(top = 12.dp),
         )
+
+        TextButton(if(state.parallaxActive) "预览与调整" else "预览与应用", onClick = { openPreview() },
+            enabled = state.parallaxPreview != null && !state.busy,
+            colors = ButtonDefaults.textButtonColorsPrimary(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp))
 
         // 动作卡：**单个按钮**（用户指定）——「立即替换」⇄「关闭替换」，不是两个按钮。
         // 位置 = 背景卡与「参数调整」卡的中间（2026-10-13 用户指定）。
@@ -542,7 +566,7 @@ internal fun ParallaxBgDetail(state: MaskUiState, onPick: () -> Unit) {
                                         conflictOther = other
                                         showConflict = true
                                     } else {
-                                        state.enableParallax()
+                                        openPreview()
                                     }
                                 }
                             }
@@ -1481,9 +1505,11 @@ internal fun SwitchRow(
     summary: String? = null,
     /** false = 整行变灰、不可点（2026-10-30：系统壁纸服务模式下属选项无效用）。 */
     enabled: Boolean = true,
+    modifier: Modifier = Modifier,
 ) {
     val haptic = rememberClickHaptic()
     BasicComponent(
+        modifier = modifier,
         title = title,
         summary = summary,
         enabled = enabled,

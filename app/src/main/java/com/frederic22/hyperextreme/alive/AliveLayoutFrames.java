@@ -48,6 +48,7 @@ final class AliveLayoutFrames implements AutoCloseable {
     private void start() {
         try {
             if (cancelled) { finish("cancelled"); return; }
+            DynamicResources.require(context,variant);
             display = EglWorker.acquireDisplay();
             EGLConfig config = CosmicEgl.choose(display, EGL14.EGL_PBUFFER_BIT,variant<201||variant>=501&&variant<=503);
             eglContext = EGL14.eglCreateContext(display, config, EGL14.EGL_NO_CONTEXT,
@@ -95,7 +96,7 @@ final class AliveLayoutFrames implements AutoCloseable {
                 handler.removeCallbacks(draw); handler.postDelayed(draw, 16); return;
             }
             if(mode==0){boolean move=!(renderer instanceof PhotoRenderer)&&!(renderer.motion() instanceof CosmicMotion);
-                presentation.render(options.brightness,move?options.aodOffsetX:0,move?options.aodOffsetY:0);}
+                presentation.render(AodBrightness.gain(options.brightness,1),move?options.aodOffsetX:0,move?options.aodOffsetY:0);}
             ByteBuffer rgba = ByteBuffer.allocateDirect(width * height * 4);
             GLES30.glReadPixels(0, 0, width, height, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, rgba);
             if (GLES30.glGetError() != GLES30.GL_NO_ERROR) throw new IllegalStateException("Layout readback failed");

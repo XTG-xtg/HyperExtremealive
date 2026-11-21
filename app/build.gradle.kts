@@ -42,8 +42,8 @@ android {
         applicationId = "com.xtg.hyperextremealive"
         minSdk = if (legacyUiSmoke) 31 else 33
         targetSdk = 37
-        versionCode = 31
-        versionName = "0.5-alive.7-ui.16" + if (legacyUiSmoke) "-ui-smoke-api31" else ""
+        versionCode = 53
+        versionName = "0.5.7" + if (legacyUiSmoke) "-ui-smoke-api31" else ""
 
         ndk {
             abiFilters += "arm64-v8a"
@@ -103,18 +103,27 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     testOptions {
         unitTests.isIncludeAndroidResources = true
+        // Host JVM access for the ART capability-field regression. Android uses its own runtime.
+        unitTests.all { it.jvmArgs("--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED") }
     }
 
+    // Only the generated tree is packaged: never include both original and compressed resources.
+    sourceSets.getByName("main").assets.setSrcDirs(listOf(layout.buildDirectory.dir("generated/packedAliveAssets").get().asFile))
     sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/aliveAssets").get().asFile)
-    sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/aliveClockAssets").get().asFile)
     sourceSets.getByName("main").jniLibs.srcDir(layout.buildDirectory.dir("generated/aliveJni").get().asFile)
-    androidResources { noCompress += listOf("mp4", "dex") }
+    // Videos require openFd; gzip streams must not be compressed a second time.
+    // Do not exempt "dex": that also disables compression of the top-level classes.dex.
+    // LSPosed searches the module APK directly for its native entry; keep this small bridge mmap-ready.
+    androidResources { noCompress += listOf("mp4", "agz", "rgbz", "libhome_bridge.so") }
 
     packaging {
+        // Let PackageInstaller extract native libraries once, instead of shipping mmap-ready ELF.
+        jniLibs { useLegacyPackaging = true }
         // dex 压缩进 APK（minSdk >= 28 时 AGP 默认是不压缩、安装时直接 mmap，
         // 体积会大 20MB 左右）。这里要的是包小，所以打开 legacy 打包。
         dex {
@@ -125,6 +134,17 @@ android {
         }
     }
 }
+
+val preparePackedAliveAssets by tasks.registering(Exec::class) {
+    inputs.dir(rootProject.file("app/src/main/assets"))
+    inputs.file(rootProject.file("tools/pack_alive_assets.py"))
+    inputs.file(rootProject.file("tools/dynamic_resource_pack.py"))
+    outputs.dir(rootProject.layout.buildDirectory.dir("dynamic-wallpapers"))
+    outputs.dir(layout.buildDirectory.dir("generated/packedAliveAssets"))
+    workingDir(rootProject.projectDir)
+    commandLine(System.getenv("PYTHON") ?: "python", "tools/pack_alive_assets.py")
+}
+tasks.named("preBuild") { dependsOn(preparePackedAliveAssets) }
 
 kotlin {
     compilerOptions {
@@ -161,6 +181,7 @@ dependencies {
 val prepareAliveHelper by tasks.registering(Exec::class) {
     inputs.dir(rootProject.file("alive-root/src"))
     inputs.file(rootProject.file("app/src/main/java/com/frederic22/hyperextreme/alive/core/ModuleIdentity.java"))
+    inputs.file(rootProject.file("app/src/main/java/com/frederic22/hyperextreme/alive/core/MusicLockRecovery.java"))
     inputs.file(rootProject.file("tools/build_alive_helper.py"))
     outputs.dir(layout.buildDirectory.dir("generated/aliveAssets"))
     workingDir(rootProject.projectDir)
@@ -186,12 +207,33 @@ val prepareAlivePhoto by tasks.registering(Exec::class) {
 }
 tasks.named("preBuild") { dependsOn(prepareAlivePhoto) }
 
-val prepareAliveClocks by tasks.registering(Exec::class) {
-    inputs.dir(rootProject.file("alive-clock/bridge"))
-    inputs.file(rootProject.file("tools/build_clock_bridge.py"))
-    outputs.dir(layout.buildDirectory.dir("generated/aliveClockAssets"))
-    workingDir(rootProject.projectDir)
-    commandLine(System.getenv("PYTHON") ?: "python", "tools/build_clock_bridge.py",
-        "--sdk", android.sdkDirectory.absolutePath, "--java-home", System.getProperty("java.home"))
+
+
+// AGP's legacy JNI mode compresses libraries but aligns explicitly stored ones to only 4 bytes.
+// Realign the tiny LSPosed entry and sign again with the SAME variant key, before any APK consumer.
+android.applicationVariants.all {
+    val variant = this
+    val signing = requireNotNull(signingConfig)
+    packageApplicationProvider.configure {
+        inputs.file(rootProject.file("tools/finalize_packed_apk.py"))
+        doLast {
+            variant.outputs.forEach { output ->
+                val process = ProcessBuilder(
+                    System.getenv("PYTHON") ?: "python", "tools/finalize_packed_apk.py",
+                    "--apk", output.outputFile.absolutePath,
+                    "--sdk", android.sdkDirectory.absolutePath,
+                    "--build-tools", android.buildToolsVersion,
+                    "--java-home", System.getProperty("java.home"),
+                    "--keystore", requireNotNull(signing.storeFile).absolutePath,
+                    "--alias", requireNotNull(signing.keyAlias),
+                    "--min-sdk", if (legacyUiSmoke) "31" else "33",
+                ).directory(rootProject.projectDir).redirectErrorStream(true)
+                process.environment()["ALIVE_STORE_PASSWORD"] = requireNotNull(signing.storePassword)
+                process.environment()["ALIVE_KEY_PASSWORD"] = signing.keyPassword ?: requireNotNull(signing.storePassword)
+                val running = process.start()
+                running.inputStream.bufferedReader().useLines { lines -> lines.forEach { logger.lifecycle(it) } }
+                check(running.waitFor() == 0) { "APK alignment/signature verification failed" }
+            }
+        }
+    }
 }
-tasks.named("preBuild") { dependsOn(prepareAliveClocks) }

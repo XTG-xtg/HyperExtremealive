@@ -34,7 +34,7 @@ public abstract class AliveWallpaperService extends WallpaperService {
         AliveEngine(int slot){this.slot=slot;}
         @Override public void onCreate(SurfaceHolder holder){
             super.onCreate(holder);setTouchEventsEnabled(true);setOffsetNotificationsEnabled(true);
-            worker=new EglWorker(AliveWallpaperService.this,isPreview(),()->{
+            worker=new EglWorker(AliveWallpaperService.this,isPreview(),slot==1,()->{
                 if(slot==1&&!isPreview())EngineRegistry.prepareCompanion();
             });
             updateDisplay();
@@ -59,20 +59,21 @@ public abstract class AliveWallpaperService extends WallpaperService {
         @Override public void onSurfaceDestroyed(SurfaceHolder h){surfaceAttached=false;worker.detach();super.onSurfaceDestroyed(h);}
         @Override public void onVisibilityChanged(boolean value){
             updateDisplay();
-            worker.visible(value);
             if(value){Display d=displays.getDisplay(Display.DEFAULT_DISPLAY);int state=d==null?Display.STATE_ON:d.getState();
                 int mode=(state==Display.STATE_OFF||state==Display.STATE_DOZE||state==Display.STATE_DOZE_SUSPEND||!power.isInteractive())?0:keyguard.isKeyguardLocked()?1:2;
                 signal(mode,"visible-slot-"+slot);transition();}
+            worker.visible(value);
+            if(!value&&!isPreview())EngineRegistry.prepareCompanion();
             Log.i(Protocol.TAG,"visible slot="+slot+" value="+value);
         }
-        @Override public void onOffsetsChanged(float x,float y,float xs,float ys,int xp,int yp){worker.offset(x-.5f,y-.5f);}
+        @Override public void onOffsetsChanged(float x,float y,float xs,float ys,int xp,int yp){worker.launcherOffset(x,y,xs,ys);}
         @Override public void onTouchEvent(MotionEvent e){
             // Keyguard taps arrive once through the selected-region bridge. Some ROMs also
             // mirror the same stream to WallpaperService; never inject the impulse twice.
             if(!isPreview()&&Config.variant(AliveWallpaperService.this)==701&&keyguard.isKeyguardLocked())return;
             float x=e.getX()/Math.max(1,getSurfaceHolder().getSurfaceFrame().width()),y=e.getY()/Math.max(1,getSurfaceHolder().getSurfaceFrame().height());
             worker.touch(e.getActionMasked(),x,y);
-            if(e.getActionMasked()==MotionEvent.ACTION_MOVE)worker.offset(x-.5f,y-.5f);
+            if(e.getActionMasked()==MotionEvent.ACTION_MOVE)worker.touchOffset(x-.5f,y-.5f);
         }
         @Override public Bundle onCommand(String action,int x,int y,int z,Bundle extras,boolean result){
             // Standard platform lifecycle commands only; arbitrary external "mode" commands are ignored.
@@ -103,6 +104,12 @@ public abstract class AliveWallpaperService extends WallpaperService {
             b.putLong("init_ms",worker.initMs);b.putLong("recoveries",worker.recoveries);
             b.putInt("display_state",worker.displayState);b.putBoolean("display_interactive",worker.displayInteractive);
             b.putLong("prepared_generation",worker.preparedGeneration);
+            b.putFloat("configured_aod_brightness",worker.configuredBrightness);
+            b.putFloat("rendered_exposure",worker.renderedExposure);
+            b.putString("frame_stage",worker.frameStage);b.putInt("swap_interval",worker.swapInterval);
+            b.putLong("discarded_frames",worker.discardedFrames);
+            b.putLong("last_frame_ms",worker.lastFrameAtMs);b.putLong("swap_started_ms",worker.lastSwapStartedMs);
+            b.putLong("max_swap_ms",worker.maxSwapMs);
             b.putString("error",worker.error);b.putString("last_failure",worker.lastFailure);return b;
         }
         void liquidTap(float x,float y,long at){
@@ -113,6 +120,7 @@ public abstract class AliveWallpaperService extends WallpaperService {
             Log.i(Protocol.TAG,"liquid tap accepted slot="+slot+" x="+x+" y="+y);
         }
         void clock(ClockSnapshot snapshot){if(!isPreview())worker.clock(snapshot);}
+        void options(AliveRenderOptions options){if(!isPreview())worker.options(options);}
         boolean readyForCompanion(){return worker!=null&&worker.readyForCompanion();}
         void prepareCompanion(){if(worker!=null)worker.prepareCompanion();}
         void reload(){if(!surfaceAttached)return;android.graphics.Rect r=getSurfaceHolder().getSurfaceFrame();worker.attach(getSurfaceHolder().getSurface(),r.width(),r.height(),Config.variant(AliveWallpaperService.this),Config.dark(AliveWallpaperService.this));EngineRegistry.prepareCompanion();}
@@ -135,6 +143,6 @@ public abstract class AliveWallpaperService extends WallpaperService {
             // Refresh-rate/HDR notifications are not new wake events or doze draw budgets.
             if(isVisible()&&changed)transition();
         }}
-        @Override public void onDestroy(){unregisterReceiver(events);displays.unregisterDisplayListener(this);EngineRegistry.unregister(slot,this);worker.close();if(!isPreview())getContentResolver().notifyChange(Protocol.CONFIG,null);super.onDestroy();}
+        @Override public void onDestroy(){unregisterReceiver(events);displays.unregisterDisplayListener(this);EngineRegistry.unregister(slot,this);worker.close();if(!isPreview()){getContentResolver().notifyChange(Protocol.CONFIG,null);if(slot==2)AliveMusicRestore.scheduleHeal(AliveWallpaperService.this,"engine-destroyed");}super.onDestroy();}
     }
 }

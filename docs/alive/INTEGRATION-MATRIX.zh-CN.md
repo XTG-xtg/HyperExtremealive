@@ -1,5 +1,7 @@
 # OpenAlive 合入清单（0.5-alive.7-ui.8）
 
+ui22 更新：时钟替换、时钟编辑器、通知光环与双侧光带均已删除。本文保留 ui8 的历史合入记录；当前删除范围见 [ui22 删除说明](REMOVED-EXTENSIONS.zh-CN.md)。
+
 ## 范围与结论
 
 本轮对照用户提供的 `HyperAlive_Module.zip` 和 `OpenAlive-main.zip`，修改当前

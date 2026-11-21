@@ -593,5 +593,8 @@
       "sha256": "4b95bd3ec2d292a5a497030ebc7883e7074270f8a1f514aed770fe1519181ac1",
       "destination": "app/src/main/assets/notification/source.json"
     }
-  ]
+  ],
+  "retired_on": "2026-11-14",
+  "retired_in": "0.5-alive.7-ui.22-trim1",
+  "status": "Clock and notification extensions removed; this document retains historical provenance only."
 }

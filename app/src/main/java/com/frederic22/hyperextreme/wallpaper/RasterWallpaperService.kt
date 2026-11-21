@@ -94,6 +94,8 @@ class RasterWallpaperService : WallpaperService() {
         private var uDir = 0
         private var uBand = 0
         private var uDim = 0
+        private var uExposure = 0
+        private var brightness: WallpaperAodBrightness? = null
         private var uFromUv = 0
         private var uToUv = 0
 
@@ -151,6 +153,9 @@ class RasterWallpaperService : WallpaperService() {
         // ─────────────────────────── 生命周期 ───────────────────────────
 
         override fun onCreate(holder: SurfaceHolder) {
+            brightness=WallpaperAodBrightness(this@RasterWallpaperService,requireNotNull(gl)) {
+                if(surfaceReady && visible) runCatching { drawFrame(force = true) }
+            }
             log("Engine onCreate preview=$isPreview")
         }
 
@@ -202,7 +207,14 @@ class RasterWallpaperService : WallpaperService() {
             }
         }
 
+        fun onAmbientModeChanged(ambient: Boolean, duration: Long) { brightness?.ambient(ambient) }
+        override fun onCommand(action: String?, x: Int, y: Int, z: Int, extras: android.os.Bundle?, resultRequested: Boolean): android.os.Bundle? {
+            if(action == "android.wallpaper.goingtosleep") brightness?.ambient(true)
+            if(action == "android.wallpaper.wakingup") brightness?.ambient(false)
+            return super.onCommand(action,x,y,z,extras,resultRequested)
+        }
         override fun onVisibilityChanged(visible: Boolean) {
+            brightness?.visible(visible)
             this.visible = visible
             log("可见性 -> $visible")
             if (visible) {
@@ -225,6 +237,7 @@ class RasterWallpaperService : WallpaperService() {
         }
 
         override fun onDestroy() {
+            brightness?.close();brightness=null
             log("Engine onDestroy")
             destroyed = true
             visible = false
@@ -489,6 +502,7 @@ class RasterWallpaperService : WallpaperService() {
             uDir = GLES20.glGetUniformLocation(p, "uDir")
             uBand = GLES20.glGetUniformLocation(p, "uBand")
             uDim = GLES20.glGetUniformLocation(p, "uDim")
+            uExposure = GLES20.glGetUniformLocation(p, "uExposure")
             uFromUv = GLES20.glGetUniformLocation(p, "uFromUv")
             uToUv = GLES20.glGetUniformLocation(p, "uToUv")
             val verts = floatArrayOf(
@@ -807,6 +821,7 @@ class RasterWallpaperService : WallpaperService() {
             GLES20.glUniform1f(uBand, RasterGlCore.BAND)
             // 系统壁纸服务链由**系统**做 AOD 压暗（setWallPaperAnimProcess），这里恒 1.0。
             GLES20.glUniform1f(uDim, 1f)
+            GLES20.glUniform1f(uExposure, brightness?.exposure ?: 1f)
             GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
             GLES20.glDisableVertexAttribArray(aPos)
             GLES20.glDisableVertexAttribArray(aUv)

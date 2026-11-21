@@ -21,8 +21,11 @@ class ModuleIdentityTest {
         val info = ctx.packageManager.getPackageInfo(ctx.packageName,
             PackageManager.GET_ACTIVITIES or PackageManager.GET_SERVICES or PackageManager.GET_PROVIDERS)
         assertEquals(ModuleIdentity.PACKAGE, info.packageName)
-        assertEquals(31L, info.longVersionCode)
-        assertEquals("0.5-alive.7-ui.16", info.versionName)
+        val buildScript = java.io.File("build.gradle.kts").readText()
+        val declaredCode = Regex("versionCode\\s*=\\s*(\\d+)").find(buildScript)!!.groupValues[1].toLong()
+        val declaredName = Regex("versionName\\s*=\\s*\"([^\"]+)\"").find(buildScript)!!.groupValues[1]
+        assertEquals(declaredCode, info.longVersionCode)
+        assertEquals(declaredName, info.versionName)
         val providers = info.providers.orEmpty().map { it.authority }.toSet()
         assertTrue(providers.containsAll(setOf(ModuleIdentity.CONFIG_AUTHORITY, ModuleIdentity.MASK_AUTHORITY,
             ModuleIdentity.XPOSED_AUTHORITY)))

@@ -84,7 +84,9 @@ class AliveLibraryActivity : ComponentActivity() {
         requestHighRefreshRate()
         setContent {
             val controller = remember { ThemeController(ThemeMode.of(MaskPrefs(this).themeMode).toColorSchemeMode()) }
-            MiuixTheme(controller = controller, textStyles = HyperTextStyles) { AliveLibrary { finish() } }
+            MiuixTheme(controller = controller, textStyles = HyperTextStyles) {
+                AliveLibrary(infinity = intent.getBooleanExtra("infinity", false)) { finish() }
+            }
         }
     }
 }
@@ -103,6 +105,11 @@ internal data class AliveHomeModel(
     val photoShapesError: String = "",
     val presets: List<AlivePreset> = emptyList(),
     val currentPreset: AlivePreset? = null,
+    val resourceMissing: Boolean = false,
+    val aodEnabled: Boolean? = null,
+    val aodError: String = "",
+    val aodUpdating: Boolean = false,
+    val forceAod: Boolean = false,
 )
 
 internal object LayoutCache : LruCache<String, List<ImageBitmap>>(8 * 1024 * 1024) {
@@ -110,18 +117,22 @@ internal object LayoutCache : LruCache<String, List<ImageBitmap>>(8 * 1024 * 102
 }
 
 @Composable
-internal fun AliveDetail(onBack: () -> Unit) {
+internal fun AliveDetail(onBack: () -> Unit, infinity: Boolean = false) {
     val context = LocalContext.current
     val app = context.applicationContext
+    val family = if(infinity) 800 else 0
+    val familyName = if(infinity) "Infinity" else "Alive"
     val owner = LocalLifecycleOwner.current
     val scope = rememberCoroutineScope()
     var diagnostics by rememberSaveable { mutableStateOf(false) }
     var revision by remember { mutableIntStateOf(0) }
-    var variant by remember { mutableIntStateOf(aliveHomeVariant(app)) }
-    var model by remember { mutableStateOf(AliveHomeModel()) }
+    var variant by remember { mutableIntStateOf(aliveHomeVariant(app, infinity)) }
+    var model by remember { mutableStateOf(AliveHomeModel(resourceMissing=DynamicResources.needsPack(variant))) }
     var confirmation by remember { mutableStateOf<Boolean?>(null) }
     var switching by remember { mutableStateOf(false) }
     var importing by remember { mutableStateOf(false) }
+    var aodUpdating by remember { mutableStateOf(false) }
+    var aodRevision by remember { mutableIntStateOf(0) }
     var newPhotoVariant by rememberSaveable { mutableIntStateOf(601) }
     var pendingPhotoPreview by rememberSaveable { mutableStateOf<Intent?>(null) }
     var deleting by remember { mutableStateOf<AlivePreset?>(null) }
@@ -131,23 +142,39 @@ internal fun AliveDetail(onBack: () -> Unit) {
     val aspect = (maxOf(width, height).toFloat() / minOf(width, height)).coerceIn(1.6f, 2.6f)
 
     DisposableEffect(owner) {
-        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) revision++ }
+        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) { revision++; aodRevision++ } }
         owner.lifecycle.addObserver(observer)
         onDispose { owner.lifecycle.removeObserver(observer) }
     }
+    DisposableEffect(app) {
+        val observer = object : android.database.ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) { aodRevision++ }
+        }
+        app.contentResolver.registerContentObserver(android.provider.Settings.Secure.getUriFor(SystemAodControl.ENABLED), false, observer)
+        app.contentResolver.registerContentObserver(android.provider.Settings.Secure.getUriFor(SystemAodControl.FORCE), false, observer)
+        onDispose { app.contentResolver.unregisterContentObserver(observer) }
+    }
+    LaunchedEffect(aodRevision, aodUpdating) {
+        if (!aodUpdating) {
+            val state=withContext(Dispatchers.IO) { SystemAodControl.read(app) }
+            model=model.copy(aodEnabled=if(state.error.isEmpty()) state.enabled else null,aodError=state.error,forceAod=state.forced)
+        }
+    }
     LaunchedEffect(revision) {
         try {
-            val status = withContext(Dispatchers.IO) { runCatching { WallpaperFeatures.isBound(app, Feature.ALIVE) && Config.variant(app) !in 701..703 } }
-            val current = withContext(Dispatchers.IO) { AlivePresets.current(app) }
+            val status = withContext(Dispatchers.IO) { runCatching { WallpaperFeatures.isBound(app, Feature.ALIVE) && AlivePresets.family(Config.variant(app)) == family } }
+            val current = withContext(Dispatchers.IO) { AlivePresets.current(app, family) }
             variant = current.variant
-            val history = withContext(Dispatchers.IO) { AlivePresets.list(app) }.filter { it.variant < 701 && it.signature() != current.signature() }
+            val missing = DynamicResources.needsPack(variant) && !withContext(Dispatchers.IO) { DynamicResources.installed(app) }
+            val history = withContext(Dispatchers.IO) { AlivePresets.list(app) }.filter { AlivePresets.family(it.variant) == family && it.signature() != current.signature() }
             val name = withContext(Dispatchers.IO) {
                 runCatching { AliveCatalog.load(app).firstOrNull { it.id == variant }?.name }.getOrNull() ?: "Alive"
             }
             model = model.copy(name = name, running = status.getOrDefault(model.running), busy = false,
                 frameworkConnected = ActivationState.frameworkConnected,
                 statusError = status.exceptionOrNull()?.message.orEmpty(), aspect = aspect, variant = variant,
-                currentPreset = current, presets = history)
+                currentPreset = current, presets = history,resourceMissing=missing,
+                previewError=if(missing) DynamicResources.MISSING else "")
         } catch (e: kotlinx.coroutines.CancellationException) { throw e }
         catch (e: Exception) {
             model = model.copy(busy = false, statusError = "壁纸与预设读取失败：${e.message}；可刷新重试")
@@ -161,7 +188,7 @@ internal fun AliveDetail(onBack: () -> Unit) {
     DisposableEffect(tileKey, diagnostics, revision) {
         var disposed = false
         var job: PhotoStyleThumbnails? = null
-        if(!diagnostics) {
+        if(!diagnostics && !infinity) {
             val cached = LayoutCache.get(tileKey)
             if(cached != null) model = model.copy(photoShapes=cached,photoShapesError="")
             else {
@@ -180,10 +207,10 @@ internal fun AliveDetail(onBack: () -> Unit) {
         }
         onDispose { disposed=true;job?.close() }
     }
-    DisposableEffect(layoutKey, diagnostics, model.currentPreset?.signature()) {
+    DisposableEffect(layoutKey, diagnostics, model.currentPreset?.signature(),model.resourceMissing) {
         var disposed = false
         var worker: AliveLayoutFrames? = null
-        if (!diagnostics) {
+        if (!diagnostics && !model.resourceMissing) {
             val cached = LayoutCache.get(layoutKey)
             if (cached != null) model = model.copy(frames = cached, previewError = "")
             else {
@@ -205,6 +232,10 @@ internal fun AliveDetail(onBack: () -> Unit) {
         onDispose { disposed = true; worker?.close() }
     }
     fun openPreset(preset: AlivePreset) {
+        if(DynamicResources.needsPack(preset.variant) && !DynamicResources.installed(app)) {
+            context.startActivity(Intent(context,AliveLibraryActivity::class.java))
+            return
+        }
         context.startActivity(Intent(context, AlivePreviewActivity::class.java).putExtra("variant",preset.variant)
             .putExtra("name",preset.name).putExtra("mode",1).putExtra("preset",preset.json()))
     }
@@ -212,6 +243,9 @@ internal fun AliveDetail(onBack: () -> Unit) {
         val name = when (id) { 601 -> "圆景"; 602 -> "留光"; 603 -> "星月"; 604 -> "轻启·照片"; 605 -> "山脉"; 606 -> "银河"; else -> model.name }
         context.startActivity(Intent(context, AlivePreviewActivity::class.java)
             .putExtra("variant", id).putExtra("name", name).putExtra("mode", mode))
+    }
+    fun openLibrary() {
+        context.startActivity(Intent(context, AliveLibraryActivity::class.java).putExtra("infinity", infinity))
     }
     val newPhotoPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) scope.launch {
@@ -234,20 +268,41 @@ internal fun AliveDetail(onBack: () -> Unit) {
             Box(Modifier.padding(padding)) { AliveDiagnostics() }
         }
     } else {
-        AliveHomeContent(model.copy(busy = model.busy || switching || importing), onBack,
-            onDiagnostics = { diagnostics = true }, onMode = { model.currentPreset?.let(::openPreset) ?: edit(variant, 1) },
-            onPhoto = { edit(it) }, onLibrary = { context.startActivity(Intent(context, AliveLibraryActivity::class.java)) },
+        AliveHomeContent(model.copy(busy = model.busy || switching || importing, aodUpdating = aodUpdating), onBack,
+            onDiagnostics = { diagnostics = true }, onMode = { if(model.resourceMissing) openLibrary() else model.currentPreset?.let(::openPreset) ?: edit(variant, 1) },
+            onPhoto = { edit(it) }, onLibrary = ::openLibrary,
             onToggle = {
-                if (it && Config.variant(app) in 701..703) {
-                    edit(variant, 1)
-                    AppToast.show(context, "请预览并应用 Alive 壁纸，不会自动覆盖当前 vivo 壁纸")
+                if(it && model.resourceMissing) openLibrary()
+                else if (it && AlivePresets.family(Config.variant(app)) != family) {
+                    model.currentPreset?.let(::openPreset) ?: edit(variant, 1)
+                    AppToast.show(context, "请预览并确认应用 $familyName 壁纸")
                 } else confirmation = it
             }, onRetry = { revision++ }, onNew = {
-                newPhotoVariant = variant.takeIf { it in 601..606 }
-                    ?: model.presets.firstOrNull { it.variant in 601..606 }?.variant ?: 601
-                newPhotoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                if(infinity) openLibrary()
+                else {
+                    newPhotoVariant = variant.takeIf { it in 601..606 }
+                        ?: model.presets.firstOrNull { it.variant in 601..606 }?.variant ?: 601
+                    newPhotoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
             },
-            onPreset = ::openPreset, onDeletePreset = { deleting = it })
+            onPreset = ::openPreset, onDeletePreset = { deleting = it }, infinity = infinity,
+            onAodToggle = { enabled ->
+                if(!aodUpdating) scope.launch {
+                    aodUpdating=true
+                    try {
+                        val result=withContext(Dispatchers.IO) { SystemAodControl.set(app,enabled) }
+                        AppToast.show(context,result.text,long=!result.ok())
+                    } finally { aodUpdating=false; aodRevision++ }
+                }
+            }, onAodRetry = { aodRevision++ }, onForceAod = { forced ->
+                if(!aodUpdating) scope.launch {
+                    aodUpdating=true
+                    try {
+                        val result=withContext(Dispatchers.IO) { SystemAodControl.setForced(app,forced) }
+                        AppToast.show(context,result.text,long=true)
+                    } finally { aodUpdating=false; aodRevision++ }
+                }
+            })
     }
     WindowDialog(show = importing, title = "正在导入照片", summary = "导入完成后进入预览，当前壁纸不会改变。",
         onDismissRequest = {}) {}
@@ -265,10 +320,10 @@ internal fun AliveDetail(onBack: () -> Unit) {
         }
     }
     WindowDialog(show = confirmation != null,
-        title = if (confirmation == false) "关闭 Alive 壁纸？" else "启用 Alive 壁纸？",
+        title = if (confirmation == false) "关闭 $familyName 壁纸？" else "启用 $familyName 壁纸？",
         summary = if (confirmation == false)
-            "将卸下正在使用的 Alive 壁纸，对应位置恢复系统默认壁纸。照片和参数会保留，下次可直接开启；不会修改其他壁纸组件。"
-        else "将上次应用的布局设为桌面和锁屏壁纸（首次为默认启航）。不会应用未确认的照片草稿；请先关闭空间壁纸和视差壁纸。",
+            "将卸下正在使用的 $familyName 壁纸，对应位置恢复系统默认壁纸。预设和参数会保留，下次可直接开启。"
+        else "将上次应用的 $familyName 布局设为桌面和锁屏壁纸。不会应用未确认的草稿。",
         onDismissRequest = { confirmation = null }) {
         val dismiss = LocalDismissState.current
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -279,10 +334,10 @@ internal fun AliveDetail(onBack: () -> Unit) {
                     confirmation = null; dismiss?.invoke(); switching = true
                     scope.launch {
                         try {
-                            val result = withContext(Dispatchers.IO) { runCatching { AliveSettings.setEnabled(app, enabled) } }
+                            val result = withContext(Dispatchers.IO) { runCatching { AliveSettings.setFamilyEnabled(app, enabled, infinity) } }
                             val value = result.getOrNull()
                             val message = result.exceptionOrNull()?.message ?: if (value?.ok() == true)
-                                if (enabled) "Alive 已开启，桌面和锁屏均已回读确认" else "Alive 已关闭，照片与设置已保留"
+                                if (enabled) "$familyName 已开启，桌面和锁屏均已回读确认" else "$familyName 已关闭，预设与设置已保留"
                             else value?.text ?: "操作失败，请到诊断页查看"
                             AppToast.show(context, message, long = true)
                         } finally { switching = false; revision++ }
@@ -292,8 +347,17 @@ internal fun AliveDetail(onBack: () -> Unit) {
     }
 }
 
-internal fun aliveHomeVariant(context: android.content.Context): Int = Config.variant(context).let {
-    if (it in 701..703) Config.prefs(context).getInt("alive_last_variant", 1).takeIf { id -> id in 1..606 } ?: 1 else it
+internal fun aliveHomeVariant(context: android.content.Context, infinity: Boolean = false): Int {
+    val active = Config.variant(context)
+    fun accepts(id: Int) = if(infinity) InfinityTheme.supports(id) else id in 1..606
+    if(accepts(active)) return active
+    val prefs = Config.prefs(context)
+    val fallback = if(infinity) 801 else 1
+    val remembered = prefs.getInt(if(infinity) "infinity_last_variant" else "alive_last_variant", fallback)
+    // Read the ui19 preference only as an Infinity migration fallback, never as an Alive theme.
+    if(infinity && !prefs.contains("infinity_last_variant"))
+        return prefs.getInt("alive_last_variant", fallback).takeIf(::accepts) ?: fallback
+    return remembered.takeIf(::accepts) ?: fallback
 }
 
 @Composable
@@ -317,14 +381,19 @@ internal fun AliveHomeContent(
     onNew: () -> Unit,
     onPreset: (AlivePreset) -> Unit = {},
     onDeletePreset: (AlivePreset) -> Unit = {},
+    infinity: Boolean = false,
+    onAodToggle: (Boolean) -> Unit = {},
+    onAodRetry: () -> Unit = {},
+    onForceAod: (Boolean) -> Unit = {},
 ) {
+    val familyName = if(infinity) "Infinity" else "Alive"
     val screen = rememberScreenSizePx()
     val cardWidth = with(LocalDensity.current) { (screen.width * CARD_WIDTH_RATIO).toDp() }
     var focused by remember { mutableIntStateOf(1) }
     val focusPreset = model.presets.getOrNull(focused - 2)
     val context = LocalContext.current
-    DetailTabHost(title = "Alive 壁纸", onBack = onBack, onRestartAod = null) {
-        Column(Modifier.fillMaxSize().testTag("alive-home-page").verticalScroll(rememberPageScroll())
+    DetailTabHost(title = "$familyName 壁纸", onBack = onBack, onRestartAod = null) {
+        Column(Modifier.fillMaxSize().testTag(if(infinity) "infinity-home-page" else "alive-home-page").verticalScroll(rememberPageScroll())
             .padding(top = LocalTopBarHeight.current, bottom = 32.dp)) {
             Spacer(Modifier.height(BLOCK_GAP))
             val cards = listOf(CoverItem("current", null, frame = model.frames.firstOrNull(), description = "当前壁纸封面")) +
@@ -350,21 +419,36 @@ internal fun AliveHomeContent(
                 style = MiuixTheme.textStyles.footnote1, color = MiuixTheme.colorScheme.onSurfaceVariantSummary)
             Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 VivoSettingsGroup("壁纸与预览") {
-                    LinkRow("动态壁纸", "浏览内置动态场景；照片样式在下方单独选择") { if (!model.busy) onLibrary() }
+                    LinkRow(if(infinity) "主题样式" else "动态壁纸",
+                        if(infinity) "S8、N8 与几何 · 二十款三态动态效果" else "浏览动态场景；照片样式在下方单独选择") { if (!model.busy) onLibrary() }
                     BasicComponent(title = "草稿与预设", summary = "左侧新建，右侧为已保存预设。在预览编辑器点「保存预设」；切换壁纸后自动保留历史配置。")
-                    if (model.previewError.isNotEmpty()) LinkRow("预览未能生成，查看诊断", "不会影响已保存的壁纸与照片", onDiagnostics)
+                    if(model.resourceMissing) LinkRow("需要动态壁纸资源包", "导入后恢复预览，已有预设会保留", onLibrary)
+                    else if (model.previewError.isNotEmpty()) LinkRow("预览未能生成，查看诊断", "不会影响已保存的壁纸与照片", onDiagnostics)
                 }
                 VivoSettingsGroup("运行状态") {
-                    SwitchRow(title = "启用 Alive 壁纸", checked = model.running,
+                    SwitchRow(title = "启用 $familyName 壁纸", checked = model.running,
                         summary = when { model.busy -> "正在读取或更新壁纸状态…"
                             model.statusError.isNotEmpty() -> "状态读取失败，请重试；不会改动当前壁纸"
                             model.running -> "正在使用 · 与其他壁纸组件互斥"
                             else -> "尚未启用 · 预览并确认应用后生效" },
-                        enabled = !model.busy && model.statusError.isEmpty(), onCheckedChange = onToggle)
+                        enabled = !model.busy && !model.aodUpdating && model.statusError.isEmpty(), onCheckedChange = onToggle)
+                    SwitchRow(title = "系统息屏显示", checked = model.aodEnabled == true, modifier = Modifier.testTag("system-aod-switch"),
+                        summary = when {
+                            model.aodUpdating -> "正在更新系统息屏开关…"
+                            model.aodError.isNotEmpty() -> model.aodError
+                            model.aodEnabled == null -> "正在读取系统息屏状态…"
+                            else -> "与系统开关同步 · 需要 Root 授权，显示时段仍由系统控制"
+                        }, enabled = !model.busy && !model.aodUpdating && model.aodEnabled != null,
+                        onCheckedChange = onAodToggle)
+                    SwitchRow(title = "强制息屏支持", checked = model.forceAod,
+                        summary = "跳过设备支持限制并开启息屏显示 · 开启或关闭后重启手机完整生效",
+                        enabled = !model.busy && !model.aodUpdating && model.aodEnabled != null,
+                        onCheckedChange = onForceAod)
+                    if(model.aodError.isNotEmpty()) LinkRow("息屏状态读取失败，点击重试", "重新读取系统开关", onAodRetry)
                     if (model.statusError.isNotEmpty()) LinkRow("壁纸状态读取失败，点击重试", "保留现有设置", onRetry)
                     LinkRow("管理与诊断", if (model.frameworkConnected) "LSPosed 已连接 · 查看运行状态与故障信息" else "LSPosed 未连接 · 查看配置说明", onDiagnostics)
                 }
-                Column {
+                if(!infinity) Column {
                     SmallTitle("照片壁纸")
                     listOf(listOf(601 to "圆景", 602 to "留光"), listOf(603 to "星月", 604 to "轻启·照片"),
                         listOf(605 to "山脉", 606 to "银河")).forEachIndexed { row, pair ->
@@ -379,11 +463,8 @@ internal fun AliveHomeContent(
                     }
                     if (model.photoShapesError.isNotEmpty()) TextButton("照片缩略图生成失败，点击重试", onClick = onRetry)
                 }
-                VivoSettingsGroup("扩展功能") {
-                    LinkRow("时钟与通知 · 实验", "独立设置，不改变壁纸素材") {
-                        if (!model.busy) context.startActivity(Intent(context, AliveExtensionsActivity::class.java))
-                    }
-                    BasicComponent(title = "生效方式", summary = "需要 Root + LSPosed。液态、趣味光栅与闪卡已独立为同级入口；在这里开启 Alive 不会直接覆盖它们。")
+                VivoSettingsGroup("使用说明") {
+                    BasicComponent(title = "生效方式", summary = "需要 Root + LSPosed。$familyName 使用独立的主题入口与预设记录，预览并确认应用后生效。")
                 }
             }
         }

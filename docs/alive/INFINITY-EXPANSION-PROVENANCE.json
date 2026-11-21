@@ -1,0 +1,473 @@
+{
+  "sources": [
+    {
+      "apk": "Infinity Wallpaper-1.0.apk",
+      "package": "com.swautoma.wallpaper.infinity",
+      "version": "1.0 (1)",
+      "sha256": "d336cb028b9fdfb1df4208917828246e96c3da317030913d1ab9b8894954011f"
+    },
+    {
+      "apk": "N8 Infinity Wallpaper-1.2.apk",
+      "package": "com.swautoma.wallpaper.infinityn8",
+      "version": "1.2 (3)",
+      "sha256": "73b56a03d146b6f22b8c238c148aef7bee04ed994ce99ff2431c960f24d19e66"
+    }
+  ],
+  "source_kind": "User supplied third-party Infinity recreations; not verified Samsung official packages",
+  "extraction": "JADX 1.5.6 + baksmali 2.5.2; custom OBJ grouping checked against Smali",
+  "code": "EGL-hosted renderer and event-time adapters written for this project; source imagery, GLSL and numeric data retained",
+  "asset_rights": "Original rights holders retained; no separate redistribution licence identified in supplied APKs",
+  "texture_encoding": "Full resolution lossless WebP; exact RGBA comparison against source PNGs",
+  "styles": [
+    {
+      "variant": 807,
+      "slug": "n8-black",
+      "name": "N8 · 黑色",
+      "layers": 11
+    },
+    {
+      "variant": 808,
+      "slug": "n8-blue",
+      "name": "N8 · 蓝色",
+      "layers": 9
+    },
+    {
+      "variant": 809,
+      "slug": "n8-gold",
+      "name": "N8 · 金色",
+      "layers": 9
+    },
+    {
+      "variant": 810,
+      "slug": "n8-orchid",
+      "name": "N8 · 兰紫",
+      "layers": 5
+    },
+    {
+      "variant": 811,
+      "slug": "polygon-black-1",
+      "name": "几何 · 黑色星空",
+      "layers": 0
+    },
+    {
+      "variant": 812,
+      "slug": "polygon-black-2",
+      "name": "几何 · 黑色渐变",
+      "layers": 0
+    },
+    {
+      "variant": 813,
+      "slug": "polygon-blue-1",
+      "name": "几何 · 蓝色星空",
+      "layers": 0
+    },
+    {
+      "variant": 814,
+      "slug": "polygon-blue-2",
+      "name": "几何 · 蓝色渐变",
+      "layers": 0
+    },
+    {
+      "variant": 815,
+      "slug": "polygon-gold-1",
+      "name": "几何 · 金色星空",
+      "layers": 0
+    },
+    {
+      "variant": 816,
+      "slug": "polygon-gold-2",
+      "name": "几何 · 金色渐变",
+      "layers": 0
+    },
+    {
+      "variant": 817,
+      "slug": "polygon-orchid-1",
+      "name": "几何 · 兰紫星空",
+      "layers": 0
+    },
+    {
+      "variant": 818,
+      "slug": "polygon-orchid-2",
+      "name": "几何 · 兰紫渐变",
+      "layers": 0
+    },
+    {
+      "variant": 819,
+      "slug": "polygon-purple-1",
+      "name": "几何 · 紫色星空",
+      "layers": 0
+    },
+    {
+      "variant": 820,
+      "slug": "polygon-purple-2",
+      "name": "几何 · 紫色渐变",
+      "layers": 0
+    }
+  ],
+  "assets": {
+    "n8-black/atlas.webp": {
+      "sha256": "f0391eb475279c58eed2f62ead2ed6b58b2244a0a5c84825ad0974cdcc03e18b",
+      "bytes": 3535292
+    },
+    "n8-black/preview.jpg": {
+      "sha256": "8c98ba89e457b5813c3a1319437c746c405c5d343943ee599190d717c6e3e9bd",
+      "bytes": 51665
+    },
+    "n8-black/theme.json": {
+      "sha256": "668383ba51f577035f13bcbe6ccebcc0874448f6ce10d481f21670c794b9b98c",
+      "bytes": 28076
+    },
+    "n8-blue/atlas.webp": {
+      "sha256": "f1b23921754a7422470ed90e6463fa864969d620d8fd03523427ce267ec26127",
+      "bytes": 4414982
+    },
+    "n8-blue/preview.jpg": {
+      "sha256": "828ebb133622da9608fe497a696f4edc5d6279c2be2c57375b74b22e139292ad",
+      "bytes": 41186
+    },
+    "n8-blue/theme.json": {
+      "sha256": "1615f10f1f1985d6942ab2b8db9639b5dd3577abde18e048b5e217a59db905df",
+      "bytes": 22858
+    },
+    "n8-gold/atlas.webp": {
+      "sha256": "f4317157526763e43d222b6416051633cf390e70a8d652ca1b28aee9d3cb8260",
+      "bytes": 4122090
+    },
+    "n8-gold/preview.jpg": {
+      "sha256": "36f5d0c225e00b0bffd4c4741a17c7540670a4bbdfa7a60b8f512e67fab3b594",
+      "bytes": 45315
+    },
+    "n8-gold/theme.json": {
+      "sha256": "104a9ef8d558132614aaf4c52eac612de1deb69d5001296fad1921cd4de8dab1",
+      "bytes": 27026
+    },
+    "n8-orchid/atlas.webp": {
+      "sha256": "7987b920d6a49e5005785e0733bb91d43597f9f9f9690a560311b6981eb139c9",
+      "bytes": 3334418
+    },
+    "n8-orchid/preview.jpg": {
+      "sha256": "b57e690e61393dc451c22484dcb82bb5f254292b58bf1cb98f939b8446b94724",
+      "bytes": 51146
+    },
+    "n8-orchid/theme.json": {
+      "sha256": "db57fb47781606f0e5da9d7ac4027e18aa9af0beae633cda2c728ee7a307b15f",
+      "bytes": 15592
+    },
+    "n8-shaders/alpha_mask_fragment_shader.glsl": {
+      "sha256": "86aeecc9f1e835015522c798ee7c55529de1640f409dff1a5aedf71bdf145b84",
+      "bytes": 336
+    },
+    "n8-shaders/alpha_mask_vertex_shader.glsl": {
+      "sha256": "44546107b0b2aa24948a166f56b2ab70f83294876d1d5fef543c17dcc043868c",
+      "bytes": 237
+    },
+    "n8-shaders/alpha_texture_fragment_shader.glsl": {
+      "sha256": "2ac36173ba9e4ecc89311e7f2a8346f99b73c422100491c24411f4abe21186a0",
+      "bytes": 327
+    },
+    "n8-shaders/alpha_texture_vertex_shader.glsl": {
+      "sha256": "44546107b0b2aa24948a166f56b2ab70f83294876d1d5fef543c17dcc043868c",
+      "bytes": 237
+    },
+    "n8-shaders/color_fragment_shader.glsl": {
+      "sha256": "dd75dade9b831a4a50db6e6e3182c3d79fd018bc9f0402a21eb992c73a8700ad",
+      "bytes": 163
+    },
+    "n8-shaders/color_vertex_shader.glsl": {
+      "sha256": "70956a73d000870c2d765646c33c770b8ff1da4f6d9ff9918b16075ee109fe71",
+      "bytes": 237
+    },
+    "n8-shaders/particle_fragment_shader.glsl": {
+      "sha256": "29a1afe45f4cdb3d47944410f2f2424fe1357809f664911c474c44ff770e2947",
+      "bytes": 642
+    },
+    "n8-shaders/particle_move_vertex_shader.glsl": {
+      "sha256": "5b86c3dc756635f11821f7dbd93fbb1d76943eb94702a859c4d3ce203a0b2763",
+      "bytes": 1817
+    },
+    "n8-shaders/particle_vertex_shader.glsl": {
+      "sha256": "7591bba5ca4c2698db8e702b83e752cd267668a12ca14c973427c781709823dc",
+      "bytes": 362
+    },
+    "n8-shaders/simple_texture_fragment_shader.glsl": {
+      "sha256": "b2e9fba47eb847bf1cad1c3e2665d2473faaba785f78da2d650f88b142f4aeb5",
+      "bytes": 286
+    },
+    "n8-shaders/simple_texture_vertex_shader.glsl": {
+      "sha256": "c19d24dd12bee33c4793fc6de25b2eb0cda3f27fa866a6d49e7a83ee3c7590e4",
+      "bytes": 503
+    },
+    "n8-shaders/single_draw_fragment_shader.glsl": {
+      "sha256": "665241583c0810e1595984ede843b671a215458d2c9c706302b2f90b8f349e24",
+      "bytes": 464
+    },
+    "n8-shaders/single_draw_vertex_shader.glsl": {
+      "sha256": "6066dd3313dd4e5dbea59767ede6afff21b4917f7b9fea8923c3b812579184a1",
+      "bytes": 571
+    },
+    "n8-shaders/texture_fragment_shader.glsl": {
+      "sha256": "f60281ec41b402affd6a3ab5ddad04d94540da33992b386736dfb5e6190612b9",
+      "bytes": 287
+    },
+    "n8-shaders/texture_vertext_shader.glsl": {
+      "sha256": "48d4b3e50ac8de874c722ef2358ee95906e801be404d871e95e4102277e8ccf5",
+      "bytes": 289
+    },
+    "polygon-shaders/dot_frag_shader.glsl": {
+      "sha256": "1f61d0a4e5796479b7bcd820dd2391d2ac1950a198044fe64abdc4597c755180",
+      "bytes": 438
+    },
+    "polygon-shaders/dot_vert_shader.glsl": {
+      "sha256": "123e7817b1b95f21f4a5e0177a98a624d13d6e3d0b8c3e289cfb4faf7b7481cf",
+      "bytes": 1468
+    },
+    "polygon-shaders/image_wallpaper_fragment_shader.glsl": {
+      "sha256": "d4f440abae693e90a834a6bf624e4baf0512dd846ea279fd862e5c0e25ccb678",
+      "bytes": 3457
+    },
+    "polygon-shaders/image_wallpaper_vertex_shader.glsl": {
+      "sha256": "dbd8b5510bef7ea429218b65a5ceb660fe719982dbc7c6e70ebfed9e3c5b033e",
+      "bytes": 188
+    },
+    "polygon-shaders/line_frag_shader.glsl": {
+      "sha256": "bac39534f90b56b38ed81869a640737868587598869eef1db495ce709d443df7",
+      "bytes": 212
+    },
+    "polygon-shaders/line_vert_shader.glsl": {
+      "sha256": "53e60ee38a87db18e59edab832532d361ec9ddc405a4cca14a7ea24f8039a2fa",
+      "bytes": 376
+    },
+    "polygon-shaders/mask_texture_frag_shader.glsl": {
+      "sha256": "18c04b8358bda04699cb891e1eea7a326d3a8f0763ff9dc677e5182f2955680c",
+      "bytes": 1131
+    },
+    "polygon-shaders/mask_texture_vert_shader.glsl": {
+      "sha256": "11f99457d9f295d0703054d23bcd932099a763a8f3440467f21e8254980d546d",
+      "bytes": 317
+    },
+    "polygon-shaders/rectangle_frag_shader.glsl": {
+      "sha256": "b49f6c54c9c2a8c9201d55ecaf96cfbaa52f150d31c3536effd4067e47e3e8bc",
+      "bytes": 98
+    },
+    "polygon-shaders/rectangle_vert_shader.glsl": {
+      "sha256": "1e9bb5424ca49b3e47af631c941c1b32d3694ae3c8420a00c71897cce84086b7",
+      "bytes": 199
+    },
+    "polygon-shaders/single_texture_frag_shader.glsl": {
+      "sha256": "4d72ed134e1541bf102444b4c8e4b5bb04780dacf2dff655fc55c5f3d2d5922c",
+      "bytes": 613
+    },
+    "polygon-shaders/single_texture_vert_shader.glsl": {
+      "sha256": "48dc04a5f0886fc698a8a552e9efbfa6c672a3c1f3abe9d527faf2d2fa4fe23f",
+      "bytes": 215
+    },
+    "polygon-shaders/triangle_frag_shader.glsl": {
+      "sha256": "241df844021d456dd26bea16488909153347d264af8c89ac7f4896b0f8340c3d",
+      "bytes": 187
+    },
+    "polygon-shaders/triangle_vert_shader.glsl": {
+      "sha256": "1e9bb5424ca49b3e47af631c941c1b32d3694ae3c8420a00c71897cce84086b7",
+      "bytes": 199
+    },
+    "polygon/black/faces.bin": {
+      "sha256": "717c1c18353cb814ec35e454fd52dfcaca0da8a291a384f5c497062795d7d3af",
+      "bytes": 29760
+    },
+    "polygon/black/home.webp": {
+      "sha256": "daa6a4cedd165a05d355dd5252ed37d2918e94bd2f99bc8274df8c2ae6a3eed8",
+      "bytes": 2627660
+    },
+    "polygon/black/lines.bin": {
+      "sha256": "f487201b54c4b077470c770770228b551903bbfa1d5e43a7e2f087f882c5eb69",
+      "bytes": 32320
+    },
+    "polygon/black/lock.webp": {
+      "sha256": "beb50d316740a600b1680491b31875128379b530ac9e55698cf2415a69df50d3",
+      "bytes": 2661832
+    },
+    "polygon/black/mesh.json": {
+      "sha256": "871d061e411931c390e75fac882afed0f6e3ebe73171232e41ac00eecd97736c",
+      "bytes": 3534
+    },
+    "polygon/black/points.bin": {
+      "sha256": "28a629b8a176d087cacab55fed8c95f2b9130cb7544a334bcd97c83565885f02",
+      "bytes": 4960
+    },
+    "polygon/blue/faces.bin": {
+      "sha256": "bcc12dd2fbb877288227cc66a93c8213cb6f0c3fb19413e09cf61319f3d9d833",
+      "bytes": 40680
+    },
+    "polygon/blue/home.webp": {
+      "sha256": "302afd2b0950736eb10a6c27fe608e8d079262a7c50f42634002440611f4ba3f",
+      "bytes": 2388660
+    },
+    "polygon/blue/lines.bin": {
+      "sha256": "07ed47d0a3af2aa62a5795ad0f6fed7948b9d732ef7b87bb3997edf32ebfac71",
+      "bytes": 41600
+    },
+    "polygon/blue/lock.webp": {
+      "sha256": "bc7ef5eacaf97e2582dfbf94fd0782bd649fde80052535fea085e0a33393391d",
+      "bytes": 2473796
+    },
+    "polygon/blue/mesh.json": {
+      "sha256": "3fe37539648d1244717b2a5cbfef7b5cccfe8d9776788a8adf1144f1ab5c7d2e",
+      "bytes": 4134
+    },
+    "polygon/blue/points.bin": {
+      "sha256": "e398e20caad33bb26d0f9321401c78be373c4f90bcb659a4ead8329c41a21d44",
+      "bytes": 6520
+    },
+    "polygon/gold/faces.bin": {
+      "sha256": "9613db58d95393e845c6807e9698b79bb736ecc4b1ce3c99613f43ef63218596",
+      "bytes": 36600
+    },
+    "polygon/gold/home.webp": {
+      "sha256": "afdb37c3b81f4d6d611554ead95e33815d4691a0b245b9824b11131784177ab5",
+      "bytes": 2507180
+    },
+    "polygon/gold/lines.bin": {
+      "sha256": "6d8ae6c567eafadc9792ad6cb9c8d7af385707fa0ee8e0232bcd1706eeade5ad",
+      "bytes": 33760
+    },
+    "polygon/gold/lock.webp": {
+      "sha256": "def251f2bba9330fe71438749f49b1474fa59aa6c64cc3cc9961b5c4884e262f",
+      "bytes": 2510594
+    },
+    "polygon/gold/mesh.json": {
+      "sha256": "38948b8c5772430b783ad472b9593beae31807505bd5c95899e96cfc0b8cfc69",
+      "bytes": 3726
+    },
+    "polygon/gold/points.bin": {
+      "sha256": "019013a0ccaebab2348162505f767113baf3e1c4bbdebf5081aaf8586271e738",
+      "bytes": 4880
+    },
+    "polygon/orchid/faces.bin": {
+      "sha256": "42d71cdb32a280d388ff1f4e7ebbeb1167644b138cc298cecdddebee8b1c9168",
+      "bytes": 34920
+    },
+    "polygon/orchid/home.webp": {
+      "sha256": "e3e00db5b0f89f8033981271b228a85e5d16c0286921f7152d0994067b617967",
+      "bytes": 2618120
+    },
+    "polygon/orchid/lines.bin": {
+      "sha256": "ff5e618eb23632106c7707226e2626ecebd2bcd84abf4a8866051b3aa2a2045d",
+      "bytes": 32720
+    },
+    "polygon/orchid/lock.webp": {
+      "sha256": "a0bd021fc3b7880d3ab989297e1dd05bb5f8029e1a05dc558d2509988094da67",
+      "bytes": 2876264
+    },
+    "polygon/orchid/mesh.json": {
+      "sha256": "c9b7a9a8bec4be399fff946687646a5abc6f861628aa97f670c8d63826e587a6",
+      "bytes": 3560
+    },
+    "polygon/orchid/points.bin": {
+      "sha256": "80c253d9418fbd0a49fa8233a8864e296dfcdab38c8969ab39f2b7557b53f8bc",
+      "bytes": 5200
+    },
+    "polygon/purple/faces.bin": {
+      "sha256": "0c613aaa3d07fe1d68bc9ce547678fb83718eb43b4b6583a2656d2b4baa17b49",
+      "bytes": 34080
+    },
+    "polygon/purple/home.webp": {
+      "sha256": "7af7e9bf1fa5e18b12a2d847ee0450c62ee2e82939060a7ef9d1a1526c80c565",
+      "bytes": 2276166
+    },
+    "polygon/purple/lines.bin": {
+      "sha256": "cf3205f88089c000182ec7fdecfcc2f7271b2ec32c47e8622565445182c85399",
+      "bytes": 35920
+    },
+    "polygon/purple/lock.webp": {
+      "sha256": "3916391502b827b3225060f2b718d69083350731a5bdfa0f29bf0fb4d383be3b",
+      "bytes": 2662208
+    },
+    "polygon/purple/mesh.json": {
+      "sha256": "ac6fcb2960902aa083aec6b4bdd840f653b5bfad33e704714a4e5856b1ac8852",
+      "bytes": 3475
+    },
+    "polygon/purple/points.bin": {
+      "sha256": "ce317e1ed424809ccf1301871adef9ea21675952f1dc44c267dd1c247cdd7d62",
+      "bytes": 5560
+    },
+    "polygon-black-1/preview.jpg": {
+      "sha256": "42bf79fe758ee085b5eb7695533d51a167a981700362aacda211957ae12b29a3",
+      "bytes": 10813
+    },
+    "polygon-black-1/theme.json": {
+      "sha256": "44798151ba8131e93fa938df3e0695115c3b6abe7743796706c733027743e296",
+      "bytes": 171
+    },
+    "polygon-black-2/preview.jpg": {
+      "sha256": "a25bf549f748a94709d3ae79b2ccda758c3df828bc01240eb8c4a7e9f6bf7a3a",
+      "bytes": 12742
+    },
+    "polygon-black-2/theme.json": {
+      "sha256": "802fc71c8e90df4b50961eb791669e667a5b2f2530f6e49f5a695d65fe4dbe14",
+      "bytes": 171
+    },
+    "polygon-blue-1/preview.jpg": {
+      "sha256": "082987c217359c414319fbe4d8b7f047a427963b1fcb245777639088846af148",
+      "bytes": 9119
+    },
+    "polygon-blue-1/theme.json": {
+      "sha256": "4e08f5cd8a434790704d6ef36418f63ced66eab1d366dd9bc6640537bbc9ccf3",
+      "bytes": 170
+    },
+    "polygon-blue-2/preview.jpg": {
+      "sha256": "df08034c3167164ae32fb4c3610fa96dac28f70516354c093eb8a96ac49c4979",
+      "bytes": 11650
+    },
+    "polygon-blue-2/theme.json": {
+      "sha256": "440423ba4c1ad749a52a9f65261621e2c886fab23fb354e18dd250c51657312f",
+      "bytes": 170
+    },
+    "polygon-gold-1/preview.jpg": {
+      "sha256": "afb67f173b21aa97e4f7e578441e39890a831f856fa903617c576060759748d1",
+      "bytes": 9117
+    },
+    "polygon-gold-1/theme.json": {
+      "sha256": "13eee5741896aa37675db520a728ea723968fccda20fae4f1bfa255256d0e9d4",
+      "bytes": 170
+    },
+    "polygon-gold-2/preview.jpg": {
+      "sha256": "a84509f90d0eb5190bfe1be46bbd8f15ebeeecf28a1d7f15202e51c73d937b4d",
+      "bytes": 11765
+    },
+    "polygon-gold-2/theme.json": {
+      "sha256": "982d32eaebf2ca2af36724a95de54638a7adb7110e04c12424c1c3bf05cee6c8",
+      "bytes": 170
+    },
+    "polygon-orchid-1/preview.jpg": {
+      "sha256": "01eb7bb059f84edf1be0d5bac3a3db25293856dee47f071566e1f839cab68525",
+      "bytes": 9438
+    },
+    "polygon-orchid-1/theme.json": {
+      "sha256": "63c0927994c0e4ffa4c960d638fc50dba23fb6becf0e2fc700ee15aed86979b8",
+      "bytes": 172
+    },
+    "polygon-orchid-2/preview.jpg": {
+      "sha256": "29d370ef40f7def0e81b7224a426d809029adb7a3883e1e5f7f1d7eecdceaa1b",
+      "bytes": 9956
+    },
+    "polygon-orchid-2/theme.json": {
+      "sha256": "83c6ffc9e4039e21bf211fc90b38aa37c4cb1e61c529063babe8449fbc810c63",
+      "bytes": 172
+    },
+    "polygon-purple-1/preview.jpg": {
+      "sha256": "ec4d948455c93d9395854a64c02118a3484480147858e1c1719eb625ebc4c712",
+      "bytes": 9225
+    },
+    "polygon-purple-1/theme.json": {
+      "sha256": "59758d1482230f548b5f0ab90cb6a263c37a467291bf0b4d6821f2e4e6db4038",
+      "bytes": 172
+    },
+    "polygon-purple-2/preview.jpg": {
+      "sha256": "62b6b00a40d87d571c5103d8f7abb866687b8ab20f18e148c4a5d45219ea3023",
+      "bytes": 10573
+    },
+    "polygon-purple-2/theme.json": {
+      "sha256": "d43e79f67ab1e39cc7bdc86b3b981514daf47c7b64fb3a86ad90aa50ea4ba62d",
+      "bytes": 172
+    }
+  }
+}

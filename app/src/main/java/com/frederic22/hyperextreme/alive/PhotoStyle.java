@@ -26,7 +26,7 @@ final class PhotoStyle {
     static PhotoStyle get(int id){
         PhotoStyle s;
         switch(id){
-            case 1:s=new PhotoStyle(1,"leave_light",720,61,120,483667,-5,0,.70486f,1,567,530,567,530,800,400);break;
+            case 1:s=new PhotoStyle(1,"leave_light",720,61,120,483667,-5,0,.70486f,1,567,420,380,420,800,400);break;
             case 2:s=new PhotoStyle(2,"moon",720,32,60,516667,0,22,.986f,2.34f,533,743,553,743,800,400);break;
             case 3:s=new PhotoStyle(3,"door",720,41,60,616667,0,100,.917f,2.34f,717,733,717,733,800,400);break;
             case 4:s=new PhotoStyle(4,"mountain",1080,43,60,716667,0,100,.833f,2.34f,750,684,750,684,800,400);break;
@@ -37,8 +37,19 @@ final class PhotoStyle {
             boolean open=tr==0||tr==2;
             switch(id){
                 case 1:
-                    s.set(tr,t(open?517:450,open?50:0,.28f,0,.33f,1),2,4,5);
-                    s.set(tr,open?t(167,0,.33f,0,.67f,1):t(450,0,.28f,0,.33f,1),1);break;
+                    if(tr==2){
+                        // Fingerprint direct AOD->HOME unlock: zero start delay and snappy burst curve.
+                        s.set(tr,t(380,0,.18f,.05f,.15f,1),2,4,5);
+                        s.set(tr,t(140,0,.25f,0,.5f,1),1);
+                    }else if(!open){
+                        // Snappy sleep collapse: immediate start acceleration instead of sluggish ease-in.
+                        s.set(tr,t(400,0,.18f,.05f,.22f,1),2,4,5);
+                        s.set(tr,t(400,0,.18f,.05f,.22f,1),1);
+                    }else{
+                        s.set(tr,t(517,50,.28f,0,.33f,1),2,4,5);
+                        s.set(tr,t(167,0,.33f,0,.67f,1),1);
+                    }
+                    break;
                 case 2:
                     s.set(tr,t(open?367:467,open?0:176,.32f,.01f,.1f,1),4,5);
                     s.set(tr,open?t(367,0,.32f,.03f,.1f,.99f):t(567,176,.32f,-.04f,.1f,1.01f),2);

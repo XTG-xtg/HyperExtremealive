@@ -37,6 +37,12 @@ class MaskProvider : ContentProvider() {
         return true
     }
 
+    private fun acceptWallpaperChange(ctx: Context, active: Boolean, base: String, extras: Bundle?): Boolean {
+        val current = runCatching { WallpaperVersion.compute(ctx).value }.getOrDefault("")
+        return WallpaperChangeGuard.accepts(active, base,
+            extras?.getString(KEY_EXPECTED_WALLPAPER_FP), extras?.getString(KEY_OBSERVED_WALLPAPER_FP), current)
+    }
+
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor {
         val appContext = requireNotNull(context)
         // 「空间壁纸」的层图：`content://…/spatial/<16位哈希>/layer3.webp`。
@@ -349,6 +355,7 @@ class MaskProvider : ContentProvider() {
             // 改 prefs（active/key + 清基准）→ 推系统属性 → toast → 延迟重启壁纸进程。
             // 区别只有文案。`disable` 内部会兜底切主线程（`call` 跑在 binder 线程）。
             METHOD_SPATIAL_AUTO_OFF -> {
+                if (!acceptWallpaperChange(appContext, prefs.spatialActive, prefs.spatialWallpaperFp, extras)) return Bundle.EMPTY
                 SpatialControl.disable(appContext, "检测到壁纸变化，空间壁纸已自动关闭")
                 val at = SimpleDateFormat("MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
                 prefs.setDiagNote(
@@ -363,6 +370,7 @@ class MaskProvider : ContentProvider() {
             // 清 active/key + 清基准 → 推系统属性（SystemUI 轮询到 active=0 自己拆层）。
             // 服务模式不额外 `WallpaperManager.clear()` —— 系统已经把壁纸换掉了。
             METHOD_RASTER_AUTO_OFF -> {
+                if (!acceptWallpaperChange(appContext, prefs.rasterActiveId.isNotEmpty(), prefs.rasterWallpaperFp, extras)) return Bundle.EMPTY
                 RasterControl.disable(appContext, "检测到壁纸变化，光栅壁纸已自动关闭")
                 val at = SimpleDateFormat("MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
                 prefs.setDiagNote(
@@ -383,7 +391,8 @@ class MaskProvider : ContentProvider() {
             // **广播由 hook 侧拿到 token 后自行发出**（写状态在前、发广播在后，与 App 的
             // 「关闭替换」同一顺序；接收侧以 config 为准，广播只是触发）。
             METHOD_PARALLAX_AUTO_OFF -> {
-                if (prefs.parallaxBgActive && prefs.parallaxAutoOff) {
+                if (prefs.parallaxBgActive && prefs.parallaxAutoOff &&
+                    acceptWallpaperChange(appContext, true, prefs.parallaxWallpaperFp, extras)) {
                     prefs.setParallaxBgActive(false)
                     prefs.setParallaxWallpaperFp("")
                     val token = prefs.requestParallax()
@@ -489,6 +498,8 @@ class MaskProvider : ContentProvider() {
 
         /** [METHOD_PARALLAX_AUTO_OFF] 回执 bundle 里的指令号键（与广播 extra 同名，hook 拿到后发广播用）。 */
         const val KEY_PARALLAX_TOKEN = "token"
+        const val KEY_EXPECTED_WALLPAPER_FP = "expected_wallpaper_fp"
+        const val KEY_OBSERVED_WALLPAPER_FP = "observed_wallpaper_fp"
 
         /** aod 侧 hook 对「点选图前的景深检查」的回应（arg = `<值>@<请求号>`，值 -1 = 读取失败）。 */
         const val METHOD_DEPTH_STATE = "depth_state"

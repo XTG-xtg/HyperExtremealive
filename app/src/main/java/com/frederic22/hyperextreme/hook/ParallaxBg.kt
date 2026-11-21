@@ -784,7 +784,7 @@ internal object ParallaxBg {
                 RenderEffect.createBlurEffect(ratio * 100f, ratio * 100f, Shader.TileMode.CLAMP),
             )
         }
-        runCatching { view.setRenderEffect(effect) }
+        runCatching { ParallaxAodBrightness.apply(view, effect) }
             .onFailure { logOnce("blur-sync-fail", "背景层模糊效果设置失败：$it") }
         logOnce("blur-sync", "背景层已接入连续模糊（ratio=$ratio 为实测首帧值）")
     }
@@ -1499,6 +1499,7 @@ internal object ParallaxBg {
         stopGateFade()
         gateShownLogged = null
         backdropRef = null
+        ParallaxAodBrightness.detach()
         treeAnchored = false // v22：模式复位（下次亮屏稳定重新入树）
         pendingEnterTree = false
         mainHandler.removeCallbacks(enterTreeTask)

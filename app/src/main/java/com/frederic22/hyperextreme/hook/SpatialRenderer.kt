@@ -142,7 +142,7 @@ internal object SpatialRenderer {
     private const val VERT = SpatialGlCore.VERT
 
     /** 片元着色器（球面 uv + 逐像素位移 + AOD 压暗）见 [SpatialGlCore.FRAG]。 */
-    private const val FRAG = SpatialGlCore.FRAG
+    private val FRAG = SpatialGlCore.FRAG
 
     // ─────────────────── 密码页连续模糊（2026-10-29 定案：**不自绘**）───────────────────
     //
@@ -299,6 +299,10 @@ internal object SpatialRenderer {
     private var uDkTh = 0
     /** AOD 压暗 uniform（v1.5.80 起压暗回到绘制阶段）。 */
     private var uDimLoc = 0
+    private var uExposureLoc = 0
+    private var brightness: com.frederic22.hyperextreme.alive.AodBrightness.Watch? = null
+    @Volatile private var aodTargetDim = .5f
+    @Volatile private var aodBoostActive = false
     private var layerCount = 0
     private var textures = IntArray(0)
 
@@ -570,7 +574,9 @@ internal object SpatialRenderer {
     /** 解锁退场：启动 alpha 渐隐（**幂等**：重复调用会从 1 重新开始）。 */
     fun fadeOutOnUnlock() {
         val h = handler ?: return
+        val requestedAt = SystemClock.elapsedRealtime()
         h.post {
+            val queueMs = SystemClock.elapsedRealtime() - requestedAt
             if (runningKey == null) return@post
             // **AOD 归位 / 压暗动画必须先作废**（2026-11-05 v1.17.6，真机日志实证）：
             // 这两条 tick 是 handler 异步节拍，归位一次要跑几百毫秒到几秒（GL 忙时被拉长）。
@@ -579,6 +585,7 @@ internal object SpatialRenderer {
             // 压暗 tick 落地则会把亮度再拉回 0.5（偶发压暗回弹）。
             cancelAodHomeLocked()
             cancelDimAnimLocked()
+            aodBoostActive = false
             // **AOD 直接解锁**（不经过锁屏）走的是
             // `startKeyguardExitAnimationByInteractiveOrFullAODUnlockAnimation`，
             // 不会调 `doWallpaperBlackAnim(show=true)` ⇒ `onExitAod()` 不执行 ⇒
@@ -628,9 +635,10 @@ internal object SpatialRenderer {
             // 现在在淡出开始的同一帧里写两份、内容完全一致 ⇒ 切换时 SF 无论取哪帧都对，
             // 成本只是**多画一次**（不是每 64ms 一次），几乎无感。
             val deskBefore = swapDeskFrames
-            freezeFrameForBoth()
+            val freezeMs = freezeFrameForBoth()
             val deskReady = swapDeskFrames > deskBefore
-            val started = SystemClock.elapsedRealtime()
+            // Do not extend the system animation by restarting its clock after GL queue/draw work.
+            val started = requestedAt
             // 见过 `mMiKeyguardFadingAway == true` 才认后面的 false 是"动画结束"，
             // 否则启动瞬间它可能还是初始的 false，会被误判成"立刻结束"。
             var sawFading = false
@@ -678,7 +686,7 @@ internal object SpatialRenderer {
                         HookRuntime.log(
                             "SPATIAL 解锁淡出 系统动画结束（实测 ${elapsed}ms，FADE_MS=$FADE_MS，" +
                                 "真值=${if (usedExternal) "miwallpaper alpha(最低 ${(minExt * 1000).toInt()}‰)" else "时间驱动"}，" +
-                                "口径=起点→fadingAway=false，${mountStats()}）",
+                                "口径=Hook请求→fadingAway=false，queue=${queueMs}ms freeze=${freezeMs}ms，${mountStats()}）",
                         )
                     }
                     lastA = a
@@ -727,7 +735,9 @@ internal object SpatialRenderer {
             // 归位期间必须能画，先把冻结解开（重复进 AOD / 连续两次调用也安全）
             aodFrozen = false
             startAodHomingLocked(h)
-            animateDimLocked(h, 1f - black.coerceIn(0f, 1f), AOD_ANIM_MS)
+            aodTargetDim = 1f - black.coerceIn(0f, 1f)
+            brightness?.refresh()
+            animateDimLocked(h, aodTargetDim, AOD_ANIM_MS)
         }
     }
 
@@ -820,6 +830,7 @@ internal object SpatialRenderer {
 
     /** 压暗渐变（handler 节拍，[AOD_STEP_MS] 一步）。 */
     private fun animateDimLocked(h: Handler, target: Float, durationMs: Long) {
+        aodBoostActive = target < 1f
         // 同一时刻只允许一条渐变：否则进/出 AOD 挨得近时两条 tick 会互相覆盖，终值不可预期。
         cancelDimAnimLocked()
         val from = aodDim
@@ -872,7 +883,10 @@ internal object SpatialRenderer {
     }
 
     /** 给 [SpatialOverlay] 的 AGSL 用：与 GL **同一个**压暗值。 */
-    internal fun aodDimValue(): Float = aodDim
+    internal fun aodDimValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.wallpaperDim(
+        aodDim, aodTargetDim, brightness?.value ?: 1f)
+    internal fun aodExposureValue(): Float = com.frederic22.hyperextreme.alive.AodBrightness.frameGain(
+        brightness?.value ?: 0f, com.frederic22.hyperextreme.alive.AodBrightness.dimWeight(aodDim, aodTargetDim), aodBoostActive)
 
     /**
      * 回锁屏 / 重新亮屏：把 alpha 复位到 1。
@@ -1241,6 +1255,7 @@ internal object SpatialRenderer {
         uDepthCh = GLES20.glGetUniformLocation(program, "uDepthCh")
         uDkTh = GLES20.glGetUniformLocation(program, "uDkTh")
         uDimLoc = GLES20.glGetUniformLocation(program, "uDim")
+        uExposureLoc = GLES20.glGetUniformLocation(program, "uExposure")
 
         // 位置 + UV：Bitmap 第 0 行在顶部，而 GL 的 (0,0) 在左下 ⇒ UV 的 y 要反过来
         val verts = floatArrayOf(
@@ -1409,6 +1424,8 @@ internal object SpatialRenderer {
         if (l0Only) HookRuntime.log("SPATIAL 诊断模式：只画 L0")
 
         runningKey = key
+        brightness?.close()
+        brightness = com.frederic22.hyperextreme.alive.AodBrightness.Watch(ctx, requireNotNull(handler)) { requestDraw(force = true) }
         runningScope = scope
         startSensor(ctx)
         watchScreenOn(ctx)
@@ -1460,8 +1477,10 @@ internal object SpatialRenderer {
                     // 后落地的归位 tick 覆盖，传感器就会一直冻着，直到下一次进出 AOD。
                     cancelAodHomeLocked()
                     cancelDimAnimLocked()
+                    aodBoostActive = false
                     aodFrozen = false
                     unfreezeTransition()
+                    requestDraw(force = true)
                     reregisterSensor(c ?: ctx)
                 }
             }
@@ -1651,6 +1670,7 @@ internal object SpatialRenderer {
     }
 
     private fun stopInternal(reason: String) {
+        brightness?.close(); brightness = null
         val id = runningKey
         // 传感器先摘（否则回调还会往已销毁的 GL 上 post）
         runCatching { gravityListener?.let { sensorManager?.unregisterListener(it) } }
@@ -2172,7 +2192,8 @@ internal object SpatialRenderer {
         GLES20.glUniform1f(uDkTh, DK_TH)
 
         // AOD 压暗：只乘 RGB（压暗 ≠ 变透明）。GL 线程读 [aodDim]，改值时靠 requestDraw 重绘。
-        GLES20.glUniform1f(uDimLoc, aodDim.coerceIn(0f, 1f))
+        GLES20.glUniform1f(uDimLoc, aodDimValue())
+        GLES20.glUniform1f(uExposureLoc, aodExposureValue())
 
         val drawCount = if (l0Only && only == SCENE_ALL) 1 else layerCount
         for (i in 0 until drawCount) {           // 0 = 背景，先画

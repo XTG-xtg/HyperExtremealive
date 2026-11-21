@@ -8,6 +8,19 @@ final class DisplayFramePolicy {
         return preview || display != Display.STATE_OFF;
     }
 
+    static boolean sceneMatches(boolean preview, int display, boolean interactive, int mode) {
+        // The display can retain DOZE for a frame after PowerManager has woken.
+        // Wait for the accepted scene instead of submitting the old AOD image.
+        return preview || display == Display.STATE_UNKNOWN || (mode == 0) == !interactive;
+    }
+
+    /** Recheck producer-side lifecycle signals even before the GL queue consumes them. */
+    static boolean canSubmit(boolean preview,boolean visible,boolean requestedVisible,
+            int display,int requestedDisplay,long sequence,long requestedSequence) {
+        return visible&&requestedVisible&&canRender(preview,display)&&canRender(preview,requestedDisplay)
+            &&sequence==requestedSequence;
+    }
+
     static long fallback(boolean preview, int display, boolean interactive,
             boolean bootstrap, long delay, long now, long fallbackUntil) {
         if (!canRender(preview, display)) return -1;

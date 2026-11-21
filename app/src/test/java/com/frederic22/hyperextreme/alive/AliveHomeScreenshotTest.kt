@@ -78,6 +78,7 @@ class AliveHomeScreenshotTest {
             compose.onNodeWithText("桌面").assertDoesNotExist()
             compose.onNodeWithText("动态壁纸").performScrollTo().performClick()
             org.junit.Assert.assertTrue(library)
+            compose.onNodeWithText("时钟与通知 · 实验").assertDoesNotExist()
             compose.onNodeWithText("启用 Alive 壁纸").performScrollTo().performClick()
             org.junit.Assert.assertEquals(true, toggle)
             compose.onNodeWithText("圆景").performScrollTo().performClick()
@@ -140,6 +141,7 @@ class AliveHomeScreenshotTest {
         val host = Robolectric.buildActivity(ComponentActivity::class.java).setup()
         try {
             val activity = host.get()
+            DynamicPackFixture.install(activity)
             activity.setContent {
                 val controller = remember { ThemeController(ColorSchemeMode.Dark) }
                 MiuixTheme(controller = controller, textStyles = HyperTextStyles) { AliveLibrary {} }

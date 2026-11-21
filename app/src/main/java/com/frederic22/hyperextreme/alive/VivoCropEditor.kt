@@ -2,6 +2,7 @@ package com.frederic22.hyperextreme.alive
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.*
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import java.util.concurrent.TimeUnit
 
 /** Gesture geometry is the renderer's PhotoViewport, never a separately cropped preview image. */
@@ -56,16 +58,18 @@ internal fun VivoCropEditor(options: VivoOptions, onChange: (VivoOptions) -> Uni
         })
         AliveEditorTopBar("壁纸取景", "返回", "完成", true, true, onDone, onDone, Modifier.align(Alignment.TopCenter))
         Column(Modifier.align(Alignment.BottomCenter).widthIn(max = 600.dp).fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp)).background(EditorSurface.panel)
+            .clip(RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp))
+            .background(MiuixTheme.colorScheme.surfaceContainer)
+            .border(0.75.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp))
             .heightIn(max = 260.dp).verticalScroll(rememberScrollState())
-            .navigationBarsPadding().padding(horizontal = 20.dp, vertical = 12.dp)) {
+            .navigationBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("取景调整", fontSize = 15.sp, color = EditorSurface.text, modifier = Modifier.weight(1f))
+                Text("取景调整", fontSize = 15.sp, color = MiuixTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
                 EditorTextAction("复位取景", enabled = dimensions != null, icon = AliveToolIcon.UNDO,
                     onClick = { onChange(current.edited { x = .5f; y = .5f; zoom = 1f }) })
             }
             Text(failure.ifEmpty { if (dimensions == null) "正在加载照片…" else "拖动位置 · 双指缩放 · 主体同步对齐" },
-                color = EditorSurface.secondary, fontSize = 12.sp, modifier = Modifier.padding(bottom = 16.dp))
+                color = MiuixTheme.colorScheme.onSurfaceVariantSummary, fontSize = 12.sp, modifier = Modifier.padding(bottom = 14.dp))
             EditorValueSlider("缩放", options.zoom, 1f..8f, "%.1f×".format(options.zoom), enabled = dimensions != null) {
                 onChange(current.edited { zoom = it })
             }

@@ -50,7 +50,10 @@ final class MotionSession {
         }
     }
 
-    synchronized void frame(long eventSequence, int mode, long eventNanos, long frameNanos, Runnable render) {
+    synchronized boolean frame(long eventSequence, int mode, long eventNanos, long frameNanos, Runnable render) {
+        // The other slot may already have consumed the newer unlock/sleep event.
+        // Its CPU scene must never be drawn with this slot's older AOD presentation.
+        if (initialized && eventSequence < sequence) return false;
         long now = Math.max(frameNanos, lastFrame);
         if (!initialized) {
             // Uptime zero is not a scene start: seeding from it jumps gradient color time by hours.
@@ -70,5 +73,6 @@ final class MotionSession {
         lastFrame = now;
         // Hold the CPU snapshot stable while this slot uploads uniforms and submits draw calls.
         render.run();
+        return true;
     }
 }

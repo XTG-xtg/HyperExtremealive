@@ -1,5 +1,9 @@
 package com.frederic22.hyperextreme.ui
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.frederic22.hyperextreme.alive.AodBrightness
+
 import android.graphics.Bitmap
 import android.util.Size
 import android.view.WindowManager
@@ -358,10 +362,14 @@ internal fun RasterWallpaperDetail(state: MaskUiState) {
      * * **系统壁纸服务**：写**独立**的 target 文件 + 拉起系统页；**绝不推属性**
      *   （推了 hook 链也会画，同一张图被渲染两遍）。
      */
-    fun applyGroup(g: RasterGroup) {
+    fun applyGroup(g: RasterGroup, brightness: Float? = null) {
         // 服务模式**不早退**：即使 id 没变也要重新写 target + 拉起系统页
         //（用户可能刚从系统页把壁纸换回去了，这时点「跳转系统页」必须能重来）。
-        if (mountMode != RASTER_MOUNT_SERVICE && g.id == activeId) return
+        if (g.id == activeId && (mountMode != RASTER_MOUNT_SERVICE || serviceRunning)) {
+            brightness?.let { AodBrightness.save(ctx, it) }
+            Toast.makeText(ctx, "预览设置已保存", Toast.LENGTH_SHORT).show()
+            return
+        }
         // **功能冲突检测**（2026-11-04 用户要求，三侧统一）：
         // 视差 / 空间任一在跑就不许应用 —— 三条链都靠"压住系统壁纸"工作，同时开会互相盖。
         // 弹窗复用 `FeatureConflictDialog`，正文里的名字取实际在跑的那条。
@@ -393,6 +401,7 @@ internal fun RasterWallpaperDetail(state: MaskUiState) {
                 activeId = g.id
                 prefs.setRasterGroupOrder(listOf(g.id) + prefs.rasterGroupOrder.filterNot { it == g.id })
             }
+            brightness?.let { AodBrightness.save(ctx, it) }
             if (mountMode != RASTER_MOUNT_SERVICE) {
                 val app = ctx.applicationContext ?: ctx
                 Thread {
@@ -407,6 +416,17 @@ internal fun RasterWallpaperDetail(state: MaskUiState) {
         } catch (failure: Exception) {
             Toast.makeText(ctx, failure.message ?: "无法启用光栅壁纸", Toast.LENGTH_LONG).show()
         }
+    }
+
+    val previewLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val request = EffectPreviewRequest.parse(result.data)
+        val brightness = EffectPreviewRequest.brightness(result.resultCode, result.data)
+        if(request?.kind == EffectWallpaperKind.RASTER && brightness != null) {
+            groups.firstOrNull { it.id == request.key }?.let { applyGroup(it, brightness) }
+        }
+    }
+    fun previewGroup(group: RasterGroup) {
+        previewLauncher.launch(EffectPreviewRequest(EffectWallpaperKind.RASTER, group.id).intent(ctx))
     }
 
     /**
@@ -593,10 +613,10 @@ internal fun RasterWallpaperDetail(state: MaskUiState) {
             val label = when {
                 stopPending -> "重试关闭"
                 selected == null -> "新搭配"
-                serviceMode -> if (serviceRunning) "恢复默认" else "跳转系统页"
+                serviceMode -> if (serviceRunning) "恢复默认" else "预览与应用"
                 // 「正在使用」改成可点的「取消应用」（用户 2026-11-03）。
                 isActive -> "取消应用"
-                else -> "应用"
+                else -> "预览与应用"
             }
             // 提示色 ⇄ 常态：颜色**叠化**过去（用户 2026-11-03），不是硬切。
             // 已应用那套 = **正常按钮色（灰底）+ 提示色文字**，表示这是次要的"取消"操作。
@@ -625,9 +645,9 @@ internal fun RasterWallpaperDetail(state: MaskUiState) {
                         // 服务模式：运行中 = 恢复默认；未运行 = 拿当前这组去跳转系统页。
                         // ⚠️ 不能复用下面的 `g.id == activeId` 早退 —— 服务模式下 id 指针
                         // 可能还指着旧组（用户从系统页换过壁纸），那会变成"点了没反应"。
-                        serviceMode -> if (serviceRunning) clearActive() else applyGroup(g)
+                        serviceMode -> if (serviceRunning) clearActive() else previewGroup(g)
                         g.id == activeId -> clearActive()
-                        else -> applyGroup(g)
+                        else -> previewGroup(g)
                     }
                 },
                 // 三态都可点（2026-11-03 用户要求取消应用也能点）。
@@ -663,6 +683,11 @@ internal fun RasterWallpaperDetail(state: MaskUiState) {
         Spacer(Modifier.height(BLOCK_GAP))
 
         // 「参数调整」整套照空间壁纸页搬来（2026-11-03 用户要求）：
+        if(selected != null) {
+            TextButton("预览与调整", onClick = { selected?.let(::previewGroup) },
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp))
+        }
+        Spacer(Modifier.height(BLOCK_GAP))
         // **卡外标题不要**、**「缓存推理分辨率」删掉**（光栅用不到），
         // 其余两项的「空间壁纸」字样都换成「光栅壁纸」。
         // ⚠️ 渲染链还没做 ⇒ 这三项目前只存值、不生效（落点见 `MaskPrefs.raster*`）。

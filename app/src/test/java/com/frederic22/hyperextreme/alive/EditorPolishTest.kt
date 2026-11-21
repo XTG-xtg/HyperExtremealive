@@ -93,56 +93,6 @@ class EditorPolishTest {
     fun largeFontMaskKeepsActionsReachable() = mask("mask-large", true)
     @Test fun paintMaskDoesNotExposeSubjectRecognition() = mask("paint", subject = false)
 
-    private fun clock(name: String, dark: Boolean, large: Boolean = false) {
-        RuntimeEnvironment.setFontScale(if (large) 1.4f else 1f)
-        val host = Robolectric.buildActivity(ComponentActivity::class.java).setup()
-        var applied = false; var styles = false
-        try {
-            host.get().setContent {
-                MiuixTheme(controller = remember { ThemeController(if (dark) ColorSchemeMode.Dark else ColorSchemeMode.Light) }, textStyles = HyperTextStyles) {
-                    var options by remember { mutableStateOf(ExtensionOptions.defaults()) }
-                    ExtensionEditorContent(options, false, 0, false, "unsupported", "", clockTitle(options.style),
-                        {}, { applied = true }, {}, { options = it }, { styles = true }, {}, {}) {}
-                }
-            }
-            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("所选时钟的静态样式参考").fetchSemanticsNodes().isNotEmpty() }
-            capture(name)
-            compose.onNodeWithText("替换息屏时钟").performScrollTo().performClick()
-            compose.onNodeWithText("应用").assertIsNotEnabled(); assertFalse(applied)
-            compose.onNodeWithTag("extension-styles").performScrollTo().performClick(); assertTrue(styles)
-            compose.onNodeWithText("双侧光带").performScrollTo().performClick()
-            compose.onNodeWithText("播放光效").performScrollTo().assertIsDisplayed()
-            capture("$name-notification")
-        } finally { host.pause().stop().destroy(); RuntimeEnvironment.setFontScale(1f) }
-    }
-    @Test fun clockLightHasHonestFallback() = clock("clock-light", false)
-    @Test fun clockDarkHasHonestFallback() = clock("clock-dark", true)
-    @Test @Config(qualifiers = "zh-rCN-w320dp-h640dp-xhdpi")
-    fun compactClockAndLargeText() = clock("clock-compact-large", false, true)
-
-    @Test fun galleryShowsActualClockArtworkAndSelection() {
-        val host = Robolectric.buildActivity(ComponentActivity::class.java).setup()
-        try {
-            val styles = NativeHyperOsStyles.ALL.take(6)
-            host.get().setContent {
-                MiuixTheme(controller = remember { ThemeController(ColorSchemeMode.Dark) }, textStyles = HyperTextStyles) {
-                    var selected by remember { mutableStateOf(styles[0].id) }
-                    LazyVerticalGrid(GridCells.Fixed(2), modifier = Modifier.fillMaxSize().background(EditorSurface.page), contentPadding = PaddingValues(20.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        items(styles) { style -> ClockStyleTile(arrayOf(style.id, style.title), selected == style.id) { selected = style.id } }
-                    }
-                }
-            }
-            compose.onNodeWithTag("clock-style-${styles[1].id}").performClick().assertIsSelected()
-            compose.waitUntil(15_000) {
-                styles.all { compose.onAllNodesWithContentDescription("样式缩略图：${it.title}", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty() }
-            }
-            capture("clock-gallery")
-            val artwork = loadClockArtwork(host.get(), styles[0].id)!!
-            assertTrue("Full-screen black padding must be removed", artwork.height < 500)
-        } finally { host.pause().stop().destroy() }
-    }
-
     @Test fun maskCanvasUndoAndComparisonDoNotMutateOriginal() {
         val app = RuntimeEnvironment.getApplication()
         val photo = Bitmap.createBitmap(100, 200, Bitmap.Config.ARGB_8888).apply { eraseColor(android.graphics.Color.RED) }
@@ -170,13 +120,4 @@ class EditorPolishTest {
         } finally { view.close() }
     }
 
-    @Test fun clockPreviewFitsTallNativeGeometryWithoutChangingItsLayoutWidth() {
-        val frame = ClockPreviewFrame(RuntimeEnvironment.getApplication())
-        frame.stage.addView(View(frame.context), FrameLayout.LayoutParams(-1, 1500))
-        frame.measure(View.MeasureSpec.makeMeasureSpec(600, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(400, View.MeasureSpec.EXACTLY))
-        frame.layout(0, 0, 600, 400)
-        assertEquals(frame.resources.displayMetrics.widthPixels, frame.stage.width)
-        assertTrue(frame.stage.height * frame.stage.scaleY * 1.35f <= 400.01f)
-        assertTrue(frame.stage.translationY >= 0)
-    }
 }

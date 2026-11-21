@@ -7,11 +7,11 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'deliverables'
-NAME = 'HyperExtreme-Alive-0.5-alive.7-ui.16'
+NAME = 'HyperExtreme-Alive-0.5-alive.7-ui.17'
 ROOT_FILES = ['.gitignore', 'ALIVE-POWER-FIX.md', 'ALIVE-UI-NOTES.md', 'README.md',
               'LICENSE', 'MIT_License.md', 'build.gradle.kts', 'settings.gradle.kts',
               'gradle.properties', 'gradlew', 'gradlew.bat', 'keystore.properties.example']
-SOURCE_DIRS = ['app/src', 'app/libs', 'gradle', 'docs', 'tools', 'tests', 'alive-root/src', 'alive-photo/native', 'alive-clock/bridge']
+SOURCE_DIRS = ['app/src', 'app/libs', 'gradle', 'docs', 'tools', 'tests', 'alive-root/src', 'alive-photo/native']
 EXTRA_FILES = ['app/build.gradle.kts', 'app/proguard-rules.pro', 'alive-photo/Cargo.toml',
                'alive-photo/Cargo.lock', 'alive-photo/rust-toolchain.toml', 'alive-photo/LICENSE']
 FORBIDDEN = {'.reference', 'build', '.gradle', '.kotlin', '__pycache__', '.cxx', 'keystore', 'deliverables'}
@@ -24,8 +24,8 @@ def main():
         raise SystemExit('Build and verify :app:assembleRelease before packaging (not the debug APK).')
     metadata = json.loads((apk.parent / 'output-metadata.json').read_text(encoding='utf-8'))
     if (metadata['applicationId'] != 'com.xtg.hyperextremealive' or metadata['variantName'] != 'release'
-            or len(metadata['elements']) != 1 or metadata['elements'][0]['versionCode'] != 31
-            or metadata['elements'][0]['versionName'] != '0.5-alive.7-ui.16'):
+            or len(metadata['elements']) != 1 or metadata['elements'][0]['versionCode'] != 32
+            or metadata['elements'][0]['versionName'] != '0.5-alive.7-ui.17'):
         raise SystemExit('Release metadata does not match the candidate version.')
     mapping = ROOT / 'app/build/outputs/mapping/release/mapping.txt'
     if not mapping.is_file():

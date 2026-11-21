@@ -3,6 +3,7 @@ package com.frederic22.hyperextreme.alive
 import android.graphics.BitmapFactory
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -65,14 +66,16 @@ internal fun PhotoCropEditor(variant: Int, options: PhotoOptions, target: Int,
         AliveEditorTopBar("照片取景", "返回", "完成", true, true, onDone, onDone,
             Modifier.align(Alignment.TopCenter))
         Column(Modifier.align(Alignment.BottomCenter).widthIn(max=600.dp).fillMaxWidth()
-            .clip(RoundedCornerShape(topStart=26.dp,topEnd=26.dp)).background(EditorSurface.panel)
+            .clip(RoundedCornerShape(topStart=26.dp,topEnd=26.dp))
+            .background(MiuixTheme.colorScheme.surfaceContainer)
+            .border(0.75.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(topStart=26.dp,topEnd=26.dp))
             .heightIn(max=300.dp).verticalScroll(rememberScrollState()).navigationBarsPadding()
-            .padding(horizontal=20.dp,vertical=12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            .padding(horizontal=20.dp,vertical=14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             AliveSegments(if(variant == 602) listOf("锁屏", "桌面", "相框") else listOf("锁屏", "桌面"),target,onSelect=onTarget)
             Text(if(target == 2) "拖动、双指缩放及旋转" else "拖动调整位置，双指缩放", style = MiuixTheme.textStyles.footnote1,
-                color=Color(0xffb0b0b6),modifier=Modifier.padding(top=8.dp))
+                color=MiuixTheme.colorScheme.onSurfaceVariantSummary,modifier=Modifier.padding(top=6.dp))
             Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically) {
-                Text("取景调整",fontSize=14.sp,color=EditorSurface.text)
+                Text("取景调整",fontSize=14.sp,color=MiuixTheme.colorScheme.onSurface)
                 EditorTextAction("复位",icon=AliveToolIcon.UNDO,onClick={onChange(current.editableCrop(target).edit(keys[0],.5f).edit(keys[1],.5f).edit(keys[2],1f).let { if(target==2) it.edit(7,0f) else it })})
             }
             EditorValueSlider("缩放",zoom,1f..4f,"%.1f×".format(zoom),onChange={

@@ -18,7 +18,7 @@ final class AodWallpaperGuard {
     private final Map<View, Panel> panels = new WeakHashMap<>();
 
     static boolean contracts(ClassLoader loader) {
-        if(!HyperOsExtensionHooks.requiredContracts(loader))return false;
+        if(!baseContracts(loader))return false;
         try {
             Class<?> host=Class.forName("com.miui.aod.DozeHost",false,loader);
             Class<?> root=Class.forName("com.miui.aod.AODView",false,loader);
@@ -34,6 +34,21 @@ final class AodWallpaperGuard {
                 &&host.getDeclaredField("mFingerprintPressed").getType()==boolean.class
                 &&host.getDeclaredField("mKeyguardOccluded").getType()==boolean.class
                 &&View.class.isAssignableFrom(host.getDeclaredField("mAODView").getType());
+        }catch(ReflectiveOperationException|RuntimeException|LinkageError absent){return false;}
+    }
+
+    // These contracts belong to wallpaper visibility, independent of retired overlays.
+    private static boolean baseContracts(ClassLoader loader) {
+        try {
+            Class<?> host=Class.forName("com.miui.aod.DozeHost",false,loader);
+            for(String name:new String[]{"isDozing","isAodVisible","isFingerprintPressed"})
+                if(host.getDeclaredMethod(name).getReturnType()!=boolean.class)return false;
+            for(String name:new String[]{"fireFingerprintPressed","onFingerprintPressed"})host.getDeclaredMethod(name,boolean.class,boolean.class);
+            for(String name:new String[]{"onStopDoze","screenTurnOn","removeAODView"})host.getDeclaredMethod(name);
+            host.getDeclaredField("mKeyguardOccluded");
+            Class<?> view=Class.forName("com.miui.aod.AODView",false,loader);
+            view.getDeclaredField("mHost");view.getDeclaredMethod("onAttachedToWindow");view.getDeclaredMethod("onDetachedFromWindow");
+            return true;
         }catch(ReflectiveOperationException|RuntimeException|LinkageError absent){return false;}
     }
 
@@ -94,8 +109,8 @@ final class AodWallpaperGuard {
                 continue;
             }
             if(!root.isAttachedToWindow()||field(host,"mAODView")!=root||!safe(host)
-                    ||!Boolean.TRUE.equals(HyperOsExtensionHooks.call(host,"isDozing"))
-                    ||!Boolean.TRUE.equals(HyperOsExtensionHooks.call(host,"isAodVisible")))continue;
+                    ||!Boolean.TRUE.equals(call(host,"isDozing"))
+                    ||!Boolean.TRUE.equals(call(host,"isAodVisible")))continue;
             if(!ownedBackground(panel,root))continue;
             if(panel.nativeEligibility!=null&&!panel.nativeEligibility.test(root))continue;
             if(panel.layout!=null&&(root.getLayoutParams()!=panel.layout||field(host,"lp")!=panel.layout))continue;
@@ -143,7 +158,18 @@ final class AodWallpaperGuard {
     private static boolean safe(Object host) {
         return Boolean.FALSE.equals(field(host,"mKeyguardOccluded"))&&Boolean.FALSE.equals(field(host,"mFingerprintPressed"));
     }
-    private static Object field(Object host,String name) { return HyperOsExtensionHooks.field(host,name); }
+    private static Object field(Object host,String name) {
+        if(host==null)return null;
+        for(Class<?> type=host.getClass();type!=null;type=type.getSuperclass())try {
+            Field field=type.getDeclaredField(name);field.setAccessible(true);return field.get(host);
+        }catch(ReflectiveOperationException|RuntimeException ignored){}
+        return null;
+    }
+    private static Object call(Object host,String name) {
+        if(host==null)return null;
+        try{return host.getClass().getMethod(name).invoke(host);}
+        catch(ReflectiveOperationException|RuntimeException error){return null;}
+    }
     private static boolean writePermission(Object host,boolean value) {
         if(host==null)return false;
         for(Class<?> c=host.getClass();c!=null;c=c.getSuperclass())try {

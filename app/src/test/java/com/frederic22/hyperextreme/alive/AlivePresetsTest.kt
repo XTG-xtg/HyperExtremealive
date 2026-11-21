@@ -83,4 +83,20 @@ class AlivePresetsTest {
         assertEquals(701,AlivePresets.current(app,701).variant)
         assertThrows(IllegalArgumentException::class.java) { AlivePresets.current(app,606) }
     }
+    @Test fun ui31HighBrightnessHistoryMigratesWithoutLosingItsCover() {
+        val value=snapshot()
+        val legacy=org.json.JSONObject(value.json()).apply { getJSONArray("render").put(7,1000f) }
+        val canonical=org.json.JSONObject(legacy.toString()).apply { remove("created");remove("name") }
+        val oldId=java.security.MessageDigest.getInstance("SHA-256").digest(canonical.toString().toByteArray())
+            .joinToString("") { "%02x".format(it) }
+        val cover=AlivePresets.cover(app,oldId).apply { writeBytes(byteArrayOf(1,2,3)) }
+        val record=File(cover.parentFile,"$oldId.json").apply { writeText(legacy.toString()) }
+        val migrated=AlivePresets.list(app).single()
+        assertEquals(5f,migrated.render.brightness,0f)
+        assertEquals(migrated.signature(),migrated.id)
+        assertNotEquals(oldId,migrated.id)
+        assertArrayEquals(cover.readBytes(),AlivePresets.cover(app,migrated.id).readBytes())
+        assertFalse(record.exists());assertTrue(File(record.parentFile,"${record.name}.ui31").isFile)
+        assertEquals(listOf(migrated.id),AlivePresets.list(app).map { it.id })
+    }
 }

@@ -42,6 +42,7 @@ import java.util.concurrent.ConcurrentHashMap
  * 的缩放，不读不写任何 parallax / 锁屏遮罩字段。
  */
 internal object SpatialAod {
+    private val brightnessHold = com.frederic22.hyperextreme.alive.AodBrightness.Hold()
 
     private const val CLS_PANEL = "com.android.keyguard.panel.KeyguardPanelViewController"
     private const val METHOD_BLACK = "doWallpaperBlackAnim"
@@ -88,11 +89,15 @@ internal object SpatialAod {
                     val black = args.filterIsInstance<Float>().firstOrNull()
                     val result = chain.proceed()
                     if (show == null || black == null) return result
+                    if(show) brightnessHold.clear()
+                    val heldBlack = if(show) black else brightnessHold.black(black,
+                        com.frederic22.hyperextreme.alive.AliveHooks.aodBrightness())
                     // **光栅壁纸也要这套时机**（2026-11-04）：它不做静止归位，只在这里重设基点。
                     // 与空间壁纸的开关无关，各自判各自在不在跑（没跑就是空操作）。
                     runCatching {
-                        if (show) RasterRenderer.onExitAod() else RasterRenderer.onEnterAod(black)
+                        if (show) RasterRenderer.onExitAod() else RasterRenderer.onEnterAod(heldBlack)
                     }
+                    runCatching { ParallaxAodBrightness.transition(show, heldBlack, args.getOrNull(3) as? Boolean ?: true) }
                     if (!enabled()) return result
                     runCatching {
                         if (show) {
@@ -106,8 +111,8 @@ internal object SpatialAod {
                                     "压暗到 ${"%.2f".format(1f - black.coerceIn(0f, 1f))}）" +
                                     "→ 先归位再冻结",
                             )
-                            SpatialRenderer.onEnterAod(black)
-                            SpatialOverlay.onEnterAod(black)
+                            SpatialRenderer.onEnterAod(heldBlack)
+                            SpatialOverlay.onEnterAod(heldBlack)
                         }
                     }.onFailure { log("AOD 处理异常：${it.javaClass.simpleName}: ${it.message}") }
                     return result

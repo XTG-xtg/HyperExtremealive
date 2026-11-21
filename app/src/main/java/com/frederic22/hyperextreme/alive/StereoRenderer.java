@@ -71,7 +71,7 @@ final class StereoRenderer implements WallpaperRenderer {
         } catch(IOException|RuntimeException error){close();throw error;}
     }
     private static Bitmap bitmap(AssetManager assets,String path)throws IOException{
-        try(InputStream input=assets.open(path)){
+        try(InputStream input=DynamicResources.open(assets,path)){
             BitmapFactory.Options options=new BitmapFactory.Options();options.inScaled=false;options.inPreferredConfig=Bitmap.Config.ARGB_8888;
             Bitmap image=BitmapFactory.decodeStream(input,null,options);
             if(image==null)throw new IOException("Invalid Stereo texture: "+path);return image;

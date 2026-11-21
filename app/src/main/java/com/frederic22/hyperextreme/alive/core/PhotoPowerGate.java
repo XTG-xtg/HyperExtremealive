@@ -37,10 +37,12 @@ public final class PhotoPowerGate {
             sleeping=false;
         }
         if(cancel)unlockAt=-1;
-        if(requested==AliveState.HOME&&"keyguard-going-away".equals(reason))unlockAt=at;
+        if(requested==AliveState.HOME&&("keyguard-going-away".equals(reason)||"biometric".equals(reason)))unlockAt=at;
         if(requested==AliveState.HOME&&"user-present".equals(reason))unlockAt=-1;
         if(requested==AliveState.LOCK&&unlockAt>=0&&at-unlockAt<2000
-                &&(reason.startsWith("visible-slot-")||"scrim-keyguard".equals(reason)))return AliveState.HOME;
+                &&(reason.startsWith("visible-slot-")||"scrim-keyguard".equals(reason)
+                ||"screen-on".equals(reason)||"power-wake".equals(reason)
+                ||"display-awake".equals(reason)||"wallpaper-waking".equals(reason)))return AliveState.HOME;
         return requested;
     }
 }

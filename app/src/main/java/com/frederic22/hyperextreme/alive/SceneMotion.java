@@ -93,8 +93,9 @@ final class SceneMotion {
         return from==1?4:5;
     }
     static float nearestRotation(float current,float target) {
-        float distance=Math.floorMod((int)(target-current),360);
-        return target+(distance>=180?360-distance:-distance);
+        float distance=(current-target)%360f;
+        if(distance>180)distance-=360;else if(distance<=-180)distance+=360;
+        return target+distance;
     }
     private ObjectAnimator track(int slot,float target,long duration,Interpolator curve) {
         ObjectAnimator animator=ObjectAnimator.ofFloat(this,PROPERTIES[slot],values[slot],target);
@@ -147,7 +148,7 @@ final class SceneMotion {
             long ms;Interpolator curve;
             if(tr==0||tr==5) {
                 ms=i==3?(tr==0&&lock==2?470:425):850;curve=path(.23f,.09f,.16f,1);
-            } else if(tr==2) {ms=200;curve=path(.23f,.09f,.16f,1);}
+            } else if(tr==1||tr==2) {ms=200;curve=path(.23f,.09f,.16f,1);}
             else if(tr==3) {ms=i==0?800:200;curve=path(.1f,0,.3f,1);}
             else {ms=i<4?1500:700;curve=i==0?path(.22f,.66f,.15f,1):path(.48f,.22f,.46f,1);}
             tracks.add(track(GLASS+i,target[i],ms,curve));
@@ -186,7 +187,6 @@ final class SceneMotion {
     // Also used by the on-device differential test to seek the real Android animators.
     AnimatorSet prepare(int next) {
         if(next<0||next>2)throw new IllegalArgumentException("scene "+next);
-        boolean interrupted=animation!=null&&animation.isStarted();
         if(!active())lastFrame=0;
         if(animation!=null)animation.cancel();
         int previous=mode,tr=transition(previous,next);
@@ -199,7 +199,8 @@ final class SceneMotion {
         blend.addUpdateListener(a->{float t=(float)a.getAnimatedValue();for(int i=0;i<3;i++)values[i]=source[i]+((next==i?1:0)-source[i])*t;});
         tracks.add(blend);
         animation=new AnimatorSet();animation.playTogether(tracks);
-        if(previous==0&&!interrupted)animation.setStartDelay(150);
+        // The registry already supplies the accepted wake/unlock time. A second 150ms
+        // hold here leaves the collapsed photo visible while the launcher is entering.
         mode=next;return animation;
     }
     void change(int next){if(mode!=next)timeline.start(prepare(next));}

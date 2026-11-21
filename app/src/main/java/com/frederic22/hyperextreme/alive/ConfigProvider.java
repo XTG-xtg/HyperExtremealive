@@ -15,7 +15,7 @@ public final class ConfigProvider extends ContentProvider {
     public boolean onCreate() { return true; }
     private boolean trusted() {
         int uid = Binder.getCallingUid();
-        return uid == Process.myUid() || uid == 0 || uid % 100000 == 1000;
+        return ConfigCallerTrust.trusted(getContext(), uid, Process.myUid());
     }
     public Bundle call(String method, String arg, Bundle extras) {
         int uid = Binder.getCallingUid();
@@ -33,6 +33,14 @@ public final class ConfigProvider extends ContentProvider {
         if ("clockGeometry".equals(method)) {
             if(extras==null)throw new IllegalArgumentException("Missing clock geometry");
             if(Config.prefs(getContext()).getBoolean("enabled",false))EngineRegistry.clock(new ClockSnapshot(extras));
+            return Bundle.EMPTY;
+        }
+        if ("music".equals(method)) {
+            AliveMusicRestore.onMusic(getContext(), extras != null && extras.getBoolean("shown", false));
+            return Bundle.EMPTY;
+        }
+        if ("heal".equals(method)) {
+            AliveMusicRestore.heal(getContext());
             return Bundle.EMPTY;
         }
         if ("signal".equals(method)) {

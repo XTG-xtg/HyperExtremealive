@@ -10,23 +10,18 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.TextClock;
 import com.frederic22.hyperextreme.alive.core.AlivePermissionPolicy;
 import io.github.libxposed.api.XposedInterface;
 import io.github.libxposed.api.XposedModule;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 /** API 102 adapter owned by HookEntry. Never mixes legacy Xposed APIs into this APK. */
 public final class AliveHooks {
-    private static final Set<Method> INSTALLED = Collections.synchronizedSet(new HashSet<>());
-    private static final Map<ViewGroup, WeakReference<TextClock>> CLOCKS = new WeakHashMap<>();
+    private static final Set<java.lang.reflect.Executable> INSTALLED = Collections.synchronizedSet(new HashSet<>());
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
     // Only Application.attach's base Context or ActivityThread's system Context, never an Activity.
     @android.annotation.SuppressLint("StaticFieldLeak")
@@ -39,6 +34,10 @@ public final class AliveHooks {
     private static XposedModule logger;
     private static final ThreadLocal<AodWallpaperGuard.Panel> NORMAL_PANEL=new ThreadLocal<>();
     private static final AodWallpaperGuard AOD_WALLPAPER=new AodWallpaperGuard();
+    private static final AodSessionBrightness AOD_BRIGHTNESS=new AodSessionBrightness();
+    private static final MiuiAodPanelBrightness MIUI_AOD_PANEL=new MiuiAodPanelBrightness();
+    private static final LauncherWallpaperScroll LAUNCHER_SCROLL=new LauncherWallpaperScroll();
+    private static boolean systemAdapter;
     private static final ThreadLocal<AodCreation> AOD_CREATION=new ThreadLocal<>();
     private static final class AodCreation {
         final Object host;final boolean eligible;boolean denied;
@@ -69,11 +68,20 @@ public final class AliveHooks {
         if (context != null) return context;
         try {
             Class<?> type = Class.forName("android.app.ActivityThread");
-            Object thread = type.getMethod("currentActivityThread").invoke(null);
-            if (thread != null) context = (Context) type.getMethod("getSystemContext").invoke(thread);
+            context = (Context) type.getMethod("currentApplication").invoke(null);
+            // A system Context attributes Binder calls to "android". It is invalid in a
+            // dedicated-UID SystemUI process; wait for Application.attach there instead.
+            if (context == null && systemContextAllowed(android.os.Process.myUid())) {
+                Object thread = type.getMethod("currentActivityThread").invoke(null);
+                if (thread != null) context = (Context) type.getMethod("getSystemContext").invoke(thread);
+            }
         } catch (ReflectiveOperationException ignored) { }
         return context;
     }
+
+    static boolean systemContextAllowed(int uid) { return uid >= 0 && uid % 100000 == 1000; }
+    /** Reuse the observed config for hook layers; no Binder work on the UI thread. */
+    public static float aodBrightness(){return AodBrightness.normalize(cached.getFloat(AodBrightness.KEY,AodBrightness.DEFAULT));}
 
     // All Provider calls run off the system service / UI hook thread (which may hold locks).
     private static Bundle refresh() {
@@ -96,6 +104,11 @@ public final class AliveHooks {
             }
             Bundle result = c.getContentResolver().call(Protocol.CONFIG, "getConfig", null, null);
             cached = result == null ? Bundle.EMPTY : result;
+            if(systemAdapter){
+                MIUI_AOD_PANEL.refresh(c,worker());
+                Runnable changed=()->{readAt=-750;refreshFailures=0;refresh();};
+                LAUNCHER_SCROLL.refresh(c,worker(),cached,changed);
+            }
             retry=result==null||cached.getBoolean("configured",false)&&!cached.getBoolean("enabled",false);
             LiquidKeyguardHooks.config(cached);
         } catch (RuntimeException error) {
@@ -111,8 +124,6 @@ public final class AliveHooks {
         // Initial reads and retries must reconcile a panel too, not only observer notifications.
         MAIN.post(() -> {
             AOD_WALLPAPER.refresh(cached.getBoolean("enabled",false));
-            HyperOsExtensionHooks.refresh();
-            for(ViewGroup root:new java.util.ArrayList<>(CLOCKS.keySet()))if(root!=null)updateClock(root);
         });
         return cached;
     }
@@ -166,6 +177,25 @@ public final class AliveHooks {
 
     public static void installSystem(XposedModule module, ClassLoader loader) {
         logger = module;
+        systemAdapter=true;
+        String dozeStrategy="com.android.server.display.brightness.strategy.DozeBrightnessStrategy";
+        hook(module,loader,dozeStrategy,"updateBrightness",chain->{
+            if(!MiuiAodPanelBrightness.contract((Method)chain.getExecutable()))return chain.proceed();
+            Object nativeState=chain.proceed();
+            return MIUI_AOD_PANEL.update(chain.getThisObject(),chain.getArgs().get(0),nativeState,aodBrightness(),AliveHooks::log);
+        });
+        hook(module,loader,dozeStrategy,"setDozeBrightnessState",chain->{
+            if(chain.getArgs().size()==2&&Boolean.FALSE.equals(chain.getArgs().get(0)))MIUI_AOD_PANEL.clear();
+            return chain.proceed();
+        });
+        hook(module,loader,"com.android.server.display.DisplayPowerController","requestPowerState",chain->{
+            if(chain.getArgs().size()==2)MIUI_AOD_PANEL.powerRequest(chain.getThisObject(),chain.getArgs().get(0));
+            return chain.proceed();
+        });
+        worker().post(AliveHooks::refresh);
+        hook(module,loader,"android.hardware.display.AmbientDisplayConfiguration","alwaysOnAvailable",chain->{
+            return ForcedAodSupport.active(context()) ? true : chain.proceed();
+        });
         log("Alive system_server adapter v2 starting");
         // WPMS checks the service package, not the UID of the wallpaper-setting helper.
         // Keep this available before enabled=true, otherwise first application cannot succeed.
@@ -183,6 +213,7 @@ public final class AliveHooks {
             for (String method : new String[]{"goToSleep", "goToSleepInternal", "goToSleepGroup", "wakeUp", "wakeUpInternal", "wakePowerGroup"}) {
                 hook(module, loader, type, method, chain -> {
                     boolean sleep = method.startsWith("goToSleep");
+                    MIUI_AOD_PANEL.clear();
                     boolean biometric = false;
                     for (Object arg : chain.getArgs()) {
                         if (arg instanceof String) {
@@ -201,11 +232,91 @@ public final class AliveHooks {
 
     public static void installUi(XposedModule module, ClassLoader loader) {
         logger = module;
+        hook(module,loader,"com.android.keyguard.panel.KeyguardPanelViewController","doWallpaperBlackAnim",chain->{
+            float brightness=aodBrightness();
+            if(!SystemAodDimming.contract((Method)chain.getExecutable()))return chain.proceed();
+            boolean owned=brightness>0&&SystemAodDimming.ownsFullAod(chain.getThisObject());
+            AOD_BRIGHTNESS.wallpaper(chain.getThisObject(),chain.getArgs(),brightness,owned);
+            Object[] args=SystemAodDimming.heldArguments(chain.getThisObject(),chain.getArgs(),brightness,owned);
+            if(args==null)return chain.proceed();
+            log("AOD wallpaper mask="+chain.getArgs().get(1)+" -> "+args[1]+" brightness="+brightness);
+            // Keep native animation, wake-lock cleanup, depth and wake restoration callbacks.
+            return chain.proceed(args);
+        });
+        String dozeService="com.android.systemui.doze.DozeService";
+        hook(module,loader,dozeService,"setDozeScreenBrightness",chain->{
+            java.util.List<Object> args=chain.getArgs();
+            if(args.size()!=1||!(args.get(0) instanceof Float))return chain.proceed();
+            android.os.PowerManager power=((Context)chain.getThisObject()).getSystemService(android.os.PowerManager.class);
+            if(power==null||power.isInteractive()){AOD_BRIGHTNESS.clear();return chain.proceed();}
+            float original=(Float)args.get(0),held=AOD_BRIGHTNESS.panel(original,aodBrightness());
+            if(held==original)return chain.proceed();
+            log("AOD panel brightness="+original+" -> "+held);
+            return chain.proceed(new Object[]{held});
+        });
+        hook(module,loader,dozeService,"setDozeScreenState",chain->{
+            if(chain.getArgs().size()==1&&Integer.valueOf(android.view.Display.STATE_OFF).equals(chain.getArgs().get(0)))
+                AOD_BRIGHTNESS.clear();
+            return chain.proceed();
+        });
+        hook(module,loader,dozeService,"onDreamingStopped",chain->{AOD_BRIGHTNESS.clear();return chain.proceed();});
+        hook(module,loader,"com.android.systemui.statusbar.phone.DozeServiceHost","setAodDimmingScrim",chain->{
+            java.util.List<Object> args=chain.getArgs();
+            if(args.size()!=1||!(args.get(0) instanceof Float))return chain.proceed();
+            float original=(Float)args.get(0),scrim=AOD_BRIGHTNESS.scrim(original,aodBrightness());
+            if(scrim==original)return chain.proceed();
+            log("AOD ambient scrim="+original+" -> "+scrim);
+            return chain.proceed(new Object[]{scrim});
+        });
+        hook(module,loader,"miui.util.FeatureParser","getBoolean",chain->{
+            if(chain.getArgs().size()==2 && chain.getArgs().get(0) instanceof String
+                    && ForcedAodSupport.feature((String)chain.getArgs().get(0)) && ForcedAodSupport.active(context())) return true;
+            return chain.proceed();
+        });
+        hook(module,loader,"android.hardware.display.AmbientDisplayConfiguration","alwaysOnAvailable",chain->{
+            return ForcedAodSupport.active(context()) ? true : chain.proceed();
+        });
+        for(String[] contract:new String[][]{
+                {"com.miui.aod.Utils","supportAod"},{"com.miui.aod.Utils","isSupportFsAod"},
+                {"com.miui.aod.Utils","isInnerScreenSupportFsAod"},{"com.miui.aod.widget.AODSettings","isSupportAodWallpaper"}})
+            hook(module,loader,contract[0],contract[1],chain->ForcedAodSupport.active(context()) ? true : chain.proceed());
+        // Recompute on every settings update so removing our wallpaper restores the stock decision.
+        String fullAod="com.android.keyguard.fullaod.MiuiFullAodManager";
+        try {
+            for(java.lang.reflect.Constructor<?> constructor:Class.forName(fullAod,false,loader).getDeclaredConstructors()) {
+                if(INSTALLED.contains(constructor)) continue;
+                module.hook(constructor).intercept(chain->{
+                    Context c=null;
+                    for(Object arg:chain.getArgs()) if(arg instanceof Context) { c=(Context)arg; break; }
+                    if(ForcedAodSupport.active(c)) {
+                        try {
+                            ForcedAodSupport.prepare(loader);
+                            log("Alive force AOD constructor flags verified");
+                        } catch(ReflectiveOperationException | RuntimeException | LinkageError unavailable) {
+                            log("Alive force AOD preparation unavailable: "+unavailable);
+                        }
+                    }
+                    return chain.proceed();
+                });
+                module.deoptimize(constructor);
+                INSTALLED.add(constructor);
+            }
+        } catch(ReflectiveOperationException unavailable) { log("Alive force AOD constructor unavailable: "+unavailable); }
+        hook(module,loader,fullAod,"onWallpaperChanged",chain->{
+            Object result=chain.proceed();
+            try { FullAodCompatibility.reconcile(chain.getThisObject()); }
+            catch(ReflectiveOperationException unavailable) { log("Alive full AOD contract unavailable: "+unavailable); }
+            return result;
+        });
+        hook(module,loader,fullAod,"updateSettings",chain->{
+            try { chain.getThisObject().getClass().getMethod("onWallpaperChanged").invoke(chain.getThisObject()); }
+            catch(ReflectiveOperationException unavailable) { log("Alive full AOD refresh unavailable: "+unavailable); }
+            return chain.proceed();
+        });
         LiquidKeyguardHooks.install(module,loader,event->worker().post(()->{
             try{Context c=context();if(c!=null)c.getContentResolver().call(Protocol.CONFIG,"liquidTap",null,event);}
             catch(RuntimeException error){log("Liquid touch delivery failed: "+error);}
         }),AliveHooks::log);
-        HyperOsExtensionHooks.install(module, loader, () -> cached, value -> log("Alive extensions: " + value));
         hook(module, Application.class.getClassLoader(), "android.app.Application", "attach", chain -> {
             Object result = chain.proceed();
             Object arg = chain.getArgs().get(0);
@@ -325,7 +436,6 @@ public final class AliveHooks {
                     observeClock(root);
                     worker().post(() -> { refresh(); MAIN.post(() -> {
                         AOD_WALLPAPER.refresh(cached.getBoolean("enabled",false));
-                        updateClock(root);
                     }); });
                 }
                 return result;
@@ -345,29 +455,4 @@ public final class AliveHooks {
         return null;
     }
 
-    private static void updateClock(ViewGroup root) {
-        if (!root.isAttachedToWindow()) return;
-        WeakReference<TextClock> reference = CLOCKS.get(root);
-        TextClock clock = reference == null ? null : reference.get();
-        Bundle config = cached;
-        if (!config.getBoolean("enabled", false) || !config.getBoolean("clock", false) || config.getBoolean("ext_clock", false)) {
-            if (clock != null) root.removeView(clock);
-            CLOCKS.put(root, new WeakReference<>(null));
-            return;
-        }
-        if (clock == null) {
-            clock = new TextClock(root.getContext());
-            clock.setFormat12Hour("HH:mm");
-            clock.setFormat24Hour("HH:mm");
-            clock.setTextSize(48);
-            int pad = Math.round(24 * root.getResources().getDisplayMetrics().density);
-            clock.setPadding(pad, pad * 2, pad, pad);
-            root.addView(clock, new ViewGroup.LayoutParams(-2, -2));
-            CLOCKS.put(root, new WeakReference<>(clock));
-        }
-        clock.setTextColor(config.getInt("clock_color", 0xffeeeeee));
-        float scale = config.getFloat("clock_scale", 1f);
-        clock.setScaleX(scale);
-        clock.setScaleY(scale);
-    }
 }

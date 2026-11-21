@@ -130,6 +130,7 @@ final class PhotoRenderer implements WallpaperRenderer {
     public WallpaperMotion motion(){return motion;}
     public void continuous(boolean value){continuous=value;}
     boolean animating(){return scene.transitionActive()||textureMotion.active()||frameMotion!=null&&frameMotion.active();}
+    boolean frameAnimating(){return scene.transitionActive()||frameMotion!=null&&frameMotion.active();}
     void configure(PhotoOptions options) {
         this.options=options;
         int nextAod=options.aod(variant);

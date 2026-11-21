@@ -87,13 +87,20 @@ final class EngineRegistry {
     static synchronized void reload() {
         MAIN.post(() -> { synchronized (EngineRegistry.class) { if (home != null) home.reload(); if (lock != null) lock.reload(); } });
     }
+    static void refreshOptions(Context context){
+        MAIN.post(()->{synchronized(EngineRegistry.class){
+            AliveRenderOptions options=AliveRenderOptions.load(context);
+            if(home!=null)home.options(options);
+            if(lock!=null)lock.options(options);
+        }});
+    }
     static synchronized Bundle status(Context c) {
         Bundle b = Config.read(c);
         b.putInt("mode", STATE.current); b.putString("reason", lastReason);
         b.putBoolean("home_engine", home != null); b.putBoolean("lock_engine", lock != null);
         b.putLong("frames", EglWorker.frames.get()); b.putString("render_error", EglWorker.lastError);
-        if(home!=null)b.putBundle("home_render",home.renderStatus());
-        if(lock!=null)b.putBundle("lock_render",lock.renderStatus());
+        if(home!=null){Bundle render=home.renderStatus();b.putBundle("home_render",render);b.putString("home_frame_state",render.toString());}
+        if(lock!=null){Bundle render=lock.renderStatus();b.putBundle("lock_render",render);b.putString("lock_frame_state",render.toString());}
         b.putBoolean("power_sleeping",POWER_GATE.sleeping());
         if(aodClock!=null)b.putBundle("aod_clock_bounds",aodClock.bundle());
         if(lockClock!=null)b.putBundle("lock_clock_bounds",lockClock.bundle());
@@ -103,6 +110,8 @@ final class EngineRegistry {
         MAIN.post(()->{synchronized(EngineRegistry.class){
             if(STATE.current==2&&home!=null&&lock!=null&&home.isVisible()
                     &&home.readyForCompanion()&&!lock.isVisible())lock.prepareCompanion();
+            else if(STATE.current==0&&home!=null&&lock!=null&&lock.isVisible()
+                    &&lock.readyForCompanion()&&!home.isVisible())home.prepareCompanion();
         }});
     }
     static final class Snapshot {

@@ -70,8 +70,8 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name="com.frederic22.hyperextreme.alive.AlivePreviewActivity" android:exported="false" />
+        <activity android:name="com.frederic22.hyperextreme.ui.EffectWallpaperPreviewActivity" android:exported="false" />
         <activity android:name="com.frederic22.hyperextreme.alive.AliveLibraryActivity" android:exported="false" />
-        <activity android:name="com.frederic22.hyperextreme.alive.AliveExtensionsActivity" android:exported="false" />
         <provider
             android:name="com.frederic22.hyperextreme.alive.ConfigProvider"
             android:authorities="${applicationId}.alive.config"

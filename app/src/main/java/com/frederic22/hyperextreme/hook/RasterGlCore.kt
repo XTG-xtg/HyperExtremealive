@@ -75,8 +75,8 @@ void main() {
 }
 """
 
-    const val FRAG = """
-precision mediump float;
+    val FRAG = """
+precision highp float;
 varying vec2 vUv;
 uniform sampler2D uFrom;
 uniform sampler2D uTo;
@@ -88,6 +88,8 @@ uniform float uT;
 uniform float uDir;
 uniform float uBand;
 uniform float uDim;
+uniform float uExposure;
+${com.frederic22.hyperextreme.alive.AodBrightness.GLSL}
 void main() {
     vec2 uv = vUv;
     // dir > 0（向左转）= 新图从**左**边进来；dir < 0 = 从右边进来。
@@ -101,7 +103,7 @@ void main() {
         a
     );
     // 压暗只乘 RGB（AOD 用；`Transaction#setColor` 在 HyperOS 上会发白，已封死）。
-    gl_FragColor = vec4(c.rgb * uDim, c.a);
+    gl_FragColor = vec4(aodExpose(c.rgb / max(c.a, 0.00001) * uDim, uExposure) * c.a, c.a);
 }
 """
 }

@@ -24,7 +24,7 @@ final class AssetGl implements AutoCloseable {
         finally{GLES30.glDeleteShader(v);if(f!=0)GLES30.glDeleteShader(f);}
     }
     static byte[] bytes(AssetManager assets,String path)throws IOException{
-        try(InputStream in=assets.open(path);ByteArrayOutputStream out=new ByteArrayOutputStream()){
+        try(InputStream in=DynamicResources.open(assets,path);ByteArrayOutputStream out=new ByteArrayOutputStream()){
             byte[] b=new byte[16384];for(int n;(n=in.read(b))!=-1;)out.write(b,0,n);return out.toByteArray();
         }
     }

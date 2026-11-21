@@ -143,8 +143,8 @@ class MaskDetailActivity : ComponentActivity() {
 @Composable
 internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
     // Alive owns its drafts; opening it must not start the mask import/replace workflow.
-    if (page == DetailPage.Alive) {
-        AliveDetail(onBack = onClose)
+    if (page == DetailPage.Alive || page == DetailPage.InfinityWallpaper) {
+        AliveDetail(onBack = onClose, infinity = page == DetailPage.InfinityWallpaper)
         return
     }
     val context = LocalContext.current
@@ -283,6 +283,7 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
                 DetailPage.ParallaxBg -> "视差壁纸"
                 DetailPage.SpatialWallpaper -> "空间壁纸"
                 DetailPage.Alive -> "Alive 动态壁纸"
+                DetailPage.InfinityWallpaper -> "Infinity 壁纸"
                 DetailPage.RasterWallpaper -> "光栅壁纸"
                 DetailPage.LiquidWallpaper -> "液态壁纸"
                 DetailPage.FlashWallpaper -> "闪卡壁纸"
@@ -298,7 +299,7 @@ internal fun MaskDetailScreen(page: DetailPage, onClose: () -> Unit) {
                 DetailPage.ParallaxBg -> ParallaxBgDetail(state = state, onPick = pickParallaxBg)
                 // 「空间壁纸」：**独立链**，暂不接收选图回调（深度模型流程还没接）。
                 DetailPage.SpatialWallpaper -> SpatialWallpaperDetail(state)
-                DetailPage.Alive -> Unit // Handled by the independent gallery above.
+                DetailPage.Alive, DetailPage.InfinityWallpaper -> Unit // Handled by the independent gallery above.
                 // 「光栅壁纸」（2026-11-03）：目前只是**主体验证页**，渲染链还没接。
                 DetailPage.RasterWallpaper -> RasterWallpaperDetail(state)
                 DetailPage.LiquidWallpaper -> VivoWallpaperDetail(701)

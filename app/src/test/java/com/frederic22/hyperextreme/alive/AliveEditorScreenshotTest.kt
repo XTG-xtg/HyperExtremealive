@@ -178,6 +178,7 @@ class AliveEditorScreenshotTest {
     private fun verifyDynamicPicker(name: String) {
         val host=Robolectric.buildActivity(ComponentActivity::class.java).setup()
         try {
+            DynamicPackFixture.install(host.get())
             val scenes=AliveCatalog.load(host.get())
             var variant by mutableIntStateOf(603);var mode by mutableIntStateOf(0);var panel by mutableStateOf(false)
             var applied=false

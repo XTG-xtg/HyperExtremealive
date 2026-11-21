@@ -47,7 +47,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /** Dynamic scenes live in a separate child page; custom photo styles stay on the Alive home. */
 @Composable
-internal fun AliveLibrary(onBack: () -> Unit) {
+internal fun AliveLibrary(infinity: Boolean = false, onBack: () -> Unit) {
     val context = LocalContext.current
     val app = context.applicationContext
     val owner = LocalLifecycleOwner.current
@@ -56,13 +56,15 @@ internal fun AliveLibrary(onBack: () -> Unit) {
     var failure by remember { mutableStateOf("") }
     var group by rememberSaveable { mutableIntStateOf(0) }
     var revision by remember { mutableIntStateOf(0) }
+    var packReady by remember { mutableStateOf(infinity) }
     val groups = aliveDynamicGroups
     val labels = aliveDynamicLabels
     val colors = aliveUiColors()
     LaunchedEffect(Unit) {
-        val result = withContext(Dispatchers.IO) { runCatching { AliveCatalog.load(app).filter(::isAliveDynamicScene) } }
+        val result = withContext(Dispatchers.IO) { runCatching { AliveCatalog.load(app).filter { isWallpaperLibraryScene(it, infinity) } } }
         scenes = result.getOrDefault(emptyList())
         failure = result.exceptionOrNull()?.message.orEmpty()
+        packReady = infinity || withContext(Dispatchers.IO) { DynamicResources.installed(app) }
         loading = false
     }
     DisposableEffect(owner) {
@@ -71,10 +73,10 @@ internal fun AliveLibrary(onBack: () -> Unit) {
         onDispose { owner.lifecycle.removeObserver(observer) }
     }
     Scaffold(topBar = {
-        SmallTopAppBar(title = "动态壁纸", color = colors.page, navigationIcon = { AliveBackButton(onBack) })
+        SmallTopAppBar(title = if(infinity) "Infinity 主题" else "动态壁纸", color = colors.page, navigationIcon = { AliveBackButton(onBack) })
     }) { padding ->
         Column(Modifier.fillMaxSize().background(colors.page).padding(padding)) {
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).selectableGroup()
+            if(!infinity && !loading && packReady) Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).selectableGroup()
                 .padding(horizontal = 14.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 labels.forEachIndexed { index, label ->
                     Box(Modifier.clip(RoundedCornerShape(24.dp))
@@ -87,6 +89,11 @@ internal fun AliveLibrary(onBack: () -> Unit) {
             }
             when {
                 loading -> Text(stringResource(R.string.alive_loading), modifier = Modifier.padding(20.dp), color = colors.secondary)
+                !infinity && !packReady -> Box(Modifier.weight(1f).fillMaxWidth().testTag("dynamic-pack-empty"),contentAlignment=Alignment.Center) {
+                    Column(Modifier.widthIn(max=340.dp).fillMaxWidth().padding(horizontal=20.dp),horizontalAlignment=Alignment.CenterHorizontally) {
+                        DynamicPackControls { ready -> packReady=ready;revision++ }
+                    }
+                }
                 scenes.isEmpty() -> Text(stringResource(R.string.alive_empty) + "\n" + failure, modifier = Modifier.padding(20.dp), color = colors.secondary)
                 else -> {
                     val applied = remember(revision) { Config.variant(app) }
@@ -176,7 +183,7 @@ internal fun AliveThumbnail(scene: AliveCatalog.Scene, revision: Int, modifier: 
                 val key = if (scene.thumbnail.isNotEmpty()) scene.thumbnail else "${file.path}:${file.lastModified()}:${file.length()}"
                 ThumbnailCache.get(key) ?: run {
                     fun decode(options: BitmapFactory.Options) = if (scene.thumbnail.isNotEmpty()) {
-                        app.assets.open(scene.thumbnail).use { BitmapFactory.decodeStream(it, null, options) }
+                        DynamicResources.open(app.assets,scene.thumbnail).use { BitmapFactory.decodeStream(it, null, options) }
                     } else BitmapFactory.decodeFile(file.path, options)
                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                     decode(options)
